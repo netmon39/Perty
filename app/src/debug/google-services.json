@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "429859836461",
+    "firebase_url": "https://perty-53386.firebaseio.com",
+    "project_id": "perty-53386",
+    "storage_bucket": "perty-53386.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429859836461:android:0da7e8ad45c2280b",
+        "android_client_info": {
+          "package_name": "com.example.netipol.perty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "429859836461-p6u4burd5aadf5vp8rp2qr846mro9d7v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.netipol.perty",
+            "certificate_hash": "25c34d603fb81e55a1499797355511512a5a041c"
+          }
+        },
+        {
+          "client_id": "429859836461-tkgj0jpi5lndpnov9c0k767msr2mjmc1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.netipol.perty",
+            "certificate_hash": "9bc5d759ca13737baaee2b64efa1695dc86f20d7"
+          }
+        },
+        {
+          "client_id": "429859836461-7j1din4rnfngv7d70cehap47vfc7tb4c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVo4QoUX-q1ozAHvRiiGVUf7O4pogUS-Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "429859836461-7j1din4rnfngv7d70cehap47vfc7tb4c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
