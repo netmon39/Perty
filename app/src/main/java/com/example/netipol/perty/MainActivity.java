@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private CallbackManager mCallbackManager;
     private static final String TAG = "FACELOG";
     private FirebaseAuth mAuth;
+    //perty
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
