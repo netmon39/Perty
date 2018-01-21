@@ -6,12 +6,28 @@
     android:layout_height="match_parent"
     tools:context="com.example.netipol.perty.AccountActivity">
 
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
     <TextView
-        android:id="@+id/welcomeText"
+        android:id="@+id/nameAndSurname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="Hey b0ss. Cen i habe Perty pls?" />
+        android:layout_below="@+id/profileImage" />
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameAndSurname"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="LOGOUT" />
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.netipol.perty;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,15 +67,30 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        Profile profile = Profile.getCurrentProfile();
         if(currentUser!=null) {
-            updateUI();
+            updateUI(profile);
         }
     }
 
-    private void updateUI(){
+    @Override
+    public void onStop() {
+        super.onStop();
+        signOutFromAll();
+    }
+
+    public void signOutFromAll(){
+        mAuth.getInstance().signOut();
+        LoginManager.getInstance().logOut();
+    }
+
+    private void updateUI(Profile profile){
 
         Toast.makeText(MainActivity.this, "You're logged in", Toast.LENGTH_LONG).show();
         Intent accountIntent = new Intent(MainActivity.this, AccountActivity.class);
+        accountIntent.putExtra("name", profile.getFirstName());
+        accountIntent.putExtra("surname", profile.getLastName());
+        accountIntent.putExtra("imageUrl", profile.getProfilePictureUri(200,200).toString());
         startActivity(accountIntent);
         finish();
     }
@@ -96,7 +115,8 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI();
+                            Profile profile = Profile.getCurrentProfile();
+                            updateUI(profile);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
