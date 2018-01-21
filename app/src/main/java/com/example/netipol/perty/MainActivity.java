@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser!=null){
+        if(currentUser!=null) {
             updateUI();
         }
     }
@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI(){
 
         Toast.makeText(MainActivity.this, "You're logged in", Toast.LENGTH_LONG).show();
-
         Intent accountIntent = new Intent(MainActivity.this, AccountActivity.class);
         startActivity(accountIntent);
         finish();
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
+                            updateUI();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
