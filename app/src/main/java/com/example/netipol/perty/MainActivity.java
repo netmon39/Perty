@@ -24,6 +24,8 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //hello world!
         mAuth = FirebaseAuth.getInstance();
+
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = findViewById(R.id.login_button);
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+    @Override// *************** for demo purposes, don't forget to remove this **************
     public void onStop() {
         super.onStop();
         signOutFromAll();
@@ -92,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         accountIntent.putExtra("name", profile.getFirstName());
         accountIntent.putExtra("surname", profile.getLastName());
         accountIntent.putExtra("imageUrl", profile.getProfilePictureUri(200,200).toString());
+        accountIntent.putExtra("fbUID", profile.getId());
         startActivity(accountIntent);
         finish();
     }
@@ -115,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
                             Profile profile = Profile.getCurrentProfile();
                             updateUI(profile);
                         } else {

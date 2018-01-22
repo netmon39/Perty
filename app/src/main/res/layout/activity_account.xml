@@ -11,14 +11,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_marginTop="30dp"/>
 
     <TextView
         android:id="@+id/nameAndSurname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:layout_below="@+id/profileImage" />
 
     <Button
@@ -27,7 +26,52 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/nameAndSurname"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="LOGOUT" />
+        android:text="LOGOUT"
+        android:layout_marginBottom="30dp"/>
+
+    <EditText
+        android:id="@+id/userNameField"
+        android:layout_width="270dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:hint="Come up with a cool username ;)"
+        android:layout_below="@+id/logout"
+        android:maxLength="20"
+        android:layout_marginBottom="30dp"
+        />
+
+    <TextView
+        android:id="@+id/userTypeInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="What type of user are you?"
+        android:layout_below="@+id/userNameField"/>
+
+    <Spinner
+        android:id="@+id/userType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/userTypeInfo"
+        android:layout_marginBottom="30dp"/>
+
+    <EditText
+        android:id="@+id/accountDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tell others something about you!"
+        android:layout_below="@+id/userType"
+        android:layout_marginBottom="30dp"
+        android:maxLength="100"/>
+
+    <Button
+        android:id="@+id/nextToPref"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/accountDesc"
+        android:layout_centerHorizontal="true"
+        android:text="NEXT" />
+
 
 </RelativeLayout>
