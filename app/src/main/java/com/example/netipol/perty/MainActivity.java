@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private CallbackManager mCallbackManager;
     private static final String TAG = "FACELOG";
     private FirebaseAuth mAuth;
+    public static String fbUID;
     //perty
 
     @Override
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         accountIntent.putExtra("surname", profile.getLastName());
         accountIntent.putExtra("imageUrl", profile.getProfilePictureUri(200,200).toString());
         accountIntent.putExtra("fbUID", profile.getId());
+        fbUID = profile.getId();
         startActivity(accountIntent);
         finish();
     }

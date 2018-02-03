@@ -3,6 +3,9 @@
     package="com.example.netipol.perty">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -41,7 +44,21 @@
         </activity>
         <activity android:name=".AccountActivity" />
         <activity android:name=".SelectPrefActivity" />
-        <activity android:name=".UserProfileActivity"></activity>
+        <activity android:name=".UserProfileActivity" />
+        <activity
+            android:name=".GridViewAdapter"
+            android:label="@string/title_activity_grid_view_adapter"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".GridItemView"
+            android:label="@string/title_activity_grid_item_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SelectedItemsActivity"
+            android:label="@string/title_activity_selected_items"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".PostActivity" />
+        <activity android:name=".FeedActivity"></activity>
     </application>
 
 </manifest>

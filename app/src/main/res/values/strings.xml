@@ -2,5 +2,8 @@
     <string name="app_name">Perty</string>
     <string name="facebook_app_id">840754492763222</string>
     <string name="fb_login_protocol_scheme">fb840754492763222</string>
+    <string name="title_activity_grid_view_adapter">GridViewAdapter</string>
+    <string name="title_activity_grid_item_view">GridItemView</string>
+    <string name="title_activity_selected_items">SelectedItemsActivity</string>
 
 </resources>
