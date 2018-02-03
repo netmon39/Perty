@@ -7,9 +7,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.w3c.dom.Text;
 
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by netipol on 3/2/2018 AD.
@@ -36,6 +40,8 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         holder.desc.setText(eventList.get(position).getDesc());
         holder.type.setText(eventList.get(position).getType());
         //holder.image.setText(eventList.get(position).getTitle());
+        Picasso.with(getApplicationContext()).load(eventList.get(position).getImage()).into(holder.image);
+
     }
 
     @Override
