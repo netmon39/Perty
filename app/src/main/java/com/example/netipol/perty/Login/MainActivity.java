@@ -75,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*@Override// *************** for demo purposes, don't forget to remove this **************
+    @Override// *************** for demo purposes, don't forget to remove this **************
     public void onStop() {
         super.onStop();
         signOutFromAll();
-    }*/
+    }
 
     public void signOutFromAll(){
         mAuth.getInstance().signOut();
