@@ -13,5 +13,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="userHint">Come up with a cool username ;)</string>
+    <string name="typeTitle">What type of user are you?</string>
+    <string name="bioHint">Tell others something about you!</string>
 
 </resources>
