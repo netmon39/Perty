@@ -40,8 +40,9 @@
             <Button
                 android:id="@+id/logout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_gravity="center_horizontal"
+                android:background="@drawable/btstyle"
                 android:text="LOGOUT" />
 
             <EditText
@@ -51,7 +52,9 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="5dp"
                 android:hint="Come up with a cool username ;)"
-                android:maxLength="20" />
+                android:maxLength="20"
+                android:textSize="12sp"
+                />
 
             <TextView
                 android:id="@+id/userTypeInfo"
@@ -75,7 +78,9 @@
                 android:layout_marginBottom="5dp"
                 android:layout_gravity="center_horizontal"
                 android:hint="Tell others something about you!"
-                android:maxLength="100" />
+                android:maxLength="100"
+                android:textSize="12sp"
+                />
 
             <Button
                 android:id="@+id/nextToPref"
