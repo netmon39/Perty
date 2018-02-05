@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.example.netipol.perty.Home.BaseActivity;
+import com.example.netipol.perty.Login.Home.BaseActivity;
 import com.example.netipol.perty.GridItemView;
 import com.example.netipol.perty.GridViewAdapter;
 import com.example.netipol.perty.R;
