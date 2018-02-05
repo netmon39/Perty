@@ -1,4 +1,4 @@
-package com.example.netipol.perty.Login.Home;
+package com.example.netipol.perty.Home;
 
 
 import android.os.Bundle;

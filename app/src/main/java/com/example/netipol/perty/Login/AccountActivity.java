@@ -53,7 +53,7 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         final String fbUID = inBundle.get("fbUID").toString();
         String imageUrl = inBundle.get("imageUrl").toString();
 
-        TextView nameView = (TextView) findViewById(R.id.nameAndSurname);
+        TextView nameView = (TextView) findViewById(R.id.fbName);
         nameView.setText("" + name + " " + surname);
 
         new AccountActivity.DownloadImage((ImageView)findViewById(R.id.profileImage)).execute(imageUrl);

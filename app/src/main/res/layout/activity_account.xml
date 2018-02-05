@@ -4,74 +4,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.netipol.perty.Login.AccountActivity">
+    tools:context="com.example.netipol.perty.Login.AccountActivity"
+    android:background="@drawable/apptibg2"
+    >
 
-    <ImageView
-        android:id="@+id/profileImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"/>
-
-    <TextView
-        android:id="@+id/nameAndSurname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/profileImage" />
-
-    <Button
-        android:id="@+id/logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nameAndSurname"
-        android:layout_centerHorizontal="true"
-        android:text="LOGOUT"
-        android:layout_marginBottom="30dp"/>
-
-    <EditText
-        android:id="@+id/userNameField"
-        android:layout_width="270dp"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
-        android:hint="Come up with a cool username ;)"
-        android:layout_below="@+id/logout"
-        android:maxLength="20"
-        android:layout_marginBottom="30dp"
-        />
-
-    <TextView
-        android:id="@+id/userTypeInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="What type of user are you?"
-        android:layout_below="@+id/userNameField"/>
-
-    <Spinner
-        android:id="@+id/userType"
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/SiUpCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
-        android:layout_below="@+id/userTypeInfo"
-        android:layout_marginBottom="30dp"/>
+        card_view:cardBackgroundColor="@color/bgPrimary"
+        android:layout_margin="35dp"
+        card_view:cardCornerRadius="20dp"
+        android:layout_gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
 
-    <EditText
-        android:id="@+id/accountDesc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tell others something about you!"
-        android:layout_below="@+id/userType"
-        android:layout_marginBottom="30dp"
-        android:maxLength="100"/>
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp" />
 
-    <Button
-        android:id="@+id/nextToPref"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/accountDesc"
-        android:layout_centerHorizontal="true"
-        android:text="NEXT" />
+            <TextView
+                android:id="@+id/fbName"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
 
+            <Button
+                android:id="@+id/logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="LOGOUT" />
 
+            <EditText
+                android:id="@+id/userNameField"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:hint="Come up with a cool username ;)"
+                android:maxLength="20" />
+
+            <TextView
+                android:id="@+id/userTypeInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="What type of user are you?" />
+
+            <Spinner
+                android:id="@+id/userType"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal"
+                android:spinnerMode="dropdown" />
+
+            <EditText
+                android:id="@+id/accountDesc"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal"
+                android:hint="Tell others something about you!"
+                android:maxLength="100" />
+
+            <Button
+                android:id="@+id/nextToPref"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:text="NEXT"
+                android:background="@drawable/btstyle"
+                android:layout_marginBottom="20dp"
+                />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 </RelativeLayout>
