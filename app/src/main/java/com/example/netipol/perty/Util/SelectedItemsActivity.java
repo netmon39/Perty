@@ -1,4 +1,4 @@
-package com.example.netipol.perty;
+package com.example.netipol.perty.Util;
 
 import android.annotation.SuppressLint;
 import android.graphics.Typeface;

@@ -1,4 +1,4 @@
-package com.example.netipol.perty;
+package com.example.netipol.perty.Util;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.example.netipol.perty.R;
 
 public class GridItemView extends FrameLayout {
 

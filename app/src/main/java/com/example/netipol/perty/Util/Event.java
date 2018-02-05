@@ -1,4 +1,4 @@
-package com.example.netipol.perty;
+package com.example.netipol.perty.Util;
 
 /**
  * Created by netipol on 1/2/2018 AD.
