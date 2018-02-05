@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.example.netipol.perty.Home.BaseActivity;
 import com.example.netipol.perty.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;

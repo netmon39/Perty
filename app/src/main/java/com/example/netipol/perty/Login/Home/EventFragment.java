@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.netipol.perty.Event;
-import com.example.netipol.perty.EventListAdapter;
+import com.example.netipol.perty.Util.Event;
+import com.example.netipol.perty.Util.EventListAdapter;
 import com.example.netipol.perty.R;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;

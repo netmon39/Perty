@@ -46,15 +46,15 @@
         <activity android:name=".Login.SelectPrefActivity" />
         <activity android:name=".UserProfileActivity" />
         <activity
-            android:name=".GridViewAdapter"
+            android:name=".Util.GridViewAdapter"
             android:label="@string/title_activity_grid_view_adapter"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".GridItemView"
+            android:name=".Util.GridItemView"
             android:label="@string/title_activity_grid_item_view"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SelectedItemsActivity"
+            android:name=".Util.SelectedItemsActivity"
             android:label="@string/title_activity_selected_items"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Login.Home.PostActivity" />
