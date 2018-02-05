@@ -5,5 +5,13 @@
     <string name="title_activity_grid_view_adapter">GridViewAdapter</string>
     <string name="title_activity_grid_item_view">GridItemView</string>
     <string name="title_activity_selected_items">SelectedItemsActivity</string>
+    <string name="nav_feed">Events</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_create">Create</string>
+    <string name="nav_notif">Notifications</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

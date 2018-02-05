@@ -1,13 +1,11 @@
-package com.example.netipol.perty;
+package com.example.netipol.perty.Home;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,10 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
+import com.example.netipol.perty.R;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -140,7 +138,10 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     mProgress.dismiss();
 
-                    startActivity(new Intent(PostActivity.this, FeedActivity.class));
+                    Toast.makeText(PostActivity.this, "Your post was successfully uploaded.",
+                            Toast.LENGTH_SHORT).show();
+
+                    finish();
                 }
             });
         }

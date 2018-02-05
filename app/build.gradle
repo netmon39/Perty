@@ -30,6 +30,7 @@ dependencies {
     implementation 'com.android.support:design:27.0.2'
 
     implementation 'com.google.firebase:firebase-database:11.8.0'
+    implementation 'com.android.support:support-v4:27.0.2'
     compile 'com.google.firebase:firebase-firestore:11.8.0'
     compile 'com.google.firebase:firebase-storage:11.8.0'
     compile 'com.google.firebase:firebase-auth:11.8.0'
@@ -43,6 +44,11 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 
 }
+
+
+
+
+
 
 
 

@@ -1,7 +1,6 @@
-package com.example.netipol.perty;
+package com.example.netipol.perty.Login;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,16 +8,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.netipol.perty.Home.BaseActivity;
+import com.example.netipol.perty.GridItemView;
+import com.example.netipol.perty.GridViewAdapter;
+import com.example.netipol.perty.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.example.netipol.perty.MainActivity.fbUID;
 
 public class SelectPrefActivity extends AppCompatActivity {
 
@@ -102,10 +101,10 @@ public class SelectPrefActivity extends AppCompatActivity {
                 // Add a new document with a generated ID
 
                 db.collection("users")
-                        .document(fbUID)
+                        .document(MainActivity.fbUID)
                         .set(categ, SetOptions.merge());
 
-                Intent intent = new Intent(SelectPrefActivity.this, PostActivity.class);
+                Intent intent = new Intent(SelectPrefActivity.this, BaseActivity.class);
                 //intent.putStringArrayListExtra("SELECTED_LETTER", selectedStrings);
                 //intent.putExtra("categ", categ_key);
                 startActivity(intent);

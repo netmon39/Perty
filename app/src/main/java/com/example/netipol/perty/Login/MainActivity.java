@@ -1,13 +1,13 @@
-package com.example.netipol.perty;
+package com.example.netipol.perty.Login;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.netipol.perty.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -23,9 +23,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override// *************** for demo purposes, don't forget to remove this **************
+    /*@Override// *************** for demo purposes, don't forget to remove this **************
     public void onStop() {
         super.onStop();
         signOutFromAll();
-    }
+    }*/
 
     public void signOutFromAll(){
         mAuth.getInstance().signOut();

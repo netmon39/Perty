@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".Login.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,8 +42,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".AccountActivity" />
-        <activity android:name=".SelectPrefActivity" />
+        <activity android:name=".Login.AccountActivity" />
+        <activity android:name=".Login.SelectPrefActivity" />
         <activity android:name=".UserProfileActivity" />
         <activity
             android:name=".GridViewAdapter"
@@ -57,8 +57,8 @@
             android:name=".SelectedItemsActivity"
             android:label="@string/title_activity_selected_items"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".PostActivity" />
-        <activity android:name=".FeedActivity"></activity>
+        <activity android:name=".Home.PostActivity" />
+        <activity android:name=".Home.BaseActivity"></activity>
     </application>
 
 </manifest>
