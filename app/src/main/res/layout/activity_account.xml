@@ -49,16 +49,9 @@
                 android:textSize="12sp"
                 />
 
-            <TextView
-                android:id="@+id/userTypeInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/typeTitle" />
-
             <Spinner
                 android:id="@+id/userType"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_gravity="center_horizontal"

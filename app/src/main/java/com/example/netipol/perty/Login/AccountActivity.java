@@ -3,6 +3,7 @@ package com.example.netipol.perty.Login;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.netipol.perty.R;
 import com.facebook.FacebookSdk;
@@ -58,7 +61,7 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
 
         new AccountActivity.DownloadImage((ImageView)findViewById(R.id.profileImage)).execute(imageUrl);
 
-        Button logout = (Button) findViewById(R.id.logout);
+        /*Button logout = (Button) findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -68,15 +71,43 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
                 startActivity(login);
                 finish();
             }
-        });
+        });*/
 
         //get the spinner from the xml.
         Spinner userTypeDropdown = findViewById(R.id.userType);
         //create a list of items for the spinner.
-        String[] items = new String[]{"Student", "Professor", "Club", "Official"};
+        String[] items = new String[]{"What type of user are you?","Student", "Professor", "Club", "Official"};
         //create an adapter to describe how the items are displayed, adapters are used in several places in android.
         //There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items){
+            @Override
+            public boolean isEnabled(int position){
+                if(position == 0)
+                {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
         //set the spinners adapter to the previously created one.
         userTypeDropdown.setAdapter(adapter);
         userTypeDropdown.setOnItemSelectedListener(this);
@@ -132,19 +163,32 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         });
     }
 
+
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+        String selectedItemText = (String) adapterView.getItemAtPosition(i);
+        // If user change the default selection
+        // First item is disable and it is used for hint
+        if (i > 0) {
+            // Notify the selected item text
+            Toast.makeText(getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
+        }
+
         switch (i) {
             case 0://Student
+                userType = "What type of user are you?";
+                break;
+            case 1://Student
                 userType = "Student";
                 break;
-            case 1://Prof
+            case 2://Prof
                 userType = "Professor";
                 break;
-            case 2://Club
+            case 3://Club
                 userType = "Club";
                 break;
-            case 3://Official
+            case 4://Official
                 userType = "Official";
                 break;
         }
