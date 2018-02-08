@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import com.example.netipol.perty.Profile.ProfileFragment;
-import com.example.netipol.perty.Profile.UserProfileActivity;
 import com.example.netipol.perty.R;
 
 public class BaseActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -76,9 +74,7 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
 
                     case R.id.nav_profile :
                         prevFrag = R.id.nav_profile;
-                      //  startActivity(new Intent(BaseActivity.this, UserProfileActivity.class));
-                        setFrag(profileFragment);
-
+                        setFrag(eventFragment);
                         return true;
 
                     default:
