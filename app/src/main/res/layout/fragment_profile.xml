@@ -1,13 +1,43 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home.ProfileFragment">
+    tools:context=".Profile.ProfileFragment"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+        android:id="@+id/my_profile_picture"
+        />
+      <TextView
+          android:id="@+id/my_username_profile"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="30sp"
+          android:layout_marginTop="20dp"
+          android:text="Boon"
+          android:textStyle="bold"
+          android:layout_toEndOf="@id/my_profile_picture"
+          />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="a very very sad boy"
+            android:layout_toEndOf="@id/my_profile_picture"
+            android:layout_below="@id/my_username_profile"
+            />
+    </RelativeLayout>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/profile_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></android.support.design.widget.TabLayout>
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+       />
 
-</FrameLayout>
+</LinearLayout>

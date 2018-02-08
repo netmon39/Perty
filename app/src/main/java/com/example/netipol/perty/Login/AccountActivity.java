@@ -1,5 +1,6 @@
 package com.example.netipol.perty.Login;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import static com.example.netipol.perty.Profile.currentUser.*;
 
 import com.example.netipol.perty.R;
 import com.facebook.FacebookSdk;
@@ -33,21 +35,22 @@ import java.util.Map;
 
 public class AccountActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
-    private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String TAG = "FIRESTORELOG";
     public Button nextToP;
     public EditText userNameF, accountD;
     public String userType, userName, accountDescription;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
         FacebookSdk.sdkInitialize(this);
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         Bundle inBundle = getIntent().getExtras();
+        assert inBundle != null;
         String name = inBundle.get("name").toString();
         String surname = inBundle.get("surname").toString();
         final String fbUID = inBundle.get("fbUID").toString();
@@ -58,17 +61,6 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
 
         new AccountActivity.DownloadImage((ImageView)findViewById(R.id.profileImage)).execute(imageUrl);
 
-        Button logout = (Button) findViewById(R.id.logout);
-        logout.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                mAuth.getInstance().signOut();
-                LoginManager.getInstance().logOut();
-                Intent login = new Intent(AccountActivity.this, MainActivity.class);
-                startActivity(login);
-                finish();
-            }
-        });
 
         //get the spinner from the xml.
         Spinner userTypeDropdown = findViewById(R.id.userType);
@@ -155,10 +147,11 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         //Don't allow it
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
-        public DownloadImage(ImageView bmImage){
+        DownloadImage(ImageView bmImage){
             this.bmImage = bmImage;
         }
 
@@ -178,6 +171,7 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         protected void onPostExecute(Bitmap result){
             RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(),result);
             roundedBitmapDrawable.setCircular(true);
+            profilepicture = roundedBitmapDrawable;
             bmImage.setImageDrawable(roundedBitmapDrawable);
         }
 
