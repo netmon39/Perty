@@ -1,12 +1,16 @@
 package com.example.netipol.perty.Util;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.netipol.perty.Model.Event;
 import com.example.netipol.perty.R;
 import com.squareup.picasso.Picasso;
 
@@ -21,8 +25,11 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder>{
 
     public List<Event> eventList;
+    public Context context;
+    public String event_id;
 
-    public EventListAdapter(List<Event> eventList){
+    public EventListAdapter(Context context, List<Event> eventList){
+
         this.eventList = eventList;
     }
 
@@ -35,11 +42,22 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+
         holder.title.setText(eventList.get(position).getTitle());
         holder.desc.setText(eventList.get(position).getDesc());
         holder.type.setText(eventList.get(position).getType());
         //holder.image.setText(eventList.get(position).getTitle());
         Picasso.with(getApplicationContext()).load(eventList.get(position).getImage()).into(holder.image);
+
+        event_id = eventList.get(position).eventId;
+
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("GETID", event_id);
+            }
+        });
 
     }
 

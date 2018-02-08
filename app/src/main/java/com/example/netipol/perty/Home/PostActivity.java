@@ -109,6 +109,8 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         final String title_val = mPostTitle.getText().toString().trim();
         final String desc_val = mPostDesc.getText().toString().trim();
         final String type_val = eventType;
+        Long tsLong = System.currentTimeMillis()/1000;
+        final String ts = tsLong.toString();
 
         if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && mImageUri != null){
 
@@ -130,6 +132,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     event.put("desc", desc_val);
                     event.put("type", type_val);
                     event.put("image", downloadUrl.toString());
+                    event.put("timestamp", ts);
 
                     // Add a new document with a generated ID
                     db.collection("events")

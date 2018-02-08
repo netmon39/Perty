@@ -33,6 +33,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         nextToSelectPref = (Button) findViewById(R.id.nextToSelectPref);
 
+        //get data from a user doc in database
         db.collection("users")
                 .document(MainActivity.fbUID)
                 .get()
@@ -42,12 +43,8 @@ public class UserProfileActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot doc = task.getResult();
                                 Log.d(TAG, "DocumentSnapshot data:"+ " => " + doc.getData());
-                                StringBuilder fields = new StringBuilder("");
-                                fields.append("User: ").append(doc.get("username"));
-                                fields.append("\nType: ").append(doc.get("accountdesc"));
-                                fields.append("\nDesc: ").append(doc.get("usertype"));
-                                profView.setText(fields.toString());
-
+                                String usern = (String) doc.get("username"); //get username, usertype. etc. (corresponding to fields avail. in doc)
+                                profView.setText(usern); //where ever you want to display it
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
@@ -62,7 +59,11 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-
+ /*StringBuilder fields = new StringBuilder("");
+                                fields.append("User: ").append(doc.get("username"));
+                                fields.append("\nType: ").append(doc.get("accountdesc"));
+                                fields.append("\nDesc: ").append(doc.get("usertype"));
+                                profView.setText(fields.toString());*/
 
 
     }
