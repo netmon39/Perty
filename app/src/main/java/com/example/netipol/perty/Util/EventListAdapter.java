@@ -1,6 +1,7 @@
 package com.example.netipol.perty.Util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,12 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.netipol.perty.Home.SingleEventActivity;
 import com.example.netipol.perty.Model.Event;
 import com.example.netipol.perty.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -26,7 +29,6 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
 
     public List<Event> eventList;
     public Context context;
-    public String event_id;
 
     public EventListAdapter(Context context, List<Event> eventList){
 
@@ -35,13 +37,12 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_row,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_row, parent,false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-
+    public void onBindViewHolder(ViewHolder holder, final int position) {
 
         holder.title.setText(eventList.get(position).getTitle());
         holder.desc.setText(eventList.get(position).getDesc());
@@ -49,13 +50,18 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         //holder.image.setText(eventList.get(position).getTitle());
         Picasso.with(getApplicationContext()).load(eventList.get(position).getImage()).into(holder.image);
 
-        event_id = eventList.get(position).eventId;
+        final String event_doc_id = eventList.get(position).eventId;
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Log.d("GETID", event_id);
+                Log.d("GETID", event_doc_id + position);
+
+                Intent singleEventIntent = new Intent(getApplicationContext(), SingleEventActivity.class);
+                singleEventIntent.putExtra("event_id", event_doc_id);
+                singleEventIntent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(singleEventIntent);
             }
         });
 
@@ -75,6 +81,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         public TextView title, desc, type;
 
         public ViewHolder(View itemView) {
+
             super(itemView);
             mView = itemView;
 

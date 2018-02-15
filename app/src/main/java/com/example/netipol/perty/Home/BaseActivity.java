@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.example.netipol.perty.Profile.ProfileFragment;
 import com.example.netipol.perty.R;
+import com.example.netipol.perty.UserProfileActivity;
 
 public class BaseActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -18,9 +20,11 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
     private FrameLayout mMainFrame;
 
     private EventFragment eventFragment;
+    private SearchFragment searchFragment;
     private ProfileFragment profileFragment;
+    private ExploreFragment exploreFragment;
 
-    private int prevFrag;
+    private int prevFrag=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +37,17 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
         //frag constructors
         eventFragment = new EventFragment();
         profileFragment = new ProfileFragment();
+        searchFragment = new SearchFragment();
+        exploreFragment = new ExploreFragment();
 
         //set default frag
         setFrag(eventFragment);
+       /* switch (prevFrag) {
+            case 1 : setFrag(eventFragment);
+            case 2 : setFrag(searchFragment);
+            case 4 : setFrag(eventFragment);
+            case 5 : setFrag(eventFragment);
+        }*/
 
         mMainNav.setOnNavigationItemSelectedListener(this);
 
@@ -47,34 +59,28 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
                 switch (item.getItemId()){
 
                     case R.id.nav_events :
-                        prevFrag = R.id.nav_events;
                         setFrag(eventFragment);
-
+                        prevFrag=1;
                         return true;
 
-                    case R.id.nav_search :
-                        prevFrag = R.id.nav_search;
-                        setFrag(eventFragment);
+                    case R.id.nav_search ://Search
+                        setFrag(searchFragment);
+                        prevFrag=2;
                         return true;
 
                     case R.id.nav_create :
-
                         startActivity(new Intent(BaseActivity.this, PostActivity.class));
-                        mMainNav.setSelectedItemId(mMainNav.getMenu().findItem(R.id.nav_events).getItemId());
+                        //"post repeat" bug when post event at EventFragment
+                        return false;
 
-
-
-
-                        return true;
-
-                    case R.id.nav_notif :
-                        prevFrag = R.id.nav_notif;
-                        setFrag(eventFragment);
+                    case R.id.nav_exp :///Explore
+                        setFrag(exploreFragment);
+                        prevFrag=4;
                         return true;
 
                     case R.id.nav_profile :
-                        prevFrag = R.id.nav_profile;
-                        setFrag(eventFragment);
+                        setFrag(profileFragment);
+                        prevFrag=5;
                         return true;
 
                     default:
@@ -91,4 +97,5 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
         fragmentTransaction.commit();
 
     }
+
 }

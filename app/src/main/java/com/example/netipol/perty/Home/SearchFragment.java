@@ -90,7 +90,7 @@ public class SearchFragment extends Fragment {
                             if(change.getType() == DocumentChange.Type.ADDED){ //MODIFIED, REMOVED ??
 
                                 String event_id = change.getDocument().getId();
-
+                                Log.d("GETID at SearchFrag", event_id);
                                 Event events = change.getDocument().toObject(Event.class).withId(event_id);
                                 eventList.add(events);
 

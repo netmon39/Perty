@@ -44,7 +44,7 @@
         </activity>
         <activity android:name=".Login.AccountActivity" />
         <activity android:name=".Login.SelectPrefActivity" />
-        <activity android:name=".Profile.UserProfileActivity" />
+        <activity android:name=".UserProfileActivity" />
         <activity
             android:name=".Util.GridViewAdapter"
             android:label="@string/title_activity_grid_view_adapter"
@@ -58,7 +58,8 @@
             android:label="@string/title_activity_selected_items"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Home.PostActivity" />
-        <activity android:name=".Home.BaseActivity"></activity>
+        <activity android:name=".Home.BaseActivity" />
+        <activity android:name=".Home.SingleEventActivity"></activity>
     </application>
 
 </manifest>

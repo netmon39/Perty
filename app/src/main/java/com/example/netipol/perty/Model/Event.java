@@ -8,18 +8,19 @@ import com.example.netipol.perty.Util.EventId;
 
 public class Event extends EventId{
 
-    private String title, desc, type, image, timestamp;
+    private String title, desc, type, image, timestamp, host;
 
     public Event(){
 
     }
 
-    public Event(String title, String desc, String type, String image, String timestamp) {
+    public Event(String title, String desc, String type, String image, String timestamp, String host) {
         this.title = title;
         this.desc = desc;
         this.type = type;
         this.image = image;
         this.timestamp = timestamp;
+        this.host = host;
     }
 
     public String getTitle() {
@@ -59,6 +60,13 @@ public class Event extends EventId{
     }
 
     public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+        this.timestamp = timestamp;}
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 }

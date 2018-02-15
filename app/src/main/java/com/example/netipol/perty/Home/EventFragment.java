@@ -20,6 +20,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Document;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +58,7 @@ public class EventFragment extends Fragment {
         mEventList.setAdapter(eventListAdapter);
 
         mFirestore = FirebaseFirestore.getInstance();
+
         mFirestore.collection("events").orderBy("timestamp", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -69,6 +72,7 @@ public class EventFragment extends Fragment {
                     if(change.getType() == DocumentChange.Type.ADDED){ //MODIFIED, REMOVED ??
 
                         String event_id = change.getDocument().getId();
+                        Log.d("GETID at EventFrag", event_id);
 
                         Event events = change.getDocument().toObject(Event.class).withId(event_id);
 

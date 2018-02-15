@@ -18,24 +18,35 @@
           android:layout_height="wrap_content"
           android:textSize="30sp"
           android:layout_marginTop="20dp"
-          android:text="Boon"
           android:textStyle="bold"
           android:layout_toEndOf="@id/my_profile_picture"
           />
+
         <TextView
+            android:id="@+id/my_type_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="a very very sad boy"
-            android:layout_toEndOf="@id/my_profile_picture"
+            android:layout_alignBaseline="@+id/my_desc_profile"
+            android:layout_alignBottom="@+id/my_desc_profile"
+            android:layout_alignParentEnd="true"
+             />
+
+        <TextView
+            android:id="@+id/my_desc_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@id/my_username_profile"
+            android:layout_toEndOf="@id/my_profile_picture"
             />
     </RelativeLayout>
+
     <android.support.design.widget.TabLayout
         android:id="@+id/profile_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></android.support.design.widget.TabLayout>
 
-    <FrameLayout
+    <android.support.v4.view.ViewPager
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
        />

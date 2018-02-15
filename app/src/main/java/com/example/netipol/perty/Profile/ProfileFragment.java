@@ -1,20 +1,38 @@
 package com.example.netipol.perty.Profile;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import static com.example.netipol.perty.Profile.currentUser.*;
 
+import com.example.netipol.perty.Login.AccountActivity;
+import com.example.netipol.perty.Login.MainActivity;
 import com.example.netipol.perty.R;
+import com.example.netipol.perty.UserProfileActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Text;
+
+import java.io.InputStream;
 
 
 /**
@@ -22,6 +40,7 @@ import com.example.netipol.perty.R;
  */
 public class ProfileFragment extends Fragment {
 
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private SectionPageAdaptor mSectionPageadapter;
     private static final String TAG = "ProfileFragment";
     private ViewPager mViewPager;
@@ -37,8 +56,13 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "On create: Starting");
         super.onCreateView(inflater, container, savedInstanceState);
-        mSectionPageadapter = new SectionPageAdaptor(getFragmentManager());
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        mSectionPageadapter = new SectionPageAdaptor(getFragmentManager());
+
+        mViewPager = (ViewPager) view.findViewById(R.id.container);
+        setupViewPager(mViewPager);
+
 
         TabLayout tabLayout= (TabLayout) view.findViewById(R.id.profile_tab);
         tabLayout.setupWithViewPager(mViewPager);
@@ -50,15 +74,71 @@ public class ProfileFragment extends Fragment {
         ImageView mypropic = (ImageView) view.findViewById(R.id.my_profile_picture);
         mypropic.setImageDrawable(profilepicture);
 
+        String imageUrl = AccountActivity.FBimageUrl;
+
+        new ProfileFragment.DownloadImage((ImageView)view.findViewById(R.id.my_profile_picture)).execute(imageUrl);
+        final TextView profName = (TextView) view.findViewById(R.id.my_username_profile);
+        final TextView profDesc = (TextView) view.findViewById(R.id.my_desc_profile);
+        final TextView profType = (TextView) view.findViewById(R.id.my_type_profile);
+
+        //Get user info
+        db.collection("users")
+                .document(MainActivity.fbUID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot doc = task.getResult();
+                            Log.d(TAG, "DocumentSnapshot data:"+ " => " + doc.getData());
+
+                            profName.setText(doc.get("username").toString());
+                            profDesc.setText(doc.get("accountdesc").toString());
+                            profType.setText(doc.get("usertype").toString());
+
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
         return view;
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    public void setupViewPager(ViewPager viewPager) {
         SectionPageAdaptor adapter = new SectionPageAdaptor(getFragmentManager());
-        adapter.addFragment(new UpcomingFragment(), "TabUPFragment");
-        adapter.addFragment(new NotificationFragment(), "TabNotiFragment");
-        adapter.addFragment(new HostFragment(), "TabHostFragment");
-        adapter.addFragment(new HistoryFragment(), "TabHistFragment");
-        ViewPager.setAdapter(adapter);
+        adapter.addFragment(new UpcomingFragment(), "Upcoming");
+        adapter.addFragment(new HostFragment(), "Hosting");
+        adapter.addFragment(new NotificationFragment(), "Notice");
+        adapter.addFragment(new HistoryFragment(), "History");
+        viewPager.setAdapter(adapter);
+    }
+
+    public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImage(ImageView bmImage){
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls){
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try{
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            }catch (Exception e){
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result){
+            RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(),result);
+            roundedBitmapDrawable.setCircular(true);
+            bmImage.setImageDrawable(roundedBitmapDrawable);
+        }
+
     }
 }

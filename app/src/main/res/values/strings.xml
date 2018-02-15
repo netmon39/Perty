@@ -8,7 +8,7 @@
     <string name="nav_feed">Events</string>
     <string name="nav_search">Search</string>
     <string name="nav_create">Create</string>
-    <string name="nav_notif">Notifications</string>
+    <string name="nav_exp">Explore</string>
     <string name="nav_profile">Profile</string>
     <string name="profile_fragment">Profile</string>
 

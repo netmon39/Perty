@@ -15,12 +15,12 @@
             android:layout_height="50dp"
             android:layout_toEndOf="@+id/search_field"
             android:background="@android:color/background_light"
-            app:srcCompat="@drawable/green_square" />
+            app:srcCompat="@drawable/ic_search_white_24dp" />
 
         <EditText
             android:id="@+id/search_field"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
             android:ems="10"
 
             android:hint="Search here"

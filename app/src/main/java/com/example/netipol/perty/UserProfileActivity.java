@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.netipol.perty.Login.AccountActivity;
 import com.example.netipol.perty.Login.MainActivity;
 import com.example.netipol.perty.Login.SelectPrefActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
