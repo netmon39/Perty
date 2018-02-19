@@ -38,6 +38,14 @@
             android:layout_below="@id/my_username_profile"
             android:layout_toEndOf="@id/my_profile_picture"
             />
+
+        <Button
+            android:id="@+id/logoutBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:text="Log Out" />
     </RelativeLayout>
 
     <android.support.design.widget.TabLayout

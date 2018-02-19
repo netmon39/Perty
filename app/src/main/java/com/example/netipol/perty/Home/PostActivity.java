@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.netipol.perty.Login.MainActivity;
+import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -134,7 +134,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     event.put("type", type_val);
                     event.put("image", downloadUrl.toString());
                     event.put("timestamp", ts);
-                    event.put("host", MainActivity.fbUID);
+                    event.put("host", LoginActivity.fbUID);
 
                     // Add a new document with a generated ID
                     db.collection("events")

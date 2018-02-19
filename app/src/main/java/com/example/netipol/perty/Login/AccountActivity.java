@@ -110,13 +110,9 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         userTypeDropdown.setAdapter(adapter);
         userTypeDropdown.setOnItemSelectedListener(this);
 
-
-
         userNameF = (EditText) findViewById(R.id.userNameField);
         accountD = (EditText) findViewById(R.id.accountDesc);
         nextToP = (Button) findViewById(R.id.nextToPref);
-
-
 
 
         /*/ Write a message to the database
@@ -160,6 +156,7 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
 
                 Intent intent = new Intent(AccountActivity.this, SelectPrefActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }

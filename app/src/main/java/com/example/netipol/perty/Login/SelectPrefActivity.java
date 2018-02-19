@@ -8,9 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.example.netipol.perty.Home.BaseActivity;
-import com.example.netipol.perty.Util.GridItemView;
-import com.example.netipol.perty.Util.GridViewAdapter;
+import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.Util.GridItemView;
 import com.example.netipol.perty.Util.GridViewAdapter;
 import com.example.netipol.perty.R;
@@ -103,13 +101,14 @@ public class SelectPrefActivity extends AppCompatActivity {
                 // Add a new document with a generated ID
 
                 db.collection("users")
-                        .document(MainActivity.fbUID)
+                        .document(LoginActivity.fbUID)
                         .set(categ, SetOptions.merge());
 
-                Intent intent = new Intent(SelectPrefActivity.this, BaseActivity.class);
+                Intent intent = new Intent(SelectPrefActivity.this, MainActivity.class);
                 //intent.putStringArrayListExtra("SELECTED_LETTER", selectedStrings);
                 //intent.putExtra("categ", categ_key);
                 startActivity(intent);
+                finish();
             }
         });
     }

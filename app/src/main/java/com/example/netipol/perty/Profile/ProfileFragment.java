@@ -1,6 +1,7 @@
 package com.example.netipol.perty.Profile;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -16,21 +17,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import static com.example.netipol.perty.Profile.currentUser.*;
 
+import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.Login.AccountActivity;
-import com.example.netipol.perty.Login.MainActivity;
+import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.R;
-import com.example.netipol.perty.UserProfileActivity;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.w3c.dom.Text;
 
 import java.io.InputStream;
 
@@ -44,6 +47,7 @@ public class ProfileFragment extends Fragment {
     private SectionPageAdaptor mSectionPageadapter;
     private static final String TAG = "ProfileFragment";
     private ViewPager mViewPager;
+    private Button logout;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -57,6 +61,15 @@ public class ProfileFragment extends Fragment {
         Log.d(TAG, "On create: Starting");
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        logout = (Button) view.findViewById(R.id.logoutBtn);
+        logout.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                ((MainActivity)getActivity()).signOutFromAll();
+                ((MainActivity)getActivity()).sendToLogin();
+            }
+        });
 
         mSectionPageadapter = new SectionPageAdaptor(getFragmentManager());
 
@@ -83,7 +96,7 @@ public class ProfileFragment extends Fragment {
 
         //Get user info
         db.collection("users")
-                .document(MainActivity.fbUID)
+                .document(LoginActivity.fbUID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -141,4 +154,5 @@ public class ProfileFragment extends Fragment {
         }
 
     }
+
 }

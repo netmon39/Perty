@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "429859836461-im78u71so4gme06dqs51e5reivgvdmpp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.netipol.perty",
+            "certificate_hash": "5d4d92f1364543214e0ac442a68c5872e017bbb6"
+          }
+        },
+        {
           "client_id": "429859836461-p6u4burd5aadf5vp8rp2qr846mro9d7v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

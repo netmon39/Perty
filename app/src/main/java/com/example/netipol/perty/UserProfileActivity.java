@@ -7,11 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.netipol.perty.Login.AccountActivity;
-import com.example.netipol.perty.Login.MainActivity;
+import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.Login.SelectPrefActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,7 +34,7 @@ public class UserProfileActivity extends AppCompatActivity {
         nextToSelectPref = (Button) findViewById(R.id.nextToSelectPref);
 
         db.collection("users")
-                .document(MainActivity.fbUID)
+                .document(LoginActivity.fbUID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override

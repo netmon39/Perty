@@ -11,10 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.netipol.perty.Home.SingleEventActivity;
 import com.example.netipol.perty.Model.Event;
 import com.example.netipol.perty.R;
-import com.squareup.picasso.Picasso;
+
 
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         holder.desc.setText(eventList.get(position).getDesc());
         holder.type.setText(eventList.get(position).getType());
         //holder.image.setText(eventList.get(position).getTitle());
-        Picasso.with(getApplicationContext()).load(eventList.get(position).getImage()).into(holder.image);
+        Glide.with(getApplicationContext()).load(eventList.get(position).getImage()).apply(new RequestOptions().fitCenter()).into(holder.image);
 
         final String event_doc_id = eventList.get(position).eventId;
 
