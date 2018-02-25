@@ -12,6 +12,7 @@ import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.Util.GridItemView;
 import com.example.netipol.perty.Util.GridViewAdapter;
 import com.example.netipol.perty.R;
+import com.facebook.Profile;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -101,7 +102,7 @@ public class SelectPrefActivity extends AppCompatActivity {
                 // Add a new document with a generated ID
 
                 db.collection("users")
-                        .document(LoginActivity.fbUID)
+                        .document(Profile.getCurrentProfile().getId())
                         .set(categ, SetOptions.merge());
 
                 Intent intent = new Intent(SelectPrefActivity.this, MainActivity.class);

@@ -45,7 +45,6 @@
         </activity>
         <activity android:name=".Login.AccountActivity" />
         <activity android:name=".Login.SelectPrefActivity" />
-        <activity android:name=".UserProfileActivity" />
         <activity
             android:name=".Util.GridViewAdapter"
             android:label="@string/title_activity_grid_view_adapter"

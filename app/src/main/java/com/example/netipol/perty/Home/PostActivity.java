@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.R;
+import com.facebook.Profile;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -134,7 +135,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     event.put("type", type_val);
                     event.put("image", downloadUrl.toString());
                     event.put("timestamp", ts);
-                    event.put("host", LoginActivity.fbUID);
+                    event.put("host", Profile.getCurrentProfile().getId());
 
                     // Add a new document with a generated ID
                     db.collection("events")

@@ -27,6 +27,7 @@ import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.Login.AccountActivity;
 import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.R;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -87,7 +88,7 @@ public class ProfileFragment extends Fragment {
         ImageView mypropic = (ImageView) view.findViewById(R.id.my_profile_picture);
         mypropic.setImageDrawable(profilepicture);
 
-        String imageUrl = AccountActivity.FBimageUrl;
+        String imageUrl = Profile.getCurrentProfile().getProfilePictureUri(200,200).toString();
 
         new ProfileFragment.DownloadImage((ImageView)view.findViewById(R.id.my_profile_picture)).execute(imageUrl);
         final TextView profName = (TextView) view.findViewById(R.id.my_username_profile);
@@ -96,7 +97,7 @@ public class ProfileFragment extends Fragment {
 
         //Get user info
         db.collection("users")
-                .document(LoginActivity.fbUID)
+                .document(Profile.getCurrentProfile().getId())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override

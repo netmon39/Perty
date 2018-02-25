@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class SelectedItemsActivity extends AppCompatActivity {
+public class SelectedItemsActivity extends AppCompatActivity {//SelectPref
 
     private TextView textView;
 

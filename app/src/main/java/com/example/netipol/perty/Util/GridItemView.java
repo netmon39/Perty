@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.example.netipol.perty.R;
 
-public class GridItemView extends FrameLayout {
+public class GridItemView extends FrameLayout {//SelectPref
 
     private TextView textView;
 

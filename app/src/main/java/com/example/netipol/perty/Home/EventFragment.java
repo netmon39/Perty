@@ -35,7 +35,7 @@ public class EventFragment extends Fragment {
 
     private RecyclerView mEventList;
     private FirebaseFirestore mFirestore;
-    private List<Event> eventList;
+    private List<Event> eventList;//List that stores Events
     private EventListAdapter eventListAdapter;
 
     public EventFragment() {
@@ -52,10 +52,11 @@ public class EventFragment extends Fragment {
         eventList = new ArrayList<>();
         eventListAdapter = new EventListAdapter(getApplicationContext(),eventList);
 
+        //RecyclerView setup
         mEventList = v.findViewById(R.id.event_list);
         mEventList.setHasFixedSize(true);
-        mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mEventList.setAdapter(eventListAdapter);
+        mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));//Main Activity
+        mEventList.setAdapter(eventListAdapter);//to fill recycler view with Events
 
         mFirestore = FirebaseFirestore.getInstance();
 
@@ -76,7 +77,7 @@ public class EventFragment extends Fragment {
 
                         Event events = change.getDocument().toObject(Event.class).withId(event_id);
 
-                        eventList.add(events);
+                        eventList.add(events);//add new events whenever there is a change
 
                         eventListAdapter.notifyDataSetChanged();
 

@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private FirebaseAuth mAuth;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -53,12 +52,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         //set default frag
         setFrag(eventFragment);
-       /* switch (prevFrag) {
-            case 1 : setFrag(eventFragment);
-            case 2 : setFrag(searchFragment);
-            case 4 : setFrag(eventFragment);
-            case 5 : setFrag(eventFragment);
-        }*/
 
         mMainNav.setOnNavigationItemSelectedListener(this);
 
@@ -122,7 +115,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     public void sendToLogin(){
 
-        Intent accountIntent = new Intent(MainActivity.this, LoginActivity.class);
+        //CHECK if user had previous authentication !!!!!!!
+        //CHECK if user had previous authentication !!!!!!!
+
+        //some code
+
+        //CHECK if user had previous authentication !!!!!!!
+        //CHECK if user had previous authentication !!!!!!!
+
+        Intent accountIntent = new Intent(MainActivity.this, LoginActivity.class);//for 1st time user
         startActivity(accountIntent);
         finish();
     }

@@ -16,6 +16,7 @@ import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.Model.Event;
 import com.example.netipol.perty.R;
 import com.example.netipol.perty.Util.EventListAdapter;
+import com.facebook.Profile;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -41,16 +42,15 @@ public class UpcomingFragment extends Fragment {
     private List<Event> eventList;
     private EventListAdapter eventListAdapter;
     private FirebaseFirestore mFirestore;
-
+    private String mUser_id;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_upcoming_tab, container, false);
 
-
-
         mFirestore = FirebaseFirestore.getInstance();
+        mUser_id = Profile.getCurrentProfile().getId();
 
         eventList = new ArrayList<>();
         eventListAdapter = new EventListAdapter(getApplicationContext(),eventList);
@@ -60,7 +60,31 @@ public class UpcomingFragment extends Fragment {
         mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mEventList.setAdapter(eventListAdapter);
 
-        //QUERY
+        CollectionReference eventsRef = mFirestore.collection("users").document(mUser_id).collection("joining");
+        eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+
+                if(e != null){
+                    Log.d("FeedLog", "Error : " + e.getMessage());
+                }
+
+                for(DocumentChange change : documentSnapshots.getDocumentChanges()){
+
+                    if(change.getType() == DocumentChange.Type.ADDED){ //MODIFIED, REMOVED ??
+
+                        String event_id = change.getDocument().getId();
+                        Log.d("GETID at SearchFrag", event_id);
+                        Event events = change.getDocument().toObject(Event.class).withId(event_id);
+                        eventList.add(events);
+
+                        eventListAdapter.notifyDataSetChanged();//"joining" collection needs corresponding recycler view adaptor
+
+                    }
+                }
+
+            }
+        });
 
         return v;
     }
