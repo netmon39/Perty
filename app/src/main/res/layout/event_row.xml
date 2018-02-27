@@ -11,6 +11,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/post_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Post Title Goes here"
+            android:paddingLeft="15dp"
+            android:paddingBottom="5dp"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
         <ImageView
             android:id="@+id/post_image"
             android:layout_width="match_parent"
@@ -19,34 +29,79 @@
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/add_photo" />
 
-        <TextView
-            android:id="@+id/post_title"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Host: "
+                android:id="@+id/eventrow_host"/>
+
+
+            <TextView
+            android:id="@+id/post_hostname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
+
+            android:text="netmon39"
+            android:textStyle="bold"
+                android:layout_toRightOf="@+id/eventrow_host"/>
+
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:text="Post Title Goes here"
-            android:textSize="16dp"
-            android:textStyle="bold" />
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time: "
+                android:id="@+id/eventrow_time"/>
 
         <TextView
-            android:id="@+id/post_desc"
+            android:id="@+id/post_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
+            android:text="Saturday, 10 March 14:00"
+            android:layout_toRightOf="@+id/eventrow_time"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:text="Post Description Goes here" />
+            android:paddingRight="15dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Place: "
+                android:id="@+id/eventrow_loca"/>
 
         <TextView
-            android:id="@+id/post_type"
+            android:id="@+id/post_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:text="Post Type Goes here" />
+
+            android:text="CU Sport Complex"
+            android:layout_toRightOf="@+id/eventrow_loca"/>
+
+        </RelativeLayout>
 
 
     </LinearLayout>

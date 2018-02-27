@@ -46,9 +46,10 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        holder.title.setText(eventList.get(position).getTitle());
-        holder.desc.setText(eventList.get(position).getDesc());
-        holder.type.setText(eventList.get(position).getType());
+        holder.title.setText(eventList.get(position).getTitle());//from Event.java
+        holder.host.setText(eventList.get(position).getHost());
+        holder.time.setText(eventList.get(position).getTime());
+        holder.location.setText(eventList.get(position).getLocation());
         //holder.image.setText(eventList.get(position).getTitle());
         Glide.with(getApplicationContext()).load(eventList.get(position).getImage()).apply(new RequestOptions().fitCenter()).into(holder.image);
 
@@ -67,6 +68,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
             }
         });
 
+
     }
 
     @Override
@@ -80,7 +82,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
 
         public ImageView image;
 
-        public TextView title, desc, type;
+        public TextView title, host, time, location;
 
         public ViewHolder(View itemView) {
 
@@ -88,8 +90,9 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
             mView = itemView;
 
             title = (TextView) mView.findViewById(R.id.post_title);
-            desc = (TextView) mView.findViewById(R.id.post_desc);
-            type = (TextView) mView.findViewById(R.id.post_type);
+            host = (TextView) mView.findViewById(R.id.post_hostname);
+            time = (TextView) mView.findViewById(R.id.post_time);
+            location = (TextView) mView.findViewById(R.id.post_location);
             image = (ImageView) mView.findViewById(R.id.post_image);
         }
     }

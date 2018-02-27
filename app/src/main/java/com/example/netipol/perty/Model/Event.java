@@ -1,5 +1,7 @@
 package com.example.netipol.perty.Model;
 
+import android.support.annotation.NonNull;
+
 import com.example.netipol.perty.Util.EventId;
 
 /**
@@ -8,19 +10,21 @@ import com.example.netipol.perty.Util.EventId;
 
 public class Event extends EventId{
 
-    private String title, desc, type, image, timestamp, host;
+    private String title, desc, type, image, timestamp, host, time, location;
 
     public Event(){
 
     }
 
-    public Event(String title, String desc, String type, String image, String timestamp, String host) {
+    public Event(String title, String desc, String type, String image, String timestamp, String host, String time, String location) {
         this.title = title;
         this.desc = desc;
         this.type = type;
         this.image = image;
         this.timestamp = timestamp;
         this.host = host;
+        this.time = time;
+        this.location = location;
     }
 
     public String getTitle() {
@@ -68,5 +72,21 @@ public class Event extends EventId{
 
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

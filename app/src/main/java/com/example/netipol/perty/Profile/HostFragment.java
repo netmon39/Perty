@@ -57,7 +57,7 @@ public class HostFragment  extends android.support.v4.app.Fragment{
         mEventList.setAdapter(eventListAdapter);
 
         CollectionReference eventsRef = mFirestore.collection("events");
-        Query query = eventsRef.whereEqualTo("host", mUser_id);
+        Query query = eventsRef.whereEqualTo("hostid", mUser_id);
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {

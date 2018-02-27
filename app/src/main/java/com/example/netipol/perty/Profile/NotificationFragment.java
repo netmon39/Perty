@@ -10,8 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.netipol.perty.Model.Event;
+import com.example.netipol.perty.Model.FriendReq;
 import com.example.netipol.perty.R;
 import com.example.netipol.perty.Util.EventListAdapter;
+import com.example.netipol.perty.Util.FriendReqID;
+import com.example.netipol.perty.Util.FriendReqListAdapter;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -36,11 +39,10 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class NotificationFragment extends Fragment{
 
-    private RecyclerView mEventList;
-    private List<Event> eventList;
-    private EventListAdapter eventListAdapter;
+    private RecyclerView mFriendReqList;
     private FirebaseFirestore mFirestore;
-    private String mUser_id;
+    private List<FriendReq> friendreqList;//List that stores Events
+    private FriendReqListAdapter friendreqListAdapter;
 
     private static final String TAG = "TabNotiFragment";
     @Nullable
@@ -48,20 +50,20 @@ public class NotificationFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_notification_tab,container,false);
 
+        //Friend Requests
+
+        friendreqList = new ArrayList<>();
+        friendreqListAdapter = new FriendReqListAdapter(getApplicationContext(),friendreqList);
+
+        //RecyclerView setup
+        mFriendReqList = v.findViewById(R.id.notice_list);
+        mFriendReqList.setHasFixedSize(true);
+        mFriendReqList.setLayoutManager(new LinearLayoutManager(getActivity()));//Main Activity
+        mFriendReqList.setAdapter(friendreqListAdapter);//to fill recycler view with Events
+
         mFirestore = FirebaseFirestore.getInstance();
-        mUser_id = Profile.getCurrentProfile().getId();
 
-        eventList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList);
-
-        mEventList = v.findViewById(R.id.notice_list);
-        mEventList.setHasFixedSize(true);
-        mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mEventList.setAdapter(eventListAdapter);
-
-        CollectionReference eventsRef = mFirestore.collection("events");
-        Query query = eventsRef.whereEqualTo("host", mUser_id);
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        mFirestore.collection("users").document(Profile.getCurrentProfile().getId().toString()).collection("requests").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
@@ -69,22 +71,26 @@ public class NotificationFragment extends Fragment{
                     Log.d("FeedLog", "Error : " + e.getMessage());
                 }
 
+
                 for(DocumentChange change : documentSnapshots.getDocumentChanges()){
 
                     if(change.getType() == DocumentChange.Type.ADDED){ //MODIFIED, REMOVED ??
 
-                        String event_id = change.getDocument().getId();
-                        Log.d("GETID at SearchFrag", event_id);
-                        Event events = change.getDocument().toObject(Event.class).withId(event_id);
-                        eventList.add(events);
+                        String friendreq_id = change.getDocument().getId();
+                        Log.d("GETID at EventFrag", friendreq_id);
 
-                        eventListAdapter.notifyDataSetChanged();
+                        FriendReq events = change.getDocument().toObject(FriendReq.class).withId(friendreq_id);
+
+                        friendreqList.add(events);//add new events whenever there is a change
+
+                        friendreqListAdapter.notifyDataSetChanged();
 
                     }
                 }
-
             }
         });
+
+
 
         return v;
     }

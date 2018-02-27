@@ -68,6 +68,7 @@ public class EventFragment extends Fragment {
                     Log.d("FeedLog", "Error : " + e.getMessage());
                 }
 
+
                 for(DocumentChange change : documentSnapshots.getDocumentChanges()){
 
                     if(change.getType() == DocumentChange.Type.ADDED){ //MODIFIED, REMOVED ??

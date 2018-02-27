@@ -1,13 +1,18 @@
 package com.example.netipol.perty.Home;
 
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
@@ -29,7 +34,11 @@ public class SingleEventActivity extends AppCompatActivity {
 
     private String mPost_id, mUser_id;
     private Button requestJoin;
-    private String eventName, eventHost, eventHostID;
+    private String eventName, eventHostId, eventHost;
+
+    private ImageView singleImage;
+    private TextView singleTitle, singleDesc, singleHost, singleTime, singleLoca;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +49,15 @@ public class SingleEventActivity extends AppCompatActivity {
         mUser_id = Profile.getCurrentProfile().getId();
         //Get user info
 
-        /*db.collection("events")//get stuff to display in detail
-                .document(mPost_key)
+        singleImage = (ImageView) findViewById(R.id.single_image);
+        singleTitle = (TextView) findViewById(R.id.single_title);
+        singleDesc = (TextView) findViewById(R.id.single_desc);
+        singleHost = (TextView) findViewById(R.id.single_hostname);
+        singleTime = (TextView) findViewById(R.id.single_time);
+        singleLoca = (TextView) findViewById(R.id.single_location);
+
+        db.collection("events")//get stuff to display in detail
+                .document(mPost_id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -51,17 +67,24 @@ public class SingleEventActivity extends AppCompatActivity {
                             Log.d(TAG, "DocumentSnapshot data:"+ " => " + doc.getData());
 
                             eventName = doc.get("title").toString();
-                            eventHostID = doc.get("host").toString();
-                            Log.w(TAG, eventHostID, task.getException());
+                            eventHost = doc.get("host").toString();
+                            eventHostId = doc.get("hostid").toString();
+                            Log.w(TAG, eventHostId, task.getException());
 
-                            profName.setText(doc.get("username").toString());
-                            profDesc.setText(doc.get("accountdesc").toString());
-                            profType.setText(doc.get("usertype").toString());
+                            singleTitle.setText(doc.get("title").toString());
+                            Glide.with(SingleEventActivity.this).load(doc.get("image").toString()).into(singleImage);
+                            singleDesc.setText(doc.get("desc").toString());
+                            singleHost.setText(doc.get("host").toString());
+                            singleTime.setText(doc.get("time").toString());
+                            singleLoca.setText(doc.get("location").toString());
+
+
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
-                });*/
+                });
+
         //check if user is host
         db.collection("events").document(mPost_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -71,9 +94,7 @@ public class SingleEventActivity extends AppCompatActivity {
                     if (document != null) {
                         Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
 
-                        String eventHost = document.get("host").toString();
-
-                        if(mUser_id.equals(eventHost)){
+                        if(mUser_id.equals(eventHostId)){
 
                             requestJoin.setText("You are the host!");
                             requestJoin.setEnabled(false);
@@ -97,6 +118,47 @@ public class SingleEventActivity extends AppCompatActivity {
                                     }
                                 }
                             });
+
+                            singleHost.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            switch (which){
+                                                case DialogInterface.BUTTON_POSITIVE:
+                                                    Toast.makeText(SingleEventActivity.this, "Request sent!",Toast.LENGTH_SHORT).show();
+
+                                                    //Check if request has already been sent before
+
+
+                                                    //Send add request to user NOTICE
+                                                    Map<String, Object> friendreq = new HashMap<>();
+                                                    friendreq.put("name", mUser_id);//person to send request (current user)
+
+                                                    // Add a new pending join request
+                                                    db.collection("users")
+                                                            .document(eventHostId)//person to receive request
+                                                            .collection("requests")
+                                                            .document(mUser_id)
+                                                            .set(friendreq);
+
+                                                    break;
+
+                                                case DialogInterface.BUTTON_NEGATIVE:
+                                                    Toast.makeText(SingleEventActivity.this, "Nevermind",Toast.LENGTH_SHORT).show();
+                                                    break;
+                                            }
+                                        }
+                                    };
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                    builder.setMessage("Send friend request to "+eventHost+"?").setPositiveButton("Yes", dialogClickListener)
+                                            .setNegativeButton("No", dialogClickListener).show();
+
+                                }
+                            });
                         }
 
 
@@ -115,8 +177,8 @@ public class SingleEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Map<String, Object> request = new HashMap<>();
-                request.put("uid", mUser_id);
+                Map<String, Object> joinrequest = new HashMap<>();
+                joinrequest.put("uid", mUser_id);
 
                 Map<String, Object> record = new HashMap<>();
                 record.put("eid", mPost_id);
@@ -126,7 +188,7 @@ public class SingleEventActivity extends AppCompatActivity {
                         .document(mPost_id)
                         .collection("requests")
                         .document(mUser_id)
-                        .set(request);
+                        .set(joinrequest);
 
                 //Add to user's list of Upcoming events;
                 db.collection("users")
