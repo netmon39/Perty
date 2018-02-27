@@ -67,7 +67,7 @@ public class UpcomingFragment extends Fragment {
         mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mEventList.setAdapter(eventListAdapter);
 
-        //get list of joined events and store it into a arraylist or something
+        //get list of joined events and store it into a arraylist or somethingbbkbjb
         mFirestore.collection("users").document(mUser_id).collection("joining")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
