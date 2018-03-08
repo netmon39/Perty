@@ -50,15 +50,16 @@ public class SelectPrefActivity extends AppCompatActivity {
                 int selectedIndex = adapter.selectedPositions.indexOf(position);
                 if (selectedIndex > -1) {
                     adapter.selectedPositions.remove(selectedIndex);
-                    ((GridItemView) v).display(false);
+                    ((GridItemView) v).display(false, position);
                     selectedStrings.remove((String) parent.getItemAtPosition(position));
                 } else {
                     adapter.selectedPositions.add(position);
-                    ((GridItemView) v).display(true);
+                    ((GridItemView) v).display(true, position);
                     selectedStrings.add((String) parent.getItemAtPosition(position));
                 }
             }
         });
+
 
         /*Category Map
             SPORTS = 0
@@ -90,6 +91,42 @@ public class SelectPrefActivity extends AppCompatActivity {
                             categ_key = new StringBuilder()
                                     .append(categ_key)
                                     .append("2")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("MUSIC")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("3")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("ART")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("4")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("THEATRE")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("5")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("TECHNOLOGY")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("6")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("OUTING")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("7")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("CAREER")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("8")
                                     .toString();
                             Log.d("categ", categ_key);
                         }

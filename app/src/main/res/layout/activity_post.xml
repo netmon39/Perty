@@ -62,7 +62,6 @@
 
                 <TextView
                     android:id="@+id/eventTypeInfo"
-                    android:layout_toEndOf="@id/eventCategories"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Make my event ..." />
