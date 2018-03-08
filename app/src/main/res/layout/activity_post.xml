@@ -48,7 +48,21 @@
                 android:layout_marginTop="15dp">
 
                 <TextView
+                    android:id="@+id/eventCategoriesText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Make my event ..." />
+
+                <Spinner
+                    android:id="@+id/eventCategories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/eventCategoriesText"
+                    android:spinnerMode="dropdown" />
+
+                <TextView
                     android:id="@+id/eventTypeInfo"
+                    android:layout_toEndOf="@id/eventCategories"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Make my event ..." />
