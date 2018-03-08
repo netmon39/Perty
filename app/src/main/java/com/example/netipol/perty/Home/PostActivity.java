@@ -108,8 +108,8 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
         btnDatePicker=(Button)findViewById(R.id.btn_date);
         btnTimePicker=(Button)findViewById(R.id.btn_time);
-        txtDate=(TextView)findViewById(R.id.in_date);
-        txtTime=(TextView)findViewById(R.id.in_time);
+//        txtDate=(TextView)findViewById(R.id.in_date);
+//        txtTime=(TextView)findViewById(R.id.in_time);
         txtLocation=(EditText)findViewById(R.id.in_location);
 
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +125,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                btnDatePicker.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -145,7 +145,11 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                txtTime.setText(hourOfDay + ":" + minute);
+                                if(minute >= 10) {
+                                    btnTimePicker.setText(hourOfDay + ":" + minute);
+                                }else{
+                                    btnTimePicker.setText(hourOfDay + ":" + "0"+minute);
+                                }
                             }
 
                         }, mHour, mMinute, true);
@@ -184,8 +188,8 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         Long tsLong = System.currentTimeMillis()/1000;
         final String ts = tsLong.toString();
 
-        final String date_val = txtDate.getText().toString().trim();
-        final String time_val = txtTime.getText().toString().trim();
+        final String date_val = btnDatePicker.getText().toString().trim();
+        final String time_val = btnTimePicker.getText().toString().trim();
         final String posttime_val = date_val + ", " + time_val;
         final String location_val = txtLocation.getText().toString().trim();
 

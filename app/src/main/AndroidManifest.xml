@@ -58,7 +58,7 @@
             android:name=".Util.SelectedItemsActivity"
             android:label="@string/title_activity_selected_items"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Home.PostActivity" />
+        <activity android:name=".Home.PostActivity"/>
         <activity android:name=".Home.SingleEventActivity" />
         <activity android:name=".Login.LoginActivity"></activity>
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
