@@ -15,7 +15,7 @@
         <RelativeLayout
             android:id="@+id/info_box"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             >
 
             <ImageButton
@@ -47,18 +47,18 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp">
 
-                <TextView
-                    android:id="@+id/eventCategoriesText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Make my event ..." />
+                <!--<TextView-->
+                    <!--android:id="@+id/eventCategoriesText"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="Make my event ..." />-->
 
-                <Spinner
-                    android:id="@+id/eventCategories"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/eventCategoriesText"
-                    android:spinnerMode="dropdown" />
+                <!--<Spinner-->
+                    <!--android:id="@+id/eventCategories"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_toEndOf="@+id/eventCategoriesText"-->
+                    <!--android:spinnerMode="dropdown" />-->
 
                 <TextView
                     android:id="@+id/eventTypeInfo"

@@ -3,23 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Profile.ProfileFragment"
-    android:orientation="vertical"
-    android:background="@color/bgPrimary"
-    >
-
+    android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <ImageView
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
         android:id="@+id/my_profile_picture"
         />
 
         <TextView
-            android:layout_margin="8dp"
           android:id="@+id/my_username_profile"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -31,7 +25,6 @@
 
         <TextView
             android:id="@+id/my_type_profile"
-            android:layout_marginStart="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/my_profile_picture"
@@ -40,7 +33,6 @@
 
         <TextView
             android:id="@+id/my_desc_profile"
-            android:layout_margin="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/my_type_profile"

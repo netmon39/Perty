@@ -1,17 +1,17 @@
 package com.example.netipol.perty.Login;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.netipol.perty.Home.MainActivity;
+import com.example.netipol.perty.R;
 import com.example.netipol.perty.Util.GridItemView;
 import com.example.netipol.perty.Util.GridViewAdapter;
-import com.example.netipol.perty.R;
 import com.facebook.Profile;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -28,7 +28,7 @@ public class SelectPrefActivity extends AppCompatActivity {
     private ArrayList<String> selectedStrings;
     private String categ_key = "";
     private static final String[] numbers = new String[]{
-            "SPORTS", "EDUCATION", "RECREATION"};
+            "SPORTS", "EDUCATION", "RECREATION","MUSIC","ART","THEATRE","TECHNOLOGY","OUTING","CAREER"};
 
 
     @Override

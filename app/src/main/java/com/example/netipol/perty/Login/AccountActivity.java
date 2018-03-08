@@ -4,12 +4,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +26,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.netipol.perty.Home.PostActivity;
 import com.example.netipol.perty.R;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -41,8 +52,10 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
     private static final String TAG = "FIRESTORELOG";
     public Button nextToP;
     public EditText userNameF, accountD;
-    public String userType, userName, accountDescription;
+    public String userName, accountDescription;
+    public String userType = "x";
     public static String  FBimageUrl;
+    public String selectedItemText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +72,10 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
 
         TextView nameView = (TextView) findViewById(R.id.fbName);
         nameView.setText("" + name + " " + surname);
+
+
+
+
 
         new AccountActivity.DownloadImage((ImageView)findViewById(R.id.profileImage)).execute(FBimageUrl);
 
@@ -115,6 +132,7 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         nextToP = (Button) findViewById(R.id.nextToPref);
 
 
+
         /*/ Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference userRef = database.getReferenceFromUrl("https://perty-53386.firebaseio.com/Users/User_"+fbUID);*/
@@ -125,6 +143,11 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
 
                 userName = userNameF.getText().toString();
                 accountDescription = accountD.getText().toString();
+
+                if(userName.length()==0 || accountDescription.length()==0 || userType.equals("x")){
+                    Toast.makeText(getApplicationContext(), "Please fill every field :D", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 // Create a new user with a first and last name
                 Map<String, Object> user = new HashMap<>();
@@ -159,6 +182,8 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
                 finish();
             }
         });
+
+
     }
 
 
@@ -180,7 +205,7 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
                 break;
         }
 
-        String selectedItemText = (String) adapterView.getItemAtPosition(i);
+        selectedItemText = (String) adapterView.getItemAtPosition(i);
         // If user change the default selection
         // First item is disable and it is used for hint
         if (i > 0) {
