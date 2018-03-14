@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.netipol.perty.Profile.FriendFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your friend list"
+        android:id="@+id/friendlist_txt"
+        android:textColor="@color/purps"
+        android:textStyle="bold"
+        android:textSize="22dp"
+        android:textAlignment="center"
+        />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/swipe_container2"
+        android:layout_below="@+id/friendlist_txt">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/friendlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+    </android.support.v7.widget.RecyclerView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+</RelativeLayout>

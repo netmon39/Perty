@@ -1,13 +1,10 @@
-package com.example.netipol.perty.Model;
-
-import com.example.netipol.perty.Util.EventId;
-import com.example.netipol.perty.Util.FriendReqID;
+package com.example.netipol.perty.Friend;
 
 /**
  * Created by netipol on 26/2/2018 AD.
  */
 
-public class FriendReq extends FriendReqID {
+public class FriendReq extends FriendReqId {
 
         private String name;
 

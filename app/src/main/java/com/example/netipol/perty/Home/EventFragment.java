@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.netipol.perty.Model.Event;
-import com.example.netipol.perty.Util.EventListAdapter;
+import com.example.netipol.perty.Event.Event;
+import com.example.netipol.perty.Event.EventListAdapter;
 import com.example.netipol.perty.R;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -19,8 +19,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,10 +55,11 @@ public class EventFragment extends Fragment {
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));//Main Activity
         mEventList.setAdapter(eventListAdapter);//to fill recycler view with Events
+        mEventList.invalidate();
 
         mFirestore = FirebaseFirestore.getInstance();
 
-        mFirestore.collection("events").orderBy("timestamp", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        mFirestore.collection("events").orderBy("timestamp", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
@@ -68,7 +67,7 @@ public class EventFragment extends Fragment {
                     Log.d("FeedLog", "Error : " + e.getMessage());
                 }
 
-
+                //Change all this to "Pull to refresh"
                 for(DocumentChange change : documentSnapshots.getDocumentChanges()){
 
                     if(change.getType() == DocumentChange.Type.ADDED){ //MODIFIED, REMOVED ??
@@ -77,10 +76,10 @@ public class EventFragment extends Fragment {
                         Log.d("GETID at EventFrag", event_id);
 
                         Event events = change.getDocument().toObject(Event.class).withId(event_id);
-
-                        eventList.add(events);//add new events whenever there is a change
-
-                        eventListAdapter.notifyDataSetChanged();
+                        eventList.add(0,events);//add new events whenever there is a change
+                        eventListAdapter.notifyItemInserted(0);
+                        //mEventList.smoothScrollToPosition(0);
+                        //eventListAdapter.notifyDataSetChanged();
 
                     }
                 }

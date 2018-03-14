@@ -1,4 +1,4 @@
-package com.example.netipol.perty.Login;
+package com.example.netipol.perty.SelectPref;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +9,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.netipol.perty.Home.MainActivity;
-import com.example.netipol.perty.Util.GridItemView;
-import com.example.netipol.perty.Util.GridViewAdapter;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,8 +26,7 @@ public class SelectPrefActivity extends AppCompatActivity {
     private ArrayList<String> selectedStrings;
     private String categ_key = "";
     private static final String[] numbers = new String[]{
-            "SPORTS", "EDUCATION", "RECREATION"};
-
+            "SPORTS", "EDUCATION", "RECREATION","MUSIC","ART","THEATRE","TECHNOLOGY","OUTING","CAREER"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +47,11 @@ public class SelectPrefActivity extends AppCompatActivity {
                 int selectedIndex = adapter.selectedPositions.indexOf(position);
                 if (selectedIndex > -1) {
                     adapter.selectedPositions.remove(selectedIndex);
-                    ((GridItemView) v).display(false);
+                    ((GridItemView) v).display(false, position);
                     selectedStrings.remove((String) parent.getItemAtPosition(position));
                 } else {
                     adapter.selectedPositions.add(position);
-                    ((GridItemView) v).display(true);
+                    ((GridItemView) v).display(true, position);
                     selectedStrings.add((String) parent.getItemAtPosition(position));
                 }
             }
@@ -92,7 +89,42 @@ public class SelectPrefActivity extends AppCompatActivity {
                                     .append("2")
                                     .toString();
                             Log.d("categ", categ_key);
-                        }
+                        }else if(selectedStrings.get(i).equals("MUSIC")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("3")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("ART")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("4")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("THEATRE")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("5")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("TECHNOLOGY")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("6")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("OUTING")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("7")
+                                    .toString();
+                            Log.d("categ", categ_key);
+                        }else if(selectedStrings.get(i).equals("CAREER")){
+                            categ_key = new StringBuilder()
+                                    .append(categ_key)
+                                    .append("8")
+                                    .toString();
+                            Log.d("categ", categ_key);                        }
                     }
                 }
 
@@ -109,7 +141,6 @@ public class SelectPrefActivity extends AppCompatActivity {
                 //intent.putStringArrayListExtra("SELECTED_LETTER", selectedStrings);
                 //intent.putExtra("categ", categ_key);
                 startActivity(intent);
-                finish();
             }
         });
     }

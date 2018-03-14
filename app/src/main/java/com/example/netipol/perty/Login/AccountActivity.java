@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.netipol.perty.R;
+import com.example.netipol.perty.SelectPref.SelectPrefActivity;
 import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,15 +36,19 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.netipol.perty.Login.LoginActivity.fbUID;
+
 public class AccountActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private FirebaseAuth mAuth;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db;
     private static final String TAG = "FIRESTORELOG";
     public Button nextToP;
     public EditText userNameF, accountD;
-    public String userType, userName, accountDescription;
-    public static String  FBimageUrl;
+    public String userName, accountDescription;
+    public String userType = "x";
+    public Uri FBimageUri;
+    public String selectedItemText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,25 +60,15 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         Bundle inBundle = getIntent().getExtras();
         String name = inBundle.get("name").toString();
         String surname = inBundle.get("surname").toString();
-        final String fbUID = inBundle.get("fbUID").toString();
-        FBimageUrl = inBundle.get("imageUrl").toString();
+        fbUID = inBundle.get("fbUID").toString();
+        FBimageUri = Uri.parse(inBundle.get("imageUri").toString());
+
+        db = FirebaseFirestore.getInstance();
 
         TextView nameView = (TextView) findViewById(R.id.fbName);
         nameView.setText("" + name + " " + surname);
 
-        new AccountActivity.DownloadImage((ImageView)findViewById(R.id.profileImage)).execute(FBimageUrl);
-
-        /*Button logout = (Button) findViewById(R.id.logout);
-        logout.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                mAuth.getInstance().signOut();
-                LoginManager.getInstance().logOut();
-                Intent login = new Intent(AccountActivity.this, MainActivity.class);
-                startActivity(login);
-                finish();
-            }
-        });*/
+        new AccountActivity.DownloadImage((ImageView)findViewById(R.id.profileImage)).execute(inBundle.get("imageUri").toString());
 
         //get the spinner from the xml.
         Spinner userTypeDropdown = findViewById(R.id.userType);
@@ -123,10 +119,24 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
             @Override
             public void onClick(View view) {//write fields to firebase
 
+                startNext();
+            }
+        });
+    }
+
+    private void startNext() {
+
+        if(!TextUtils.isEmpty(userNameF.getText().toString().trim()) && !TextUtils.isEmpty(accountD.getText().toString().trim())) {//Add parameter check!!!
+
                 userName = userNameF.getText().toString();
                 accountDescription = accountD.getText().toString();
 
-                // Create a new user with a first and last name
+            if(userName.length()==0 || accountDescription.length()==0 || userType.equals("x")){
+                Toast.makeText(getApplicationContext(), "Please fill every field :D", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Create a new user with a first and last name
                 Map<String, Object> user = new HashMap<>();
                 user.put("username", userName);
                 user.put("accountdesc", accountDescription);
@@ -139,13 +149,13 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot added");
+                                Log.d("acc", "DocumentSnapshot added");
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error adding document", e);
+                                Log.w("acc", "Error adding document", e);
                             }
                         });
 
@@ -154,13 +164,13 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
                 userRef.child("AccountDesc").setValue(accountDescription);
                 userRef.child("UserType").setValue(userType);*/
 
-                Intent intent = new Intent(AccountActivity.this, SelectPrefActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-    }
+            Intent intent = new Intent(AccountActivity.this, SelectPrefActivity.class);
+            startActivity(intent);
 
+        }else{
+            Toast.makeText(this, "Please fill all parameters",Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
     @Override
@@ -180,7 +190,8 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
                 break;
         }
 
-        String selectedItemText = (String) adapterView.getItemAtPosition(i);
+        //String selectedItemText = (String) adapterView.getItemAtPosition(i);
+        selectedItemText = (String) adapterView.getItemAtPosition(i);
         // If user change the default selection
         // First item is disable and it is used for hint
         if (i > 0) {
@@ -195,6 +206,7 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
     }
 
     public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+
         ImageView bmImage;
 
         public DownloadImage(ImageView bmImage){

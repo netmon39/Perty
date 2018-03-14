@@ -1,4 +1,4 @@
-package com.example.netipol.perty.Util;
+package com.example.netipol.perty.Event;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.netipol.perty.Home.SingleEventActivity;
-import com.example.netipol.perty.Model.Event;
 import com.example.netipol.perty.R;
-
 
 import java.util.List;
 
@@ -74,6 +71,16 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     @Override
     public int getItemCount() {
         return eventList.size();
+    }
+
+    @Override
+    public long getItemId(int postion){
+        return postion;
+    }
+
+    @Override
+    public int getItemViewType(int position){
+        return position;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

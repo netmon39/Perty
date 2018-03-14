@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.netipol.perty.Util.GridItemView"
+    tools:context="com.example.netipol.perty.SelectPref.GridItemView"
     tools:showIn="@layout/activity_grid_item_view">
 
 </android.support.constraint.ConstraintLayout>

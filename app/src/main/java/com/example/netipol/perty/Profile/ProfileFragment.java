@@ -1,7 +1,6 @@
 package com.example.netipol.perty.Profile;
 
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -10,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
@@ -24,20 +24,15 @@ import android.widget.TextView;
 import static com.example.netipol.perty.Profile.currentUser.*;
 
 import com.example.netipol.perty.Home.MainActivity;
-import com.example.netipol.perty.Login.AccountActivity;
-import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.InputStream;
-
+import android.graphics.Color;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,10 +40,11 @@ import java.io.InputStream;
 public class ProfileFragment extends Fragment {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private SectionPageAdaptor mSectionPageadapter;
+    //private SectionPageAdaptor mSectionPageadapter;
     private static final String TAG = "ProfileFragment";
     private ViewPager mViewPager;
     private Button logout;
+    public TextView friendCount;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -72,18 +68,13 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        mSectionPageadapter = new SectionPageAdaptor(getFragmentManager());
+        //mSectionPageadapter = new SectionPageAdaptor(getFragmentManager());
 
-        mViewPager = (ViewPager) view.findViewById(R.id.container);
+        mViewPager = view.findViewById(R.id.container);
         setupViewPager(mViewPager);
 
-
-        TabLayout tabLayout= (TabLayout) view.findViewById(R.id.profile_tab);
+        TabLayout tabLayout= view.findViewById(R.id.profile_tab);
         tabLayout.setupWithViewPager(mViewPager);
-
-
-        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_profile, container, false);
 
         ImageView mypropic = (ImageView) view.findViewById(R.id.my_profile_picture);
         mypropic.setImageDrawable(profilepicture);
@@ -95,6 +86,17 @@ public class ProfileFragment extends Fragment {
         final TextView profDesc = (TextView) view.findViewById(R.id.my_desc_profile);
         final TextView profType = (TextView) view.findViewById(R.id.my_type_profile);
 
+        friendCount = view.findViewById(R.id.friend_count);
+        friendCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.main_frame, new FriendFragment());
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+
         //Get user info
         db.collection("users")
                 .document(Profile.getCurrentProfile().getId())
@@ -105,7 +107,6 @@ public class ProfileFragment extends Fragment {
                         if (task.isSuccessful()) {
                             DocumentSnapshot doc = task.getResult();
                             Log.d(TAG, "DocumentSnapshot data:"+ " => " + doc.getData());
-
                             profName.setText(doc.get("username").toString());
                             profDesc.setText(doc.get("accountdesc").toString());
                             profType.setText(doc.get("usertype").toString());
@@ -120,11 +121,11 @@ public class ProfileFragment extends Fragment {
     }
 
     public void setupViewPager(ViewPager viewPager) {
-        SectionPageAdaptor adapter = new SectionPageAdaptor(getFragmentManager());
-        adapter.addFragment(new UpcomingFragment(), "Upcoming");
-        adapter.addFragment(new HostFragment(), "Hosting");
-        adapter.addFragment(new NotificationFragment(), "Notice");
-        adapter.addFragment(new HistoryFragment(), "History");
+        SectionPageAdaptor adapter = new SectionPageAdaptor(getChildFragmentManager());//Don't use getFragmentManager!
+        adapter.addFragment(new UpcomingFragment(), "Upcoming");//0
+        adapter.addFragment(new HostFragment(), "Hosting");//1
+        adapter.addFragment(new NotificationFragment(), "Notice");//2
+        //adapter.addFragment(new HistoryFragment(), "History");//3
         viewPager.setAdapter(adapter);
     }
 
@@ -155,5 +156,6 @@ public class ProfileFragment extends Fragment {
         }
 
     }
-
 }
+
+

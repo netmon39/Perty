@@ -23,7 +23,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 
@@ -168,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
         Intent accountIntent = new Intent(LoginActivity.this, AccountActivity.class);
         accountIntent.putExtra("name", profile.getFirstName());
         accountIntent.putExtra("surname", profile.getLastName());
-        accountIntent.putExtra("imageUrl", profile.getProfilePictureUri(200,200).toString());
+        accountIntent.putExtra("imageUri", profile.getProfilePictureUri(200,200)).toString();
         accountIntent.putExtra("fbUID", fbUID);
         startActivity(accountIntent);
         finish();

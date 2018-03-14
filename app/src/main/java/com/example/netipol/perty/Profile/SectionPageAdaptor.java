@@ -2,6 +2,9 @@ package com.example.netipol.perty.Profile;
 
 import android.support.v4.app.*;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
+
+import com.example.netipol.perty.Home.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,16 +15,16 @@ import java.util.List;
 
 public class SectionPageAdaptor extends FragmentPagerAdapter {
 
-    private final List<Fragment> mFragmentList = new ArrayList<>();
+    private final List<Fragment> mFragmentList = new ArrayList<>();//List of Fragments
     private final List<String> mFragmentTitleList = new ArrayList<>();
+
+    public SectionPageAdaptor(FragmentManager fm) {
+        super(fm);
+    }
 
     public void addFragment(Fragment fragment, String title) {
         mFragmentList.add(fragment);
         mFragmentTitleList.add(title);
-    }
-
-    public SectionPageAdaptor(FragmentManager fm) {
-        super(fm);
     }
 
     @Override

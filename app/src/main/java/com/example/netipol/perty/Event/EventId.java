@@ -1,4 +1,4 @@
-package com.example.netipol.perty.Util;
+package com.example.netipol.perty.Event;
 
 import android.support.annotation.NonNull;
 

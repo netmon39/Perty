@@ -1,4 +1,4 @@
-package com.example.netipol.perty.Util;
+package com.example.netipol.perty.Friend;
 
 import android.support.annotation.NonNull;
 
@@ -7,10 +7,10 @@ import android.support.annotation.NonNull;
  * Created by netipol on 26/2/2018 AD.
  */
 
-public class FriendReqID {
+public class FriendReqId {
     public String friendreqId;
 
-    public <T extends FriendReqID> T withId(@NonNull final String id){
+    public <T extends FriendReqId> T withId(@NonNull final String id){
         this.friendreqId = id;
         return (T) this;
     }

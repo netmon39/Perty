@@ -10,25 +10,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.netipol.perty.Home.PostActivity;
-import com.example.netipol.perty.Login.LoginActivity;
-import com.example.netipol.perty.Model.Event;
+import com.example.netipol.perty.Event.Event;
 import com.example.netipol.perty.R;
-import com.example.netipol.perty.Util.EventListAdapter;
+import com.example.netipol.perty.Event.EventListAdapter;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -50,6 +44,13 @@ public class UpcomingFragment extends Fragment {
     private FirebaseFirestore mFirestore;
     private String mUser_id;
 
+    public static UpcomingFragment newInstance() {
+        UpcomingFragment fragment = new UpcomingFragment();
+        return fragment;
+    }
+
+    public UpcomingFragment() { }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,38 +68,39 @@ public class UpcomingFragment extends Fragment {
         mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mEventList.setAdapter(eventListAdapter);
 
-        //get list of joined events and store it into a arraylist or something
+        //get list of joined events and store it into a arraylist
         mFirestore.collection("users").document(mUser_id).collection("joining")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+
                             for (DocumentSnapshot document : task.getResult()) {
                                 joinList.add(document.get("eid").toString());
-
                             }
+
                             CollectionReference eventsRef = mFirestore.collection("events");
                             eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+
                                 @Override
                                 public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
                                     if (e != null) {
-                                        Log.d("ddog", "Error : " + e.getMessage());
+                                        Log.d("Upcoming", "Error : " + e.getMessage());
                                     }
 
-                                    for (DocumentSnapshot change : documentSnapshots.getDocuments()){//getDocumentChanges()) {
+                                    for (DocumentSnapshot doc : documentSnapshots.getDocuments()){//getDocuments) {
 
                                         for (int i = 0; i < joinList.size(); i++) {
 
-                                            if (change.getId().equals(joinList.get(i).toString())) {//&& change.getType() == DocumentChange.Type.ADDED) {
+                                            if (doc.getId().equals(joinList.get(i).toString())) {//&& change.getType() == DocumentChange.Type.ADDED) {
 
-                                                String event_id = change.getId();
-                                                Log.d("GETID at SearchFrag", event_id);
-                                                Event events = change.toObject(Event.class).withId(event_id);
+                                                String event_id = doc.getId();
+                                                Log.d("GETID at UpcomingFrag", event_id);
+                                                Event events = doc.toObject(Event.class).withId(event_id);
                                                 eventList.add(events);
                                                 eventListAdapter.notifyDataSetChanged();
-
                                             }
                                         }
 

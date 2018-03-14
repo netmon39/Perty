@@ -4,12 +4,15 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -53,7 +56,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
     private ProgressDialog mProgress;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String eventType;
+    private String eventType, eventCateg;
 
     Button btnDatePicker, btnTimePicker;
     TextView txtDate, txtTime;
@@ -86,14 +89,67 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         });
 
         //get the spinner from the xml.
+        Spinner userCategDropdown = findViewById(R.id.eventCategories);
         Spinner userTypeDropdown = findViewById(R.id.eventType);
         //create a list of items for the spinner.
-        String[] items = new String[]{"Public", "Private"};
+        String[] itemsCateg = new String[]{"Select Category","SPORTS", "EDUCATION", "RECREATION","MUSIC","ART","THEATRE","TECHNOLOGY","OUTING","CAREER"};
+        String[] itemsType = new String[]{"Select Type","PUBLIC", "PRIVATE"};
         //create an adapter to describe how the items are displayed, adapters are used in several places in android.
         //There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapterCateg = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsCateg){@Override
+        public boolean isEnabled(int position) {
+            if (position == 0) {
+                // Disable the first item from Spinner
+                // First item will be use for hint
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        ArrayAdapter<String> adapterType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsType){@Override
+        public boolean isEnabled(int position) {
+            if (position == 0) {
+                // Disable the first item from Spinner
+                // First item will be use for hint
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
         //set the spinners adapter to the previously created one.
-        userTypeDropdown.setAdapter(adapter);
+        userCategDropdown.setAdapter(adapterCateg);
+        userCategDropdown.setOnItemSelectedListener(this);
+        userTypeDropdown.setAdapter(adapterType);
         userTypeDropdown.setOnItemSelectedListener(this);
 
         mUploadPost.setOnClickListener(new View.OnClickListener(){
@@ -108,8 +164,8 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
         btnDatePicker=(Button)findViewById(R.id.btn_date);
         btnTimePicker=(Button)findViewById(R.id.btn_time);
-        txtDate=(TextView)findViewById(R.id.in_date);
-        txtTime=(TextView)findViewById(R.id.in_time);
+//        txtDate=(TextView)findViewById(R.id.in_date);
+//        txtTime=(TextView)findViewById(R.id.in_time);
         txtLocation=(EditText)findViewById(R.id.in_location);
 
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +181,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                btnDatePicker.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -145,7 +201,11 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                txtTime.setText(hourOfDay + ":" + minute);
+                                if(minute >= 10) {
+                                    btnTimePicker.setText(hourOfDay + ":" + minute);
+                                }else{
+                                    btnTimePicker.setText(hourOfDay + ":" + "0"+minute);
+                                }
                             }
 
                         }, mHour, mMinute, true);
@@ -160,15 +220,54 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        switch (i) {
-            case 0:
-                eventType = "Public";
-                break;
-            case 1:
-                eventType = "Private";
-                break;
+
+        Spinner spinner = (Spinner) adapterView;
+        if(spinner.getId() == R.id.eventCategories)
+        {
+            switch (i) {
+                case 1:
+                    eventCateg = "SPORTS";
+                    break;
+                case 2:
+                    eventCateg = "EDUCATION";
+                    break;
+                case 3:
+                    eventCateg = "RECREATION";
+                    break;
+                case 4:
+                    eventCateg = "MUSIC";
+                    break;
+                case 5:
+                    eventCateg = "ART";
+                    break;
+                case 6:
+                    eventCateg = "THEATRE";
+                    break;
+                case 7:
+                    eventCateg = "TECHNOLOGY";
+                    break;
+                case 8:
+                    eventCateg = "OUTING";
+                    break;
+                case 9:
+                    eventCateg = "CAREER";
+                    break;
+            }
         }
+        else if(spinner.getId() == R.id.eventType)
+        {
+            switch (i) {
+                case 1:
+                    eventType = "Public";
+                    break;
+                case 2:
+                    eventType = "Private";
+                    break;
+            }
+        }
+
     }
+
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
@@ -181,11 +280,12 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         final String title_val = mPostTitle.getText().toString().trim();
         final String desc_val = mPostDesc.getText().toString().trim();
         final String type_val = eventType;
+        final String categ_val = eventCateg;
         Long tsLong = System.currentTimeMillis()/1000;
         final String ts = tsLong.toString();
 
-        final String date_val = txtDate.getText().toString().trim();
-        final String time_val = txtTime.getText().toString().trim();
+        final String date_val = btnDatePicker.getText().toString().trim();
+        final String time_val = btnTimePicker.getText().toString().trim();
         final String posttime_val = date_val + ", " + time_val;
         final String location_val = txtLocation.getText().toString().trim();
 
@@ -204,7 +304,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && resultUri != null){
+        if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && resultUri != null){//Add parameter check!!!
 
             mProgress.setMessage("Posting your Perty event ...");
             mProgress.show();
@@ -218,11 +318,12 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
 
-                    // Create a new user with a first and last name
+                    // Create a new event
                     Map<String, Object> event = new HashMap<>();
                     event.put("title", title_val);
                     event.put("desc", desc_val);
                     event.put("type", type_val);
+                    event.put("categ", categ_val);
                     event.put("image", downloadUrl.toString());
                     event.put("timestamp", ts);
                     event.put("host", hostusername);
@@ -237,15 +338,13 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     mProgress.dismiss();
 
-                    Toast.makeText(PostActivity.this, "Your post was successfully uploaded.",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostActivity.this, "Your post was successfully uploaded.", Toast.LENGTH_SHORT).show();
 
                     finish();
                 }
             });
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -261,7 +360,6 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     .setAspectRatio(4,3)
                     .setCropMenuCropButtonTitle("NEXT")
                     .start(this);
-
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {

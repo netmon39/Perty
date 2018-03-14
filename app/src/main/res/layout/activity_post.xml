@@ -1,137 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.netipol.perty.Home.MainActivity">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        >
 
     <RelativeLayout
+        android:id="@+id/info_box"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        >
 
-
-    <ImageButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageSelect"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/add_photo"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/eventTitle"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/imageSelect"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:hint="Event title ..."
-        />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/eventDesc"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/eventTitle"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:hint="Event description ..."
-        />
-
-    <TextView
-        android:id="@+id/eventTypeInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Make my event ..."
-        android:layout_below="@+id/eventDesc"
-        />
-
-    <Spinner
-        android:id="@+id/eventType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
-        android:layout_below="@+id/eventTypeInfo"
-        />
-
-
-
-        <TextView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/in_date"
-            android:layout_below="@+id/eventType"
-            android:textSize="18dp"
-            android:padding="5dp"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SELECT DATE"
-            android:id="@+id/btn_date"
-            android:layout_alignBottom="@+id/in_date"
-            android:layout_toRightOf="@+id/in_date"
-            android:layout_toEndOf="@+id/in_date" />
-
-        <TextView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/in_time"
-            android:layout_below="@+id/in_date"
-            android:layout_toLeftOf="@+id/btn_date"
-            android:textSize="18dp"
-            android:padding="5dp"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SELECT TIME"
-            android:id="@+id/btn_time"
-            android:layout_below="@+id/btn_date"
-            android:layout_alignLeft="@+id/btn_date"
-            android:layout_alignStart="@+id/btn_date" />
-
-        <EditText
-
-            android:id="@+id/in_location"
-            android:layout_below="@+id/btn_time"
+        <ImageButton
+            android:id="@+id/imageSelect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/add_photo" />
+
+        <EditText
+            android:id="@+id/eventTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageSelect"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:hint="Event location ..."
-            />
+            android:layout_marginTop="10dp"
+            android:hint="Event name"
+            android:textSize="18dp" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/eventUpload"
-        android:layout_below="@+id/in_location"
-        android:layout_marginTop="15dp"
-        android:text="POST EVENT"
-        />
+        <RelativeLayout
+            android:id="@+id/eventTypeBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp">
+
+            <Spinner
+                android:id="@+id/eventCategories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:layout_marginRight="10dp"
+                />
+
+            <Spinner
+                android:id="@+id/eventType"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/eventCategories"
+                android:spinnerMode="dropdown" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/time_Box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventTypeBox"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/btn_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SELECT DATE" />
+
+            <Button
+                android:id="@+id/btn_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_toEndOf="@id/btn_date"
+                android:text="SELECT TIME" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/detail_Box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/time_Box"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/edit_pen"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_mode_edit_black_24dp" />
+
+            <EditText
+                android:id="@+id/eventDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_toRightOf="@id/edit_pen"
+                android:hint="Details"
+                android:textSize="18dp" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/in_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_Box"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:hint="Event location"
+            android:textSize="18dp" />
+
+
+        <Button
+            android:id="@+id/eventUpload"
+            android:layout_margin="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@id/in_location"
+            android:background="@drawable/gradient1"
+            android:elevation="2dp"
+            android:text="POST EVENT"
+            android:textColor="@color/textPrimary" />
+
 
     </RelativeLayout>
-
     </ScrollView>
 
 </RelativeLayout>

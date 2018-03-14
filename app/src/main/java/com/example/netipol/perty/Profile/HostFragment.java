@@ -9,10 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.example.netipol.perty.Model.Event;
+import com.example.netipol.perty.Event.Event;
 import com.example.netipol.perty.R;
-import com.example.netipol.perty.Util.EventListAdapter;
+import com.example.netipol.perty.Event.EventListAdapter;
 import com.facebook.Profile;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -40,6 +41,13 @@ public class HostFragment  extends android.support.v4.app.Fragment{
     private FirebaseFirestore mFirestore;
     private String mUser_id;
 
+    public static HostFragment newInstance() {
+        HostFragment fragment = new HostFragment();
+        return fragment;
+    }
+
+    public HostFragment() { }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,25 +69,21 @@ public class HostFragment  extends android.support.v4.app.Fragment{
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-
                 if(e != null){
                     Log.d("FeedLog", "Error : " + e.getMessage());
                 }
 
-                for(DocumentChange change : documentSnapshots.getDocumentChanges()){
+                for(DocumentChange change : documentSnapshots.getDocumentChanges()) {
 
-                    if(change.getType() == DocumentChange.Type.ADDED){ //MODIFIED, REMOVED ??
+                    if (change.getType() == DocumentChange.Type.ADDED) { //MODIFIED, REMOVED ??
 
                         String event_id = change.getDocument().getId();
-                        Log.d("GETID at SearchFrag", event_id);
+                        Log.d("GETID at HostFrag", event_id);
                         Event events = change.getDocument().toObject(Event.class).withId(event_id);
                         eventList.add(events);
-
                         eventListAdapter.notifyDataSetChanged();
-
                     }
                 }
-
             }
         });
 

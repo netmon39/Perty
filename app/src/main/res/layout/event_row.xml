@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp">
+    android:layout_margin="0dp"
+    app:cardUseCompatPadding="true"
+    app:cardElevation="10dp"
+    app:cardCornerRadius="10dp"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,8 +53,7 @@
             android:layout_height="wrap_content"
 
             android:text="netmon39"
-            android:textStyle="bold"
-                android:layout_toRightOf="@+id/eventrow_host"/>
+            android:textStyle="bold" android:layout_toRightOf="@+id/eventrow_host"/>
 
         </RelativeLayout>
 

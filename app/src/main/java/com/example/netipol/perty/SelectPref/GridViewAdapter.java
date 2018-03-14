@@ -1,4 +1,4 @@
-package com.example.netipol.perty.Util;
+package com.example.netipol.perty.SelectPref;
 
 import android.app.Activity;
 import android.view.View;
@@ -39,7 +39,7 @@ public class GridViewAdapter extends BaseAdapter {//SelectPref
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         GridItemView customView = (convertView == null) ? new GridItemView(activity) : (GridItemView) convertView;
-        customView.display(strings[position], selectedPositions.contains(position));
+        customView.display(strings[position], selectedPositions.contains(position), position);
 
         return customView;
     }

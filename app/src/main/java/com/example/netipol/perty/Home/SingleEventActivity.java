@@ -1,6 +1,8 @@
 package com.example.netipol.perty.Home;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,17 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.sql.Ref;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,11 +31,13 @@ public class SingleEventActivity extends AppCompatActivity {
     private String TAG = "SinglePostAct";
 
     private String mPost_id, mUser_id;
-    private Button requestJoin;
+    private Button requestJoin, whiteBg;
     private String eventName, eventHostId, eventHost;
 
+    private ProgressDialog mProgress;
+
     private ImageView singleImage;
-    private TextView singleTitle, singleDesc, singleHost, singleTime, singleLoca;
+    private TextView singleTitle, singleDesc, singleHost, singleTime, singleLoca, singleCateg;
 
 
     @Override
@@ -55,6 +55,12 @@ public class SingleEventActivity extends AppCompatActivity {
         singleHost = (TextView) findViewById(R.id.single_hostname);
         singleTime = (TextView) findViewById(R.id.single_time);
         singleLoca = (TextView) findViewById(R.id.single_location);
+        singleCateg = (TextView) findViewById(R.id.single_categ);
+        whiteBg = (Button) findViewById(R.id.single_cheat);
+
+        mProgress = new ProgressDialog(this);
+        mProgress.setMessage("Loading...");
+        mProgress.show();
 
         db.collection("events")//get stuff to display in detail
                 .document(mPost_id)
@@ -77,6 +83,11 @@ public class SingleEventActivity extends AppCompatActivity {
                             singleHost.setText(doc.get("host").toString());
                             singleTime.setText(doc.get("time").toString());
                             singleLoca.setText(doc.get("location").toString());
+                            singleCateg.setText(doc.get("categ").toString());
+
+
+                            mProgress.dismiss();
+                            whiteBg.setVisibility(View.GONE);
 
 
                         } else {

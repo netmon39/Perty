@@ -14,7 +14,8 @@
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         app:menu="@menu/nav_items"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        app:itemTextColor="@color/purps"/>
 
     <FrameLayout
         android:id="@+id/main_frame"
@@ -23,7 +24,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/main_nav"
-        android:background="@color/colorAccent">
+        android:background="@android:color/white">
     </FrameLayout>
 
 </RelativeLayout>

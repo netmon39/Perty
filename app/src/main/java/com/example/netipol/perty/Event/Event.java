@@ -1,8 +1,4 @@
-package com.example.netipol.perty.Model;
-
-import android.support.annotation.NonNull;
-
-import com.example.netipol.perty.Util.EventId;
+package com.example.netipol.perty.Event;
 
 /**
  * Created by netipol on 1/2/2018 AD.
@@ -10,13 +6,13 @@ import com.example.netipol.perty.Util.EventId;
 
 public class Event extends EventId{
 
-    private String title, desc, type, image, timestamp, host, time, location;
+    private String title, desc, type, image, timestamp, host, time, location, categ;
 
     public Event(){
 
     }
 
-    public Event(String title, String desc, String type, String image, String timestamp, String host, String time, String location) {
+    public Event(String title, String desc, String type, String image, String timestamp, String host, String time, String location, String categ) {
         this.title = title;
         this.desc = desc;
         this.type = type;
@@ -25,6 +21,7 @@ public class Event extends EventId{
         this.host = host;
         this.time = time;
         this.location = location;
+        this.categ = categ;
     }
 
     public String getTitle() {
@@ -88,5 +85,13 @@ public class Event extends EventId{
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getCateg() {
+        return categ;
+    }
+
+    public void setCateg(String categ) {
+        this.categ = categ;
     }
 }

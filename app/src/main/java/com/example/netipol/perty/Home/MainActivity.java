@@ -14,7 +14,6 @@ import android.widget.FrameLayout;
 import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.Profile.ProfileFragment;
 import com.example.netipol.perty.R;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

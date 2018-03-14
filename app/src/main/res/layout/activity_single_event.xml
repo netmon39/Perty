@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.netipol.perty.Home.SingleEventActivity">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -136,10 +137,31 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
 
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Category: "
+                    android:id="@+id/single_categinfo"/>
+
+                <TextView
+                    android:id="@+id/single_categ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="-"
+                    android:layout_toRightOf="@+id/single_categinfo"/>
+
+            </RelativeLayout>
 
         </LinearLayout>
-
 
     <Button
         android:id="@+id/reqJoin"
@@ -149,5 +171,11 @@
         android:layout_centerHorizontal="true"
         android:padding="10dp"
         android:text="Join Event" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/white"
+        android:id="@+id/single_cheat"/>
 
 </RelativeLayout>
