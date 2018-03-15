@@ -1,23 +1,25 @@
 package com.example.netipol.perty.Home;
 
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,10 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.netipol.perty.Login.AccountActivity;
-import com.example.netipol.perty.Profile.ProfileFragment;
+import com.example.netipol.perty.Event.Event;
 import com.example.netipol.perty.R;
-import com.example.netipol.perty.SelectPref.SelectPrefActivity;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,7 +39,12 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SingleEventActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class SingleEventFragment extends Fragment {
+
+    public Event model;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String TAG = "SinglePostAct";
@@ -54,25 +59,37 @@ public class SingleEventActivity extends AppCompatActivity {
     private TextView singleTitle, singleDesc, singleHost, singleTime, singleLoca, singleCateg;
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_event);
+    public SingleEventFragment() {
+        // Required empty public constructor
+    }
 
-        mPost_id = getIntent().getExtras().getString("event_id");
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_single_event, container, false);
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            mPost_id = bundle.getString("event_id");
+        }
+
+        Log.d("eventid", mPost_id);
+
         mUser_id = Profile.getCurrentProfile().getId();
         //Get user info
 
-        singleImage = (ImageView) findViewById(R.id.single_image);
-        singleTitle = (TextView) findViewById(R.id.single_title);
-        singleDesc = (TextView) findViewById(R.id.single_desc);
-        singleHost = (TextView) findViewById(R.id.single_hostname);
-        singleTime = (TextView) findViewById(R.id.single_time);
-        singleLoca = (TextView) findViewById(R.id.single_location);
-        singleCateg = (TextView) findViewById(R.id.single_categ);
-        whiteBg = (Button) findViewById(R.id.single_cheat);
+        singleImage = (ImageView) v.findViewById(R.id.single_image);
+        singleTitle = (TextView) v.findViewById(R.id.single_title);
+        singleDesc = (TextView) v.findViewById(R.id.single_desc);
+        singleHost = (TextView) v.findViewById(R.id.single_hostname);
+        singleTime = (TextView) v.findViewById(R.id.single_time);
+        singleLoca = (TextView) v.findViewById(R.id.single_location);
+        singleCateg = (TextView) v.findViewById(R.id.single_categ);
+        whiteBg = (Button) v.findViewById(R.id.single_cheat);
 
-        mProgress = new ProgressDialog(this);
+        mProgress = new ProgressDialog(getActivity());
         mProgress.setMessage("Loading...");
         mProgress.show();
 
@@ -92,7 +109,7 @@ public class SingleEventActivity extends AppCompatActivity {
                             Log.w(TAG, eventHostId, task.getException());
 
                             singleTitle.setText(doc.get("title").toString());
-                            Glide.with(SingleEventActivity.this).load(doc.get("image").toString()).into(singleImage);
+                            Glide.with(getActivity().getApplicationContext()).load(doc.get("image").toString()).into(singleImage);
                             singleDesc.setText(doc.get("desc").toString());
                             singleHost.setText(doc.get("host").toString());
                             singleTime.setText(doc.get("time").toString());
@@ -151,15 +168,15 @@ public class SingleEventActivity extends AppCompatActivity {
 
                                     /*/intent to view stranger's profile
 
-                                    ViewDialog alert = new ViewDialog();
-                                    alert.viewProfileDialog(SingleEventActivity.this, "OTP has b een sent to your Mail ");*/
+                                    SingleEventFragment.ViewDialog alert = new SingleEventFragment.ViewDialog();
+                                    alert.viewProfileDialog(getActivity().getApplicationContext(), "OTP has b een sent to your Mail ");*/
 
                                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             switch (which){
                                                 case DialogInterface.BUTTON_POSITIVE:
-                                                    Toast.makeText(SingleEventActivity.this, "Request sent!",Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity().getApplicationContext(), "Request sent!",Toast.LENGTH_SHORT).show();
 
                                                     //Check if request has already been sent before
 
@@ -178,7 +195,7 @@ public class SingleEventActivity extends AppCompatActivity {
                                                     break;
 
                                                 case DialogInterface.BUTTON_NEGATIVE:
-                                                    Toast.makeText(SingleEventActivity.this, "Nevermind",Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity().getApplicationContext(), "Nevermind",Toast.LENGTH_SHORT).show();
                                                     break;
                                             }
                                         }
@@ -201,7 +218,7 @@ public class SingleEventActivity extends AppCompatActivity {
             }
         });
 
-        requestJoin = (Button) findViewById(R.id.reqJoin);
+        requestJoin = (Button) v.findViewById(R.id.reqJoin);
 
         requestJoin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,15 +244,15 @@ public class SingleEventActivity extends AppCompatActivity {
                         .document(mPost_id)
                         .set(record);
 
-                Toast.makeText(SingleEventActivity.this, "You requested to join " + eventName, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "You requested to join " + eventName, Toast.LENGTH_LONG).show();
 
                 requestJoin.setEnabled(false);
             }
         });
 
+        return v;
     }
 
-/*
     public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -264,7 +281,7 @@ public class SingleEventActivity extends AppCompatActivity {
 
     }
 
-    public class ViewDialog {
+    /*public class ViewDialog {
 
         public void viewProfileDialog(Activity activity, String msg) {
             final Dialog dialog = new Dialog(activity);
@@ -276,7 +293,7 @@ public class SingleEventActivity extends AppCompatActivity {
             String imageUrl = "http://graph.facebook.com/" + eventHostId + "/picture?type=square";
             Log.d("hey",imageUrl);
             Log.d("hey", eventHostId);
-            new SingleEventActivity.DownloadImage((ImageView) dialog.findViewById(R.id.viewdialog_pic)).execute(imageUrl);
+            new SingleEventActivity.DownloadImage((ImageView) dialog.v.findViewById(R.id.viewdialog_pic)).execute(imageUrl);
 
             TextView text = (TextView) dialog.findViewById(R.id.viewdialog_txt);
             text.setText(msg);
@@ -316,6 +333,6 @@ public class SingleEventActivity extends AppCompatActivity {
 
             dialog.show();
         }
-    }
-*/
+    }*/
+
 }

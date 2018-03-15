@@ -48,8 +48,8 @@ public class EventFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_event, container, false);
 
         eventList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList);
-
+        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList, getFragmentManager());
+        
         //RecyclerView setup
         mEventList = v.findViewById(R.id.event_list);
         mEventList.setHasFixedSize(true);

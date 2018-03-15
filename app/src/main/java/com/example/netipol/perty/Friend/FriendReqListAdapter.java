@@ -45,12 +45,17 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
     private NotificationFragment fragmentNoti;
     private FriendFragment fragmentFrnd;
     public int key;
+    private FragmentCommunication mCommunicator;
 
     public FriendReqListAdapter(Context context, List<FriendReq> friendReqList, NotificationFragment fragmentNoti, FriendFragment fragmentFrnd, int x){
         this.friendReqList = friendReqList;
         this.fragmentNoti = fragmentNoti;
         this.fragmentFrnd = fragmentFrnd;
         this.key = x;
+    }
+
+    public interface FragmentCommunication {
+        void respond(int position,String name,String job);
     }
 
     @Override
@@ -119,15 +124,26 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
                         Toast.makeText(getApplicationContext(), "Request accepted.",Toast.LENGTH_LONG).show();
 
                         //Send add request to user NOTICE
-                        Map<String, Object> friendreq = new HashMap<>();
-                        friendreq.put("name", friendReqList.get(position).getName());//person to add
+                        Map<String, Object> friendreqAcc = new HashMap<>();
+                        friendreqAcc.put("name", friendReqList.get(position).getName());//person to add
 
-                        // Add a new friend
+                        // Add a new friend for acceptor
                         db.collection("users")
                                 .document(Profile.getCurrentProfile().getId())//current user
                                 .collection("friends")
                                 .document(friendReqList.get(position).getName())
-                                .set(friendreq);
+                                .set(friendreqAcc);
+
+                        //Send add request to user NOTICE
+                        Map<String, Object> friendreqReq = new HashMap<>();
+                        friendreqReq.put("name", Profile.getCurrentProfile().getId());//person to add
+
+                        // Add a new friend for requestor
+                        db.collection("users")
+                                .document(friendReqList.get(position).getName())//current user
+                                .collection("friends")
+                                .document(Profile.getCurrentProfile().getId())
+                                .set(friendreqReq);
 
                         //Remove friend request
                         db.collection("users")
@@ -192,11 +208,30 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
                     case DialogInterface.BUTTON_POSITIVE://Accept friend request
                         Toast.makeText(getApplicationContext(), "You unfriended "+friendReqUser,Toast.LENGTH_LONG).show();
 
-                        //Remove friend request
+                        //Remove friend for acceptor
                         db.collection("users")
                                 .document(Profile.getCurrentProfile().getId())
                                 .collection("friends")
                                 .document(friendReqList.get(position).getName())
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("friendreq", "DocumentSnapshot successfully deleted!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("friendreq", "Error deleting document", e);
+                                    }
+                                });
+
+                        //Remove friend for requestor
+                        db.collection("users")
+                                .document(friendReqList.get(position).getName())
+                                .collection("friends")
+                                .document(Profile.getCurrentProfile().getId())
                                 .delete()
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -217,25 +252,6 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
                     case DialogInterface.BUTTON_NEGATIVE://Decline friend request
                         Toast.makeText(getApplicationContext(), "Cancelled",Toast.LENGTH_LONG).show();
 
-                        /*//Remove friend request
-                        db.collection("users")
-                                .document(Profile.getCurrentProfile().getId())
-                                .collection("friends")
-                                .document(friendReqList.get(position).getName())
-                                .delete()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("friendreq", "DocumentSnapshot successfully deleted!");
-
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w("friendreq", "Error deleting document", e);
-                                    }
-                                });*/
                         fragmentFrnd.loadRecyclerViewData();
                         break;
                 }
@@ -277,6 +293,8 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
             name = mView.findViewById(R.id.friendreq_name);
 
         }
+
+
     }
 
 }

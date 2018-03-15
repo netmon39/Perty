@@ -57,7 +57,7 @@ public class HostFragment  extends android.support.v4.app.Fragment{
         mUser_id = Profile.getCurrentProfile().getId();
 
         eventList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList);
+        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList,getActivity().getSupportFragmentManager());
 
         mEventList = v.findViewById(R.id.hosting_list);
         mEventList.setHasFixedSize(true);

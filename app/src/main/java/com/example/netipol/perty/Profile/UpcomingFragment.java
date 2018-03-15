@@ -61,7 +61,7 @@ public class UpcomingFragment extends Fragment {
 
         eventList = new ArrayList<>();
         joinList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList);
+        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList, getActivity().getSupportFragmentManager());
 
         mEventList = v.findViewById(R.id.upcoming_list);
         mEventList.setHasFixedSize(true);

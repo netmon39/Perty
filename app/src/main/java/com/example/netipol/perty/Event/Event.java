@@ -1,10 +1,13 @@
 package com.example.netipol.perty.Event;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by netipol on 1/2/2018 AD.
  */
 
-public class Event extends EventId{
+public class Event extends EventId implements Parcelable {
 
     private String title, desc, type, image, timestamp, host, time, location, categ;
 
@@ -23,6 +26,30 @@ public class Event extends EventId{
         this.location = location;
         this.categ = categ;
     }
+
+    protected Event(Parcel in) {
+        title = in.readString();
+        desc = in.readString();
+        type = in.readString();
+        image = in.readString();
+        timestamp = in.readString();
+        host = in.readString();
+        time = in.readString();
+        location = in.readString();
+        categ = in.readString();
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -93,5 +120,23 @@ public class Event extends EventId{
 
     public void setCateg(String categ) {
         this.categ = categ;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(desc);
+        dest.writeString(type);
+        dest.writeString(image);
+        dest.writeString(timestamp);
+        dest.writeString(host);
+        dest.writeString(time);
+        dest.writeString(location);
+        dest.writeString(categ);
     }
 }
