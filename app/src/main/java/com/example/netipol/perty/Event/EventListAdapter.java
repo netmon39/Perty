@@ -2,6 +2,10 @@ package com.example.netipol.perty.Event;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,10 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.Home.SingleEventActivity;
+import com.example.netipol.perty.Home.SingleEventFragment;
 import com.example.netipol.perty.R;
 
 import java.util.List;
@@ -27,11 +34,15 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder>{
 
     public List<Event> eventList;
-    public Context context;
+    public Context mContext;
+    public Fragment mFragment;
+    public Bundle mBundle;
+    public FragmentManager fManager;
 
-    public EventListAdapter(Context context, List<Event> eventList){
-
+    public EventListAdapter(Context context, List<Event> eventList, FragmentManager fManager){
+        this.mContext = context;
         this.eventList = eventList;
+        this.fManager = fManager;
     }
 
     @Override
@@ -58,10 +69,14 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
 
                 Log.d("GETID", event_doc_id + position);
 
-                Intent singleEventIntent = new Intent(getApplicationContext(), SingleEventActivity.class);
-                singleEventIntent.putExtra("event_id", event_doc_id);
-                singleEventIntent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(singleEventIntent);
+                mFragment = new SingleEventFragment();
+                //Create a bundle to pass data, add data, set the bundle to your fragment and:
+                mFragment = new SingleEventFragment();
+                mBundle = new Bundle();
+                mBundle.putString("event_id",event_doc_id);
+                mFragment.setArguments(mBundle);
+                fManager.beginTransaction().replace(R.id.main_frame, mFragment).addToBackStack(null).commit();
+
             }
         });
 

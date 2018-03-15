@@ -81,6 +81,7 @@ public class ProfileFragment extends Fragment {
 
         String imageUrl = Profile.getCurrentProfile().getProfilePictureUri(200,200).toString();
 
+
         new ProfileFragment.DownloadImage((ImageView)view.findViewById(R.id.my_profile_picture)).execute(imageUrl);
         final TextView profName = (TextView) view.findViewById(R.id.my_username_profile);
         final TextView profDesc = (TextView) view.findViewById(R.id.my_desc_profile);

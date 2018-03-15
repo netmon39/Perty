@@ -69,15 +69,15 @@ public class ExploreFragment extends Fragment {
 
         exp1 = v.findViewById(R.id.txt1);
         expFeatList = new ArrayList<>();
-        expFeatListAdapter = new EventListAdapter(getApplicationContext(), expFeatList);
+        expFeatListAdapter = new EventListAdapter(getApplicationContext(), expFeatList,getFragmentManager());
 
         exp2 = v.findViewById(R.id.txt2);
         expPopList = new ArrayList<>();
-        expPopListAdapter = new EventListAdapter(getApplicationContext(), expPopList);
+        expPopListAdapter = new EventListAdapter(getApplicationContext(), expPopList,getFragmentManager());
 
         exp3 = v.findViewById(R.id.txt3);
         expRecList = new ArrayList<>();
-        expRecListAdapter = new EventListAdapter(getApplicationContext(), expRecList);
+        expRecListAdapter = new EventListAdapter(getApplicationContext(), expRecList, getFragmentManager());
 
         rand = new Random();
 

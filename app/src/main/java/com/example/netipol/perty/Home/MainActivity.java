@@ -93,11 +93,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
 
-    private void setFrag(Fragment fragment){
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_frame, fragment);
-        fragmentTransaction.commit();
+    public void setFrag(Fragment fragment){
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.main_frame, fragment);
+            fragmentTransaction.commit();
 
     }
 

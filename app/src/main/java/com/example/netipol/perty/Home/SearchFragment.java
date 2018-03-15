@@ -67,7 +67,7 @@ public class SearchFragment extends Fragment {
 
         eventList = new ArrayList<>();
         titleList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(getApplicationContext(), eventList);
+        eventListAdapter = new EventListAdapter(getApplicationContext(), eventList,getFragmentManager());
 
         mEventList = v.findViewById(R.id.result_list);
         mEventList.setHasFixedSize(true);
