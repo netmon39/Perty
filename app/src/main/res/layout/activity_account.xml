@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.netipol.perty.Login.AccountActivity"
-    android:background="@drawable/apptibg2"
+    android:background="@drawable/gradient1"
     >
 
     <android.support.v7.widget.CardView
@@ -14,72 +14,110 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardBackgroundColor="@color/bgPrimary"
-        android:layout_margin="35dp"
+        android:layout_margin="32dp"
         card_view:cardCornerRadius="20dp"
-        android:layout_gravity="center_vertical"
         >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             >
 
             <ImageView
+                android:elevation="2dp"
                 android:id="@+id/profileImage"
-                android:layout_width="95dp"
-                android:layout_height="95dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp" />
+                android:layout_width="144dp"
+                android:layout_height="144dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp" />
 
             <TextView
                 android:id="@+id/fbName"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profileImage" />
+
+            <TextView
+                android:id="@+id/usernameTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:text="Username"
+                android:layout_alignStart="@id/userNameField"
+                android:layout_below="@id/fbName"
+                android:layout_marginBottom="8dp"
+                />
 
 
             <EditText
                 android:id="@+id/userNameField"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="16dp"
                 android:hint="@string/userHint"
                 android:maxLength="20"
                 android:textSize="12sp"
+                android:singleLine="true"
+                android:layout_below="@id/usernameTitle"
+                android:imeOptions="actionDone"
                 />
+
+            <TextView
+                android:id="@+id/userTypeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/userType"
+                android:layout_below="@id/userNameField"
+                android:layout_marginBottom="8dp"
+                android:text="UserType" />
 
             <Spinner
                 android:id="@+id/userType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_gravity="center_horizontal"
+                android:layout_below="@id/userTypeTitle"
+                android:layout_marginBottom="16dp"
                 android:spinnerMode="dropdown" />
 
+            <TextView
+                android:id="@+id/userBioTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/userBio"
+                android:layout_below="@id/userType"
+                android:layout_marginBottom="8dp"
+                android:text="Bio" />
+
             <EditText
-                android:id="@+id/accountDesc"
+                android:id="@+id/userBio"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="32dp"
+                android:layout_below="@id/userBioTitle"
                 android:hint="@string/bioHint"
-                android:maxLength="100"
+                android:maxLength="144"
                 android:textSize="12sp"
-                android:maxLines="2"
+                android:maxLines="4"
+                android:imeOptions="actionDone"
                 />
 
             <Button
                 android:id="@+id/nextToPref"
+                android:elevation="2dp"
                 android:layout_width="wrap_content"
+                android:paddingHorizontal="8dp"
                 android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:text="NEXT"
+                android:layout_below="@id/userBio"
+                android:layout_centerHorizontal="true"
+                android:text="Create Account"
+                android:textColor="@color/textPrimary"
                 android:background="@drawable/btstyle"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="24dp"
                 />
-        </LinearLayout>
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 </LinearLayout>

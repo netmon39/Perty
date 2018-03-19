@@ -21,7 +21,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Boon"
-                    android:textColor="@color/txOnwhite"
+                    android:textColor="@color/textOnwhite"
                     android:textSize="20sp" />
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>

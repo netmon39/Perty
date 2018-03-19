@@ -59,6 +59,7 @@ public class ProfileFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
+
         logout = (Button) view.findViewById(R.id.logoutBtn);
         logout.setOnClickListener(new View.OnClickListener(){
             @Override
