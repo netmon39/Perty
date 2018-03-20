@@ -107,7 +107,7 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         userTypeDropdown.setOnItemSelectedListener(this);
 
         userNameF = (EditText) findViewById(R.id.userNameField);
-        accountD = (EditText) findViewById(R.id.accountDesc);
+        accountD = (EditText) findViewById(R.id.userBio);
         nextToP = (Button) findViewById(R.id.nextToPref);
 
 

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.netipol.perty.Home.MainActivity"
-    android:background="@drawable/apptibg2"
+    android:background="@drawable/gradient1"
     >
 
     <TextView
@@ -18,24 +18,33 @@
         android:background="@android:color/transparent"
         android:fontFamily="@font/dosisbold"
         android:textSize="64dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginTop="200dp"
+        android:layout_above="@id/fb_icon"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tap anywhere to login with Facebook."
-        android:textSize="14dp"
-        android:textColor="@color/textPrimary"
-        android:layout_below="@+id/tiFirst"
-        android:layout_centerHorizontal="true"/>
+    <!--<TextView-->
+        <!--android:id="@+id/tiTap"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Tap anywhere to login."-->
+        <!--android:textSize="14sp"-->
+        <!--android:textColor="@color/textPrimary"-->
+        <!--android:layout_below="@+id/tiFirst"-->
+        <!--android:layout_centerHorizontal="true"/>-->
 
     <Button
         android:id="@+id/facebookBtn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"/>
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/fb_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        />
 
 </RelativeLayout>

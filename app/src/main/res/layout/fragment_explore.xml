@@ -81,6 +81,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         app:layout_anchor="@id/svContent"
+        
         android:layout_margin="5dp"
         app:layout_anchorGravity="bottom|right|end"
         android:src="@drawable/pertynow2"
