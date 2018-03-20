@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.netipol.perty.Event.Event;
+import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.R;
 import com.example.netipol.perty.Event.EventListAdapter;
 import com.facebook.Profile;
@@ -54,7 +55,11 @@ public class HostFragment  extends android.support.v4.app.Fragment{
         View v = inflater.inflate(R.layout.fragment_host_tab,container,false);
 
         mFirestore = FirebaseFirestore.getInstance();
-        mUser_id = Profile.getCurrentProfile().getId();
+
+        MainActivity activity = (MainActivity) getActivity();
+        mUser_id = activity.getHostId();
+
+        Log.d("hello", "data: "+mUser_id);
 
         eventList = new ArrayList<>();
         eventListAdapter = new EventListAdapter(getApplicationContext(),eventList,getActivity().getSupportFragmentManager());
@@ -89,4 +94,5 @@ public class HostFragment  extends android.support.v4.app.Fragment{
 
         return v;
     }
+
 }

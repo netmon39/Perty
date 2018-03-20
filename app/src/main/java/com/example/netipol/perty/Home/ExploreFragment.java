@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import com.example.netipol.perty.Event.Event;
 import com.example.netipol.perty.Event.EventListAdapter;
 import com.example.netipol.perty.Friend.FriendReq;
+import com.example.netipol.perty.Profile.ProfileFragment;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,6 +58,9 @@ public class ExploreFragment extends Fragment {
     private Random rand;
     private int randomNum;
     public TextView exp1, exp2, exp3;
+    private Fragment mFragment;
+    private Bundle mBundle;
+    public FragmentManager fManager;
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -189,14 +196,33 @@ public class ExploreFragment extends Fragment {
                         break;
                 }
 
-                Intent singleEventIntent = new Intent(getApplicationContext(), SingleEventActivity.class);
+                /*Intent singleEventIntent = new Intent(getApplicationContext(), SingleEventActivity.class);
                 singleEventIntent.putExtra("event_id", event_doc_id);
                 singleEventIntent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(singleEventIntent);
+                getApplicationContext().startActivity(singleEventIntent);*/
+
+                mFragment = new SingleEventFragment();
+                mBundle = new Bundle();
+                mBundle.putString("event_id",event_doc_id);
+                mFragment.setArguments(mBundle);
+                //intent to view stranger's profile
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.main_frame, mFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity activity = (MainActivity) getActivity();
+        ActionBar bar = activity.getSupportActionBar();
+        bar.setTitle("Explore");
+        bar.setDisplayHomeAsUpEnabled(false);
     }
 
 }

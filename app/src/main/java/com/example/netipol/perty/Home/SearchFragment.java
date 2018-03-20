@@ -4,6 +4,7 @@ package com.example.netipol.perty.Home;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -205,5 +206,14 @@ public class SearchFragment extends Fragment {
 
         });
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity activity = (MainActivity) getActivity();
+        ActionBar bar = activity.getSupportActionBar();
+        bar.setTitle("Search");
+        bar.setDisplayHomeAsUpEnabled(false);
     }
 }

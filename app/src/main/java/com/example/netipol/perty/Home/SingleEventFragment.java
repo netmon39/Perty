@@ -1,6 +1,8 @@
 package com.example.netipol.perty.Home;
 
 
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -13,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +31,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.netipol.perty.Event.Event;
+import com.example.netipol.perty.Profile.ProfileFragment;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -58,6 +62,9 @@ public class SingleEventFragment extends Fragment {
     private ImageView singleImage;
     private TextView singleTitle, singleDesc, singleHost, singleTime, singleLoca, singleCateg;
 
+    private Fragment mFragment;
+    private Bundle mBundle;
+    public FragmentManager fManager;
 
     public SingleEventFragment() {
         // Required empty public constructor
@@ -116,8 +123,6 @@ public class SingleEventFragment extends Fragment {
                             singleLoca.setText(doc.get("location").toString());
                             singleCateg.setText(doc.get("categ").toString());
 
-
-
                             mProgress.dismiss();
                             whiteBg.setVisibility(View.GONE);
 
@@ -166,12 +171,18 @@ public class SingleEventFragment extends Fragment {
                                 @Override
                                 public void onClick(View v) {
 
-                                    /*/intent to view stranger's profile
+                                    //specify hostid
+                                    mFragment = new ProfileFragment();
+                                    mBundle = new Bundle();
+                                    mBundle.putString("host_id",eventHostId);
+                                    mFragment.setArguments(mBundle);
+                                    //intent to view stranger's profile
+                                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                                    fragmentTransaction.replace(R.id.main_frame, mFragment);
+                                    fragmentTransaction.addToBackStack(null);
+                                    fragmentTransaction.commit();
 
-                                    SingleEventFragment.ViewDialog alert = new SingleEventFragment.ViewDialog();
-                                    alert.viewProfileDialog(getActivity().getApplicationContext(), "OTP has b een sent to your Mail ");*/
-
-                                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                    /*DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             switch (which){
@@ -203,8 +214,8 @@ public class SingleEventFragment extends Fragment {
 
                                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                                     builder.setMessage("Send friend request to "+eventHost+"?").setPositiveButton("Yes", dialogClickListener)
-                                            .setNegativeButton("No", dialogClickListener).show();
-                                }
+                                            .setNegativeButton("No", dialogClickListener).show();*/
+                                }//END
                             });
                         }
 
@@ -253,6 +264,16 @@ public class SingleEventFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity activity = (MainActivity) getActivity();
+        ActionBar bar = activity.getSupportActionBar();
+        bar.setTitle("Event");
+        bar.setDisplayHomeAsUpEnabled(true);
+
+    }
+
     public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -280,59 +301,5 @@ public class SingleEventFragment extends Fragment {
         }
 
     }
-
-    /*public class ViewDialog {
-
-        public void viewProfileDialog(Activity activity, String msg) {
-            final Dialog dialog = new Dialog(activity);
-            dialog.requestWindowFeature(Window.FEATURE_ACTION_BAR);
-            dialog.setCancelable(false);
-            dialog.setContentView(R.layout.custom_dialogbox);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-
-            String imageUrl = "http://graph.facebook.com/" + eventHostId + "/picture?type=square";
-            Log.d("hey",imageUrl);
-            Log.d("hey", eventHostId);
-            new SingleEventActivity.DownloadImage((ImageView) dialog.v.findViewById(R.id.viewdialog_pic)).execute(imageUrl);
-
-            TextView text = (TextView) dialog.findViewById(R.id.viewdialog_txt);
-            text.setText(msg);
-
-            Button dialogBtn_cancel = (Button) dialog.findViewById(R.id.viewdialog_cancel);
-            dialogBtn_cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(SingleEventActivity.this, "Nevermind",Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                }
-            });
-
-            Button dialogBtn_okay = (Button) dialog.findViewById(R.id.viewdialog_okay);
-            dialogBtn_okay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    Toast.makeText(SingleEventActivity.this, "Request sent!",Toast.LENGTH_SHORT).show();
-
-                    //Check if request has already been sent before
-
-
-                    //Send add request to user NOTICE
-                    Map<String, Object> friendreq = new HashMap<>();
-                    friendreq.put("name", mUser_id);//person to send request (current user)
-
-                    // Add a new pending join request
-                    db.collection("users")
-                            .document(eventHostId)//person to receive request
-                            .collection("requests")
-                            .document(mUser_id)
-                            .set(friendreq);
-
-                    dialog.cancel();
-                }
-            });
-
-            dialog.show();
-        }
-    }*/
 
 }

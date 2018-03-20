@@ -3,6 +3,7 @@ package com.example.netipol.perty.Home;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -49,7 +50,7 @@ public class EventFragment extends Fragment {
 
         eventList = new ArrayList<>();
         eventListAdapter = new EventListAdapter(getApplicationContext(),eventList, getFragmentManager());
-        
+
         //RecyclerView setup
         mEventList = v.findViewById(R.id.event_list);
         mEventList.setHasFixedSize(true);
@@ -87,6 +88,16 @@ public class EventFragment extends Fragment {
         });
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        MainActivity activity = (MainActivity) getActivity();
+        ActionBar bar = activity.getSupportActionBar();
+        bar.setTitle("Perty"); // for set actionbar title
+        bar.setDisplayHomeAsUpEnabled(false); // for add back arrow in action bar
     }
 
 }
