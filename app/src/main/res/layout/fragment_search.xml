@@ -5,51 +5,63 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.netipol.perty.Home.SearchFragment">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
 
-        <RelativeLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/searchlay"
-            android:background="@color/purps"
-            android:paddingLeft="10dp"
-            >
-
-        <ImageButton
-            android:id="@+id/search_btn"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            app:srcCompat="@drawable/ic_search_white_24dp"
-            android:background="#00FFFFFF" />
-
-        <EditText
-            android:id="@+id/search_field"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginTop="5dp"
-            android:ems="10"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/search_btn"
-            android:hint="Search for an event by name"
-            android:textColor="#FFFFFF"
+            android:id="@+id/found_users"
             android:textSize="20dp"
-            />
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="Found users"/>
 
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/no_matches"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:text="No matches"/>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/result_list"
+            android:id="@+id/result_list_users"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/searchlay"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            ></android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/found_events"
+            android:text="Found events"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/colorPrimaryDark"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/result_list_events"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
            ></android.support.v7.widget.RecyclerView>
 
+        <!--android:layout_below="@+id/searchv"-->
+    </LinearLayout>
 
-    </RelativeLayout>
 
+</ScrollView>
 
 </FrameLayout>

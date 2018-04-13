@@ -88,7 +88,7 @@ public class SingleEventFragment extends Fragment {
         //Get user info
 
         singleImage = (ImageView) v.findViewById(R.id.single_image);
-        singleTitle = (TextView) v.findViewById(R.id.single_title);
+        //singleTitle = (TextView) v.findViewById(R.id.single_title);
         singleDesc = (TextView) v.findViewById(R.id.single_desc);
         singleHost = (TextView) v.findViewById(R.id.single_hostname);
         singleTime = (TextView) v.findViewById(R.id.single_time);
@@ -111,11 +111,16 @@ public class SingleEventFragment extends Fragment {
                             Log.d(TAG, "DocumentSnapshot data:"+ " => " + doc.getData());
 
                             eventName = doc.get("title").toString();
+                            MainActivity activity = (MainActivity) getActivity();
+                            ActionBar bar = activity.getSupportActionBar();
+                            bar.setTitle(eventName);
+                            bar.setDisplayHomeAsUpEnabled(true);
+
                             eventHost = doc.get("host").toString();
                             eventHostId = doc.get("hostid").toString();
                             Log.w(TAG, eventHostId, task.getException());
 
-                            singleTitle.setText(doc.get("title").toString());
+                            //singleTitle.setText(doc.get("title").toString());
                             Glide.with(getActivity().getApplicationContext()).load(doc.get("image").toString()).into(singleImage);
                             singleDesc.setText(doc.get("desc").toString());
                             singleHost.setText(doc.get("host").toString());
@@ -269,7 +274,7 @@ public class SingleEventFragment extends Fragment {
         super.onResume();
         MainActivity activity = (MainActivity) getActivity();
         ActionBar bar = activity.getSupportActionBar();
-        bar.setTitle("Event");
+        bar.setTitle(eventName);
         bar.setDisplayHomeAsUpEnabled(true);
 
     }

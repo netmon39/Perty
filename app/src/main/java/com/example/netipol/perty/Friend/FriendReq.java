@@ -6,22 +6,22 @@ package com.example.netipol.perty.Friend;
 
 public class FriendReq extends FriendReqId {
 
-        private String name;
+        private String uid;
 
         public FriendReq(){
 
         }
 
-        public FriendReq(String name) {
-            this.name = name;
+        public FriendReq(String uid) {
+            this.uid = uid;
 
         }
 
-        public String getName() {
-            return name;
+        public String getUid() {
+            return uid;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setUid(String uid) {
+            this.uid = uid;
         }
 }

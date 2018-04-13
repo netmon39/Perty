@@ -1,10 +1,12 @@
 package com.example.netipol.perty.Friend;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,8 +16,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.example.netipol.perty.Home.SearchFragment;
+import com.example.netipol.perty.Home.SingleEventFragment;
 import com.example.netipol.perty.Profile.FriendFragment;
 import com.example.netipol.perty.Profile.NotificationFragment;
+import com.example.netipol.perty.Profile.ProfileFragment;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,6 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -40,18 +49,26 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
 
     public List<FriendReq> friendReqList;
     public Context context;
-    public String friendReqUser;
+    public String friendReqUser, eventHostId;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private NotificationFragment fragmentNoti;
     private FriendFragment fragmentFrnd;
     public int key;
     private FragmentCommunication mCommunicator;
+    private android.support.v4.app.Fragment mFragment;
+    private Bundle mBundle;
+    public android.support.v4.app.FragmentManager fManager;
 
-    public FriendReqListAdapter(Context context, List<FriendReq> friendReqList, NotificationFragment fragmentNoti, FriendFragment fragmentFrnd, int x){
+    //int x = key
+    public FriendReqListAdapter(Context context, List<FriendReq> friendReqList, NotificationFragment fragmentNoti, FriendFragment fragmentFrnd, int x, FragmentManager fManager){
         this.friendReqList = friendReqList;
         this.fragmentNoti = fragmentNoti;
         this.fragmentFrnd = fragmentFrnd;
+        this.fManager = fManager;
         this.key = x;
+        String uid = Profile.getCurrentProfile().getId();//10211002845724097\
+
+
     }
 
     public interface FragmentCommunication {
@@ -71,7 +88,7 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
     public void onBindViewHolder(final FriendReqListAdapter.ViewHolder holder, final int position) {
 
         db.collection("users")
-                .document(friendReqList.get(position).getName())
+                .document(friendReqList.get(position).getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -79,12 +96,17 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
                         if (task.isSuccessful()) {
                             DocumentSnapshot doc = task.getResult();
                             friendReqUser = doc.get("username").toString();
+                            Glide.with(getApplicationContext()).load(doc.get("profimage").toString()).apply(new RequestOptions().fitCenter()).into(holder.profPic);
+
                             switch (key){
                                 case 0:
-                                    holder.name.setText("You have a friend request from "+friendReqUser);//from Event.java
+                                    holder.name.setText("You have a friend request from "+friendReqUser);//from NotiFragment.java
                                     break;
                                 case 1:
-                                    holder.name.setText("You are friends with "+friendReqUser);//from Event.java
+                                    holder.name.setText(friendReqUser);//from FriendFragment.java
+                                    break;
+                                case 2:
+                                    holder.name.setText(friendReqUser);//from SearchFragment.java
                                     break;
                             }
                         }
@@ -106,6 +128,26 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
                     case 1:
                         setDialogFriend(holder, position, v);
                         break;
+                    case 2:
+                        db.collection("users")
+                                .document(friendReqList.get(position).getUid())
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot doc = task.getResult();
+                                            eventHostId = doc.getId();
+                                            mFragment = new ProfileFragment();
+                                            mBundle = new Bundle();
+                                            mBundle.putString("host_id",eventHostId);
+                                            mFragment.setArguments(mBundle);
+                                            fManager.beginTransaction().replace(R.id.main_frame, mFragment).addToBackStack(null).commit();
+                                        }
+                                    }
+                                });
+
+                        break;
                 }
 
 
@@ -125,22 +167,22 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
 
                         //Send add request to user NOTICE
                         Map<String, Object> friendreqAcc = new HashMap<>();
-                        friendreqAcc.put("name", friendReqList.get(position).getName());//person to add
+                        friendreqAcc.put("uid", friendReqList.get(position).getUid());//person to add
 
                         // Add a new friend for acceptor
                         db.collection("users")
                                 .document(Profile.getCurrentProfile().getId())//current user
                                 .collection("friends")
-                                .document(friendReqList.get(position).getName())
+                                .document(friendReqList.get(position).getUid())
                                 .set(friendreqAcc);
 
                         //Send add request to user NOTICE
                         Map<String, Object> friendreqReq = new HashMap<>();
-                        friendreqReq.put("name", Profile.getCurrentProfile().getId());//person to add
+                        friendreqReq.put("uid", Profile.getCurrentProfile().getId());//person to add
 
                         // Add a new friend for requestor
                         db.collection("users")
-                                .document(friendReqList.get(position).getName())//current user
+                                .document(friendReqList.get(position).getUid())//current user
                                 .collection("friends")
                                 .document(Profile.getCurrentProfile().getId())
                                 .set(friendreqReq);
@@ -149,7 +191,7 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
                         db.collection("users")
                                 .document(Profile.getCurrentProfile().getId())
                                 .collection("requests")
-                                .document(friendReqList.get(position).getName())
+                                .document(friendReqList.get(position).getUid())
                                 .delete()
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -174,7 +216,7 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
                         db.collection("users")
                                 .document(Profile.getCurrentProfile().getId())
                                 .collection("requests")
-                                .document(friendReqList.get(position).getName())
+                                .document(friendReqList.get(position).getUid())
                                 .delete()
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -212,7 +254,7 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
                         db.collection("users")
                                 .document(Profile.getCurrentProfile().getId())
                                 .collection("friends")
-                                .document(friendReqList.get(position).getName())
+                                .document(friendReqList.get(position).getUid())
                                 .delete()
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -229,7 +271,7 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
 
                         //Remove friend for requestor
                         db.collection("users")
-                                .document(friendReqList.get(position).getName())
+                                .document(friendReqList.get(position).getUid())
                                 .collection("friends")
                                 .document(Profile.getCurrentProfile().getId())
                                 .delete()
@@ -284,6 +326,7 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
         View mView;
 
         public TextView name;
+        public CircleImageView profPic;
 
         public ViewHolder(View itemView) {
 
@@ -291,6 +334,8 @@ public class FriendReqListAdapter extends RecyclerView.Adapter<FriendReqListAdap
             mView = itemView;
 
             name = mView.findViewById(R.id.friendreq_name);
+            profPic = mView.findViewById(R.id.friendreq_profpic);
+
 
         }
 

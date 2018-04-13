@@ -9,16 +9,24 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
+import com.example.netipol.perty.BottomNavigationViewHelper;
 import com.example.netipol.perty.Login.LoginActivity;
+import com.example.netipol.perty.Profile.NotificationFragment;
 import com.example.netipol.perty.Profile.ProfileFragment;
 import com.example.netipol.perty.R;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -28,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private SearchFragment searchFragment;
     private ProfileFragment profileFragment;
     private ExploreFragment exploreFragment;
+    private NotificationFragment notiFragment;
     private int prevFrag=1;
     private String hostid;
 
@@ -50,12 +59,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         profileFragment = new ProfileFragment();
         searchFragment = new SearchFragment();
         exploreFragment = new ExploreFragment();
+        notiFragment = new NotificationFragment();
+
+        /*int v = GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE;
+        Toast toast = Toast.makeText(getApplicationContext(),String.valueObf(v),Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();*/
 
 
         //set default frag
         setFrag(eventFragment);
 
         mMainNav.setOnNavigationItemSelectedListener(this);
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.main_nav);
+        BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
 
     }
 
@@ -88,8 +106,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 prevFrag=1;
                 return true;
 
-            case R.id.nav_search ://Search
-                setFrag(searchFragment);
+            case R.id.nav_search ://Explore
+                setFrag(exploreFragment);
                 prevFrag=2;
                 return true;
 
@@ -99,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 return false;
 
             case R.id.nav_exp :///Explore
-                setFrag(exploreFragment);
+                setFrag(notiFragment);
                 prevFrag=4;
                 return true;
 
@@ -127,9 +145,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        //Log.d("whynologin", "Logged in as"+currentUser.getDisplayName());
 
         if(currentUser == null) {//First time user
             sendToLogin();
+            //Log.d("whynologin", "Sending to login");
         }
     }
 
@@ -160,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mAuth.getInstance().signOut();//of Firebase
         LoginManager.getInstance().logOut();//of Facebook
     }
+
 
 
 }

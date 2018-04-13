@@ -1,7 +1,9 @@
 package com.example.netipol.perty.Home;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +15,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -37,6 +42,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -49,18 +56,19 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 public class ExploreFragment extends Fragment {
 
-    private RecyclerView mExpFeat, mExpPop, mExpRec;
+    private RecyclerView mExpA, mExpB, mExpC;
     private FirebaseFirestore mFirestore;
-    private List<Event> expFeatList, expPopList, expRecList;
-    private List<String> evntList;//List that stores Events
-    private EventListAdapter expFeatListAdapter, expPopListAdapter, expRecListAdapter;
-    private String mPost_id, event_doc_id, event_doc_1, event_doc_2, event_doc_3;
+    private List<Event> expAList, expBList, expCList;
+    private List<String> chosenOnesA, allOfA, chosenOnesB, allOfB, chosenOnesC, allOfC, categList, randomPicks;//List that stores Events
+    private EventListAdapter expAListAdapter, expBListAdapter, expCListAdapter;
+    private String mPost_id, event_doc_id, event_doc_A, event_doc_B, event_doc_C;
     private Random rand;
     private int randomNum;
-    public TextView exp1, exp2, exp3;
+    public TextView expA, expB, expC;
     private Fragment mFragment;
     private Bundle mBundle;
     public FragmentManager fManager;
+    private ProgressDialog mProgress;
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -72,148 +80,323 @@ public class ExploreFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_explore, container, false);
 
-        mFirestore = FirebaseFirestore.getInstance();
+        mProgress = new ProgressDialog(getActivity());
 
-        exp1 = v.findViewById(R.id.txt1);
-        expFeatList = new ArrayList<>();
-        expFeatListAdapter = new EventListAdapter(getApplicationContext(), expFeatList,getFragmentManager());
+        setHasOptionsMenu(true);
 
-        exp2 = v.findViewById(R.id.txt2);
-        expPopList = new ArrayList<>();
-        expPopListAdapter = new EventListAdapter(getApplicationContext(), expPopList,getFragmentManager());
+        expA = v.findViewById(R.id.txta);
+        expAList = new ArrayList<>();
+        expAListAdapter = new EventListAdapter(getApplicationContext(), expAList,getFragmentManager());
 
-        exp3 = v.findViewById(R.id.txt3);
-        expRecList = new ArrayList<>();
-        expRecListAdapter = new EventListAdapter(getApplicationContext(), expRecList, getFragmentManager());
+        expB = v.findViewById(R.id.txtb);
+        expBList = new ArrayList<>();
+        expBListAdapter = new EventListAdapter(getApplicationContext(), expBList,getFragmentManager());
 
-        rand = new Random();
+        expC = v.findViewById(R.id.txtc);
+        expCList = new ArrayList<>();
+        expCListAdapter = new EventListAdapter(getApplicationContext(), expCList, getFragmentManager());
+
+        chosenOnesA = new ArrayList<>();
+        chosenOnesB = new ArrayList<>();
+        chosenOnesC = new ArrayList<>();
+        allOfA = new ArrayList<>();
+        allOfB = new ArrayList<>();
+        allOfC = new ArrayList<>();
+        categList = new ArrayList<>();
+        categList.add("SPORTS");
+        categList.add("EDUCATION");
+        categList.add("RECREATION");
+        categList.add("MUSIC");
+        categList.add("ART");
+        categList.add("THEATRE");
+        categList.add("TECHNOLOGY");
+        categList.add("OUTING");
+        categList.add("CAREER");
 
         /*
-        * Popular
-        * Recommended from Sports
-        * Recommend from Education
-        * Recommended from ...
+        * 1. Create random categ chooser -> 3 categs
+        * 2. Query the 3 categs; Public only
+        * 3. Randomly select 3 events of each categ
+        * 4. populate recyler views A, B, C
         * */
 
+        randomPicks = pickRandom(categList, 3);
+        Log.d("explorer","Size: "+String.valueOf(randomPicks.size()));
+        Log.d("explorer",randomPicks.get(0));
+        Log.d("explorer",randomPicks.get(1));
+        Log.d("explorer",randomPicks.get(2));
+        populateExpA(randomPicks.get(0));
+        populateExpB(randomPicks.get(1));
+        populateExpC(randomPicks.get(2));
+
         //Featured: 5 randomly selected featured (sponsored?) Events
-        mExpFeat = v.findViewById(R.id.explore_list_featured);
-        mExpFeat.setHasFixedSize(true);
-        mExpFeat.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));//Main Activity
-        mExpFeat.setAdapter(expFeatListAdapter);//to fill recycler view with Events
-        exp1.setText("Latest and Greatest");
+        mExpA = v.findViewById(R.id.explore_list_a);
+        mExpA.setHasFixedSize(true);
+        mExpA.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));//Main Activity
+        mExpA.setAdapter(expAListAdapter);//to fill recycler view with Events
+        expA.setText("Recommended from "+randomPicks.get(0));
 
         //Popular: Query top 5 public events with most joining members (events>[eventId]>joining.count)
-        mExpPop = v.findViewById(R.id.explore_list_popular);
-        mExpPop.setHasFixedSize(true);
-        mExpPop.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));//Main Activity
-        mExpPop.setAdapter(expPopListAdapter);//to fill recycler view with Events
-        exp2.setText("Recommended from MUSIC");
+        mExpB = v.findViewById(R.id.explore_list_b);
+        mExpB.setHasFixedSize(true);
+        mExpB.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));//Main Activity
+        mExpB.setAdapter(expBListAdapter);//to fill recycler view with Events
+        expB.setText("Recommended from "+randomPicks.get(1));
 
 
         //Recommended: 5 ranndomly selected according to user's categ_key vs. all event's categ
-        mExpRec = v.findViewById(R.id.explore_list_recommend);
-        mExpRec.setHasFixedSize(true);
-        mExpRec.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,false));//Main Activity
-        mExpRec.setAdapter(expRecListAdapter);//to fill recycler view with Events
-        exp3.setText("Popular from EDUCATION");
+        mExpC = v.findViewById(R.id.explore_list_c);
+        mExpC.setHasFixedSize(true);
+        mExpC.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,false));//Main Activity
+        mExpC.setAdapter(expCListAdapter);//to fill recycler view with Events
+        expC.setText("Recommended from "+randomPicks.get(2));
 
-        mFirestore.collection("events").orderBy("timestamp", Query.Direction.DESCENDING).limit(3)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                String event_id = document.getId();
-                                event_doc_1 = event_id;
-                                Event events = document.toObject(Event.class).withId(event_id);
-                                expFeatList.add(events);//add new events whenever there is a change
-                                expFeatListAdapter.notifyDataSetChanged();
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-
-        mFirestore.collection("events").whereEqualTo("categ","MUSIC").limit(3)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                String event_id = document.getId();
-                                event_doc_2 = event_id;
-                                Event events = document.toObject(Event.class).withId(event_id);
-                                expPopList.add(events);//add new events whenever there is a change
-                                expPopListAdapter.notifyDataSetChanged();
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-
-        mFirestore.collection("events").whereEqualTo("categ","EDUCATION").limit(3)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                String event_id = document.getId();
-                                event_doc_3 = event_id;
-                                Event events = document.toObject(Event.class).withId(event_id);
-                                expRecList.add(events);//add new events whenever there is a change
-                                expRecListAdapter.notifyDataSetChanged();
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        FloatingActionButton fab = v.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                randomNum = rand.nextInt((3 - 1) + 1) + 1;
-                Log.d("random", String.valueOf(randomNum));
-
-                switch(randomNum){
-                    case 1://Student
-                        event_doc_id = event_doc_1;
-                        break;
-                    case 2://Prof
-                        event_doc_id = event_doc_2;
-                        break;
-                    case 3://Club
-                        event_doc_id = event_doc_3;
-                        break;
-                }
-
-                /*Intent singleEventIntent = new Intent(getApplicationContext(), SingleEventActivity.class);
-                singleEventIntent.putExtra("event_id", event_doc_id);
-                singleEventIntent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(singleEventIntent);*/
-
-                mFragment = new SingleEventFragment();
-                mBundle = new Bundle();
-                mBundle.putString("event_id",event_doc_id);
-                mFragment.setArguments(mBundle);
-                //intent to view stranger's profile
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.main_frame, mFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                randomPicks = pickRandom(categList, 3);
+                Log.d("explorer","Random Size: "+String.valueOf(randomPicks.size()));
+                Log.d("explorer",randomPicks.get(0));
+                Log.d("explorer",randomPicks.get(1));
+                Log.d("explorer",randomPicks.get(2));
+                populateExpA(randomPicks.get(0));
+                populateExpB(randomPicks.get(1));
+                populateExpC(randomPicks.get(2));
+                expA.setText("Recommended from "+randomPicks.get(0));
+                expB.setText("Recommended from "+randomPicks.get(1));
+                expC.setText("Recommended from "+randomPicks.get(2));
             }
         });
 
         return v;
+    }
+
+    public static List<String> pickRandom(List<String> lst, int n) {
+        List<String> copy = new LinkedList<String>(lst);
+        Collections.shuffle(copy);
+        return copy.subList(0, n);
+    }
+
+    public void populateExpA(String categ){
+
+        mProgress.setMessage("Finding events for you ...");
+        mProgress.show();
+
+        allOfA.clear();
+        chosenOnesA.clear();
+        expAList.clear();
+
+        mFirestore = FirebaseFirestore.getInstance();
+
+        mFirestore.collection("events")
+                .whereEqualTo("categ", categ)
+                .whereEqualTo("type", "Public")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d("olo", document.getId() + " => " + document.getData());
+                                if (!document.get("hostid").equals(Profile.getCurrentProfile().getId())){
+                                    allOfA.add(document.getId());//all events
+                                }
+                            }
+                        }
+
+                        if(!allOfA.isEmpty()){
+                            chosenOnesA = pickRandom(allOfA, 1);
+
+                            mFirestore.collection("events")
+                                    .document(chosenOnesA.get(0))
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                String event_id = document.getId();
+                                                event_doc_A = event_id;
+                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                expAList.add(events);//add new events whenever there is a change
+                                                expAListAdapter.notifyDataSetChanged();
+                                            }
+
+                                            mProgress.dismiss();
+
+                                        }
+                                    });
+
+                            /*mFirestore.collection("events")
+                                .document(chosenOnesA.get(1))
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            String event_id = document.getId();
+                                            event_doc_1 = event_id;
+                                            Event events = document.toObject(Event.class).withId(event_id);
+                                            expAList.add(events);//add new events whenever there is a change
+                                            expAListAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
+
+                        mFirestore.collection("events")
+                                .document(chosenOnesA.get(2))
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            String event_id = document.getId();
+                                            event_doc_1 = event_id;
+                                            Event events = document.toObject(Event.class).withId(event_id);
+                                            expAList.add(events);//add new events whenever there is a change
+                                            expAListAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
+
+                        Log.d("explorer","Size of expA: "+String.valueOf(chosenOnesA.size()));
+                        Log.d("explorer",chosenOnesA.get(0));
+                        Log.d("explorer",chosenOnesA.get(1));
+                        Log.d("explorer",chosenOnesA.get(2));
+                        */
+
+                        }else{
+                            expAListAdapter.notifyDataSetChanged();
+                            mProgress.dismiss();
+                        }
+
+
+                    }
+
+                });
+        allOfA.clear();
+        chosenOnesA.clear();
+        expAList.clear();
+    }
+
+
+    public void populateExpB(String categ){
+
+        allOfB.clear();
+        chosenOnesB.clear();
+        expBList.clear();
+
+        mFirestore = FirebaseFirestore.getInstance();
+
+        mFirestore.collection("events")
+                .whereEqualTo("categ", categ)
+                .whereEqualTo("type", "Public")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d("olo", document.getId() + " => " + document.getData());
+                                if (!document.get("hostid").equals(Profile.getCurrentProfile().getId())){
+                                    allOfB.add(document.getId());//all events
+                                }
+                            }
+
+
+                        }
+
+                        if(!allOfB.isEmpty()){
+                            chosenOnesB = pickRandom(allOfB, 1);
+                            mFirestore.collection("events")
+                                    .document(chosenOnesB.get(0))
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                String event_id = document.getId();
+                                                event_doc_B = event_id;
+                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                expBList.add(events);//add new events whenever there is a change
+                                                expBListAdapter.notifyDataSetChanged();
+                                            }
+                                        }
+                                    });
+
+                        }else{
+                            expBListAdapter.notifyDataSetChanged();
+                        }
+
+                    }
+
+                });
+        allOfB.clear();
+        chosenOnesB.clear();
+        expBList.clear();
+    }
+
+
+    public void populateExpC(String categ){
+
+        allOfC.clear();
+        chosenOnesC.clear();
+        expCList.clear();
+
+        mFirestore = FirebaseFirestore.getInstance();
+
+        mFirestore.collection("events")
+                .whereEqualTo("categ", categ)
+                .whereEqualTo("type", "Public")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d("olo", document.getId() + " => " + document.getData());
+                                if (!document.get("hostid").equals(Profile.getCurrentProfile().getId())){
+                                    allOfC.add(document.getId());//all events
+                                }
+                            }
+
+                            if(!allOfC.isEmpty()){
+                                chosenOnesC = pickRandom(allOfC, 1);//change to 3?
+                                mFirestore.collection("events")
+                                        .document(chosenOnesC.get(0))
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    DocumentSnapshot document = task.getResult();
+                                                    String event_id = document.getId();
+                                                    event_doc_C = event_id;
+                                                    Event events = document.toObject(Event.class).withId(event_id);
+                                                    expCList.add(events);//add new events whenever there is a change
+                                                    expCListAdapter.notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
+
+                            }else{
+                                expCListAdapter.notifyDataSetChanged();
+                            }
+
+                        }
+                    }
+                });
+        allOfC.clear();
+        chosenOnesC.clear();
+        expCList.clear();
+
     }
 
     @Override
@@ -223,6 +406,35 @@ public class ExploreFragment extends Fragment {
         ActionBar bar = activity.getSupportActionBar();
         bar.setTitle("Explore");
         bar.setDisplayHomeAsUpEnabled(false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.explore_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.searchbutt:
+
+                mFragment = new SearchFragment();
+                //mBundle = new Bundle();
+                //mBundle.putString("host_id",eventHostId);
+                //mFragment.setArguments(mBundle);
+                //intent to view stranger's profile
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.main_frame, mFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

@@ -7,21 +7,26 @@ import android.os.Parcelable;
  * Created by netipol on 1/2/2018 AD.
  */
 
-public class Event extends EventId implements Parcelable {
+public class Event extends EventId implements Parcelable, Comparable<Event>{
 
-    private String title, desc, type, image, timestamp, host, time, location, categ;
+    private String title, desc, type, image, timestamp, host, hostid, time, location, categ;
+
+    public int compareTo(Event other) {
+        return timestamp.compareTo(other.timestamp);
+    }
 
     public Event(){
 
     }
 
-    public Event(String title, String desc, String type, String image, String timestamp, String host, String time, String location, String categ) {
+    public Event(String title, String desc, String type, String image, String timestamp, String host, String hostid, String time, String location, String categ) {
         this.title = title;
         this.desc = desc;
         this.type = type;
         this.image = image;
         this.timestamp = timestamp;
         this.host = host;
+        this.hostid = hostid;
         this.time = time;
         this.location = location;
         this.categ = categ;
@@ -34,6 +39,7 @@ public class Event extends EventId implements Parcelable {
         image = in.readString();
         timestamp = in.readString();
         host = in.readString();
+        hostid = in.readString();
         time = in.readString();
         location = in.readString();
         categ = in.readString();
@@ -94,8 +100,16 @@ public class Event extends EventId implements Parcelable {
         return host;
     }
 
+    public String getHostId() {
+        return hostid;
+    }
+
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public void setHostId(String hostid) {
+        this.hostid = hostid;
     }
 
     public String getTime() {
@@ -135,6 +149,7 @@ public class Event extends EventId implements Parcelable {
         dest.writeString(image);
         dest.writeString(timestamp);
         dest.writeString(host);
+        dest.writeString(hostid);
         dest.writeString(time);
         dest.writeString(location);
         dest.writeString(categ);

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+>
+    <item
+        android:title="Categories"
+        >
+    <menu
+        >
+
+    <item
+        android:id="@+id/categ_sports"
+        android:title="Sports"
+        app:actionViewClass="android.widget.CheckBox"/>
+
+    <item
+        android:id="@+id/categ_education"
+        android:title="Education"
+        app:actionViewClass="android.widget.CheckBox"/>
+
+    <item
+        android:id="@+id/categ_recreation"
+        android:title="Recreation"
+        app:actionViewClass="android.widget.CheckBox"/>
+
+
+        <item
+            android:id="@+id/categ_music"
+            android:title="Music"
+            app:actionViewClass="android.widget.CheckBox"/>
+
+        <item
+            android:id="@+id/categ_art"
+            android:title="Art"
+            app:actionViewClass="android.widget.CheckBox"/>
+
+        <item
+            android:id="@+id/categ_th"
+            android:title="Theatre"
+            app:actionViewClass="android.widget.CheckBox"/>
+
+        <item
+            android:id="@+id/categ_tech"
+            android:title="Technology"
+            app:actionViewClass="android.widget.CheckBox"/>
+
+        <item
+            android:id="@+id/categ_out"
+            android:title="Outing"
+            app:actionViewClass="android.widget.CheckBox"/>
+
+        <item
+            android:id="@+id/categ_career"
+            android:title="Career"
+            app:actionViewClass="android.widget.CheckBox"/>
+
+
+    </menu>
+
+    </item>
+
+    <item
+        android:title="Type"
+        >
+        <menu
+            >
+
+            <item
+                android:id="@+id/categ_public"
+                android:checkable="true"
+                android:title="Public"
+                app:actionViewClass="android.widget.Switch"/>
+
+            <item
+                android:id="@+id/categ_private"
+                android:checkable="true"
+                android:title="Private"
+                app:actionViewClass="android.widget.Switch"/>
+
+        </menu>
+
+    </item>
+
+    <item
+        android:id="@+id/categ_apply"
+        android:title="Apply Changes"
+        />
+
+
+</menu>

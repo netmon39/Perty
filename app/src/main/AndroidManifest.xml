@@ -13,9 +13,9 @@
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".Home.MainActivity"
             android:windowSoftInputMode="adjustPan">
@@ -48,6 +48,7 @@
         </activity>
         <activity android:name=".Login.AccountActivity" />
         <activity android:name=".SelectPref.SelectPrefActivity" />
+        <activity android:name=".TutorialActivity" />
         <activity
             android:name=".SelectPref.GridViewAdapter"
             android:label="@string/title_activity_grid_view_adapter"

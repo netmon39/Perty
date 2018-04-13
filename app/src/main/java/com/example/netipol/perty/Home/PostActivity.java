@@ -296,9 +296,8 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         final String categ_val = eventCateg;
         Long tsLong = System.currentTimeMillis()/1000;
         final String ts = tsLong.toString();
-
-        final String date_val = btnDatePicker.getText().toString().trim();
-        final String time_val = btnTimePicker.getText().toString().trim();
+        final String date_val = btnDatePicker.getText().toString().trim();//21-8-18
+        final String time_val = btnTimePicker.getText().toString().trim();//24-00
         final String posttime_val = date_val + ", " + time_val;
         final String location_val = txtLocation.getText().toString().trim();
 
@@ -370,7 +369,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
             CropImage.activity(mImageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(4,3)
+                    .setAspectRatio(16,9)
                     .setCropMenuCropButtonTitle("NEXT")
                     .start(this);
         }

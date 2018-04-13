@@ -1,10 +1,12 @@
 package com.example.netipol.perty.Profile;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import com.example.netipol.perty.Event.Event;
 import com.example.netipol.perty.Friend.FriendReq;
 import com.example.netipol.perty.Friend.FriendReqListAdapter;
+import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,7 +63,7 @@ public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRef
         NotificationFragment notiFrag = new NotificationFragment();
 
         friendreqList = new ArrayList<>();
-        friendreqListAdapter = new FriendReqListAdapter(getApplicationContext(),friendreqList, notiFrag,FriendFragment.this, 1);
+        friendreqListAdapter = new FriendReqListAdapter(getApplicationContext(),friendreqList, notiFrag,FriendFragment.this, 1, getFragmentManager());
 
         //RecyclerView setup
         mFriendReqList = v.findViewById(R.id.friendlist);
@@ -101,6 +104,17 @@ public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRef
         // Fetching data from server
         loadRecyclerViewData();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity activity = (MainActivity) getActivity();
+        ActionBar bar = activity.getSupportActionBar();
+        bar.setTitle("Friends");
+        bar.setDisplayHomeAsUpEnabled(true);
+
+    }
+
 
     public void loadRecyclerViewData()
     {

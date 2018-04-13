@@ -9,11 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Select at least 3 event categories of interest to get started. You can edit your Preferences again later."
-        android:textAlignment="center"
+        android:text="Select at least 3 event categories of interest to get started."
         android:textSize="16dp"
         android:padding="10dp"
-        android:textColor="@color/purps"
+        android:textColor="@color/colorPrimaryDark"
         android:id="@+id/pref_text"
         android:layout_above="@+id/grid"
         />

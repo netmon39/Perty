@@ -6,9 +6,9 @@
     <string name="title_activity_grid_item_view">GridItemView</string>
     <string name="title_activity_selected_items">SelectedItemsActivity</string>
     <string name="nav_feed">Events</string>
-    <string name="nav_search">Search</string>
+    <string name="nav_search">Explore</string>
     <string name="nav_create">Create</string>
-    <string name="nav_exp">Explore</string>
+    <string name="nav_exp">Notice</string>
     <string name="nav_profile">Profile</string>
     <string name="profile_fragment">Profile</string>
 

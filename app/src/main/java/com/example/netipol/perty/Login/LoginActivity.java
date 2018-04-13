@@ -41,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        //mAuth.getCurrentUser().getEmail();\\\\
+
         /*PackageInfo info;
         try {
             info = getPackageManager().getPackageInfo("com.example.netipol.perty.Login", PackageManager.GET_SIGNATURES);
