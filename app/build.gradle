@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.facebook.android:facebook-login:[4,5)'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.6.+'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.aurelhubert:ahbottomnavigation:2.1.0'
 }
 
 

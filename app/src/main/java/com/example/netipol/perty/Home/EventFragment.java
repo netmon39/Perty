@@ -23,10 +23,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.netipol.perty.Event.Event;
 import com.example.netipol.perty.Event.EventListAdapter;
+import com.example.netipol.perty.Profile.FavoritesFragment;
+import com.example.netipol.perty.Profile.FriendFragment;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -56,15 +59,19 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public List<String> friendsList;
     private EventListAdapter eventListAdapter;
     //private String userCategKey;
-    private char[] cArray;
+    private char[] cArray, ppArray;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     public boolean friendsListEmpty = false;
+    private boolean publicToggle = false;
+    private boolean privateToggle = false;
     public String mUser_id =null;
     private DrawerLayout mDrawerLayout;
-    private boolean cat0, cat1, cat2, cat3, cat4, cat5, cat6, cat7, cat8;
-    private MenuItem menuItem0, menuItem1, menuItem2, menuItem3, menuItem4, menuItem5, menuItem6, menuItem7, menuItem8;
+    private boolean cat0, cat1, cat2, cat3, cat4, cat5, cat6, cat7, cat8, cat9, cat10;
+    private MenuItem menuItem0, menuItem1, menuItem2, menuItem3, menuItem4, menuItem5, menuItem6, menuItem7, menuItem8, menuItem9, menuItem10;
     private String categ_key_new = "";
     private String categ_key_current = "";
+    private String pp_key_new = "";
+    private String pp_key_current = "";
     public ProgressDialog mProgress;
 
     public EventFragment() {
@@ -78,8 +85,10 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_event, container, false);
 
+
+
         eventList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList, getFragmentManager());
+        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList , getFragmentManager(),1);
 
         friendsList = new ArrayList<>();
 
@@ -91,7 +100,7 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));//Main Activity
         mEventList.setAdapter(eventListAdapter);//to fill recycler view with Events
-        mEventList.invalidate();
+        //mEventList.invalidate();
 
         // SwipeRefreshLayout
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_container3);
@@ -117,7 +126,6 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         });
 
-
         setHasOptionsMenu(true);
 
         mDrawerLayout = v.findViewById(R.id.drawer_layout);
@@ -141,6 +149,7 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                 //Set user preferences
 
                                 categ_key_new = "";
+                                pp_key_new = "";
 
                                 if(cat0==true){
                                     categ_key_new = new StringBuilder()
@@ -196,10 +205,23 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                             .append("8")
                                             .toString();
                                 }
+                                if(cat9==true){//Public
+                                    pp_key_new = new StringBuilder()
+                                            .append(pp_key_new)
+                                            .append("a")
+                                            .toString();
+                                }
+                                if(cat10==true){//Public
+                                    pp_key_new = new StringBuilder()
+                                            .append(pp_key_new)
+                                            .append("b")
+                                            .toString();
+                                }
 
                                 //set new categ_key in firebase
                                 Map<String, Object> categ = new HashMap<>();
                                 categ.put("categ_key", categ_key_new);
+                                categ.put("pp_key", pp_key_new);
 
                                 mFirestore.collection("users")
                                         .document(mUser_id)
@@ -299,11 +321,13 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         Log.d("categkey", "DocumentSnapshot data: " + document.getData());
 
                         categ_key_current = document.get("categ_key").toString();
+                        pp_key_current = document.get("pp_key").toString();
 
                         Log.d("categkey", categ_key_current);
 
                         //2. Decrypt key and store it into an array
                         cArray = categ_key_current.toCharArray();
+                        ppArray = pp_key_current.toCharArray();
 
                         //3. For loop the cArray, while querying "events" to look for corresponding categories
                         for(int i = 0; i < cArray.length; i++) {
@@ -378,6 +402,29 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                             }
 
                         }
+
+                        for(int i = 0; i < ppArray.length; i++) {
+                            switch (String.valueOf(ppArray[i])) {
+                                case "a":
+                                    //menu.findItem(R.id.categ_sports).setChecked(true);
+                                    menuItem9 = menu.findItem(R.id.categ_public);
+                                    Switch checkBox9 = (Switch) menuItem9.getActionView();
+                                    checkBox9.setChecked(true);
+                                    menuItem9.setChecked(true);
+                                    cat9 = true;
+                                    break;
+                                case "b":
+                                    menuItem10 = menu.findItem(R.id.categ_private);
+                                    Switch checkBox10 = (Switch) menuItem10.getActionView();
+                                    checkBox10.setChecked(true);
+                                    menuItem10.setChecked(true);
+                                    cat10 = true;
+                                    break;
+                            }
+
+
+                        }
+
 
                         //categ_key_ = "";
 
@@ -518,6 +565,34 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
             }
         });
+        menuItem9 = menu.findItem(R.id.categ_public);
+        View actionView9 = MenuItemCompat.getActionView(menuItem9);
+        actionView9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(menuItem9.isChecked()){
+                    menuItem9.setChecked(false);
+                    cat9=false;
+                }else{
+                    menuItem9.setChecked(true);
+                    cat9=true;
+                }
+            }
+        });
+        menuItem10 = menu.findItem(R.id.categ_private);
+        View actionView10 = MenuItemCompat.getActionView(menuItem10);
+        actionView10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(menuItem10.isChecked()){
+                    menuItem10.setChecked(false);
+                    cat10=false;
+                }else{
+                    menuItem10.setChecked(true);
+                    cat10=true;
+                }
+            }
+        });
 
     }
 
@@ -529,10 +604,17 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         eventList.clear();
         friendsList.clear();
 
+        mEventList.setHasFixedSize(true);
+        mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));//Main Activity
+        mEventList.setAdapter(eventListAdapter);//to fill recycler view with Events
+
         mFirestore = FirebaseFirestore.getInstance();
 
         mProgress.setMessage("Loading your feed ...");
         mProgress.show();
+
+        publicToggle=false;
+        privateToggle=false;
 
         //get list of user's friends uid
         mFirestore.collection("users").document(mUser_id).collection("friends")
@@ -557,589 +639,644 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                        }else{//if dont have friends
                            friendsListEmpty = true;
                            Log.d("ddog", "no friends");
+
                        }
 
-                        //1. Get user's categ_key
                         mFirestore.collection("users").document(mUser_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful()) {
                                     DocumentSnapshot document = task.getResult();
                                     if (document != null && document.exists()) {
-                                        Log.d("categkey", "DocumentSnapshot data: " + document.getData());
 
-                                        String userCategKey = document.get("categ_key").toString();
-
-                                        Log.d("categkey", userCategKey);
+                                        String userPpKey = document.get("pp_key").toString();
 
                                         //2. Decrypt key and store it into an array
-                                        cArray = userCategKey.toCharArray();
+                                        ppArray = userPpKey.toCharArray();
 
                                         //3. For loop the cArray, while querying "events" to look for corresponding categories
-                                        for(int i = 0; i < cArray.length; i++) {
+                                        for(int i = 0; i < ppArray.length; i++) {
 
-                                            Log.d("categkey", String.valueOf(cArray[i]));
+                                            switch (String.valueOf(ppArray[i])) {
+                                                case "a":
+                                                    Log.d("ddog public", String.valueOf(publicToggle));
 
-                                            switch (String.valueOf(cArray[i])) {
-                                                case "0":
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "SPORTS")
-                                                            .whereEqualTo("type", "Public")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            if(!document.get("hostid").equals(mUser_id)){
-                                                                                Log.d("olo", document.getId() + " => " + document.getData());
-                                                                                //Add into arraylist<Event>
-                                                                                String event_id = document.getId();
-                                                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                                                eventList.add(events);
-                                                                                eventListAdapter.notifyDataSetChanged();
-                                                                                //4. Sort eventList by timestamp
-                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                Collections.sort(eventList);
-                                                                                Collections.reverse(eventList);
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
+                                                    publicToggle = true;
 
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "SPORTS")
-                                                            .whereEqualTo("type", "Private")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful() && friendsListEmpty==false) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+                                                    Log.d("ddog public", String.valueOf(publicToggle));
 
-                                                                            for(int i=0;i<friendsList.size();i++){
-                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
-                                                                                    //Add into arraylist<Event>
-                                                                                    String event_id = document.getId();
-                                                                                    Event events = document.toObject(Event.class).withId(event_id);
-                                                                                    eventList.add(events);
-                                                                                    eventListAdapter.notifyDataSetChanged();
-                                                                                    //4. Sort eventList by timestamp
-                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                    Collections.sort(eventList);
-                                                                                    Collections.reverse(eventList);
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
                                                     break;
-                                                case "1":
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "EDUCATION")
-                                                            .whereEqualTo("type", "Public")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            if(!document.get("hostid").equals(mUser_id)){
-                                                                                Log.d("olo", document.getId() + " => " + document.getData());
-                                                                                //Add into arraylist<Event>
-                                                                                String event_id = document.getId();
-                                                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                                                eventList.add(events);
-                                                                                eventListAdapter.notifyDataSetChanged();
-                                                                                //4. Sort eventList by timestamp
-                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                Collections.sort(eventList);
-                                                                                Collections.reverse(eventList);
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "EDUCATION")
-                                                            .whereEqualTo("type", "Private")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful() && friendsListEmpty==false) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+                                                case "b":
 
-                                                                            for(int i=0;i<friendsList.size();i++){
-                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
-                                                                                    //Add into arraylist<Event>
-                                                                                    String event_id = document.getId();
-                                                                                    Event events = document.toObject(Event.class).withId(event_id);
-                                                                                    eventList.add(events);
-                                                                                    eventListAdapter.notifyDataSetChanged();
-                                                                                    //4. Sort eventList by timestamp
-                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                    Collections.sort(eventList);
-                                                                                    Collections.reverse(eventList);
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
+                                                    Log.d("ddog private", String.valueOf(privateToggle));
+
+                                                    privateToggle = true;
+
+                                                    Log.d("ddog private", String.valueOf(privateToggle));
+
                                                     break;
-                                                case "2":
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "RECREATION")
-                                                            .whereEqualTo("type", "Public")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            if(!document.get("hostid").equals(mUser_id)){
-                                                                                Log.d("olo", document.getId() + " => " + document.getData());
-                                                                                //Add into arraylist<Event>
-                                                                                String event_id = document.getId();
-                                                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                                                eventList.add(events);
-                                                                                eventListAdapter.notifyDataSetChanged();
-                                                                                //4. Sort eventList by timestamp
-                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                Collections.sort(eventList);
-                                                                                Collections.reverse(eventList);
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "RECREATION")
-                                                            .whereEqualTo("type", "Private")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful() && friendsListEmpty==false) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            Log.d("olo", document.getId() + " => " + document.getData());
-
-                                                                            for(int i=0;i<friendsList.size();i++){
-                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
-                                                                                    //Add into arraylist<Event>
-                                                                                    String event_id = document.getId();
-                                                                                    Event events = document.toObject(Event.class).withId(event_id);
-                                                                                    eventList.add(events);
-                                                                                    eventListAdapter.notifyDataSetChanged();
-                                                                                    //4. Sort eventList by timestamp
-                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                    Collections.sort(eventList);
-                                                                                    Collections.reverse(eventList);
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    break;
-                                                case "3":
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "MUSIC")
-                                                            .whereEqualTo("type", "Public")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            if(!document.get("hostid").equals(mUser_id)){
-                                                                                Log.d("olo", document.getId() + " => " + document.getData());
-                                                                                //Add into arraylist<Event>
-                                                                                String event_id = document.getId();
-                                                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                                                eventList.add(events);
-                                                                                eventListAdapter.notifyDataSetChanged();
-                                                                                //4. Sort eventList by timestamp
-                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                Collections.sort(eventList);
-                                                                                Collections.reverse(eventList);
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "MUSIC")
-                                                            .whereEqualTo("type", "Private")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful() && friendsListEmpty==false) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            Log.d("olo", document.getId() + " => " + document.getData());
-
-                                                                            for(int i=0;i<friendsList.size();i++){
-                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
-                                                                                    //Add into arraylist<Event>
-                                                                                    String event_id = document.getId();
-                                                                                    Event events = document.toObject(Event.class).withId(event_id);
-                                                                                    eventList.add(events);
-                                                                                    eventListAdapter.notifyDataSetChanged();
-                                                                                    //4. Sort eventList by timestamp
-                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                    Collections.sort(eventList);
-                                                                                    Collections.reverse(eventList);
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    break;
-                                                case "4":
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "ART")
-                                                            .whereEqualTo("type", "Public")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful() ) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            if(!document.get("hostid").equals(mUser_id)){
-                                                                                Log.d("olo", document.getId() + " => " + document.getData());
-                                                                                //Add into arraylist<Event>
-                                                                                String event_id = document.getId();
-                                                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                                                eventList.add(events);
-                                                                                eventListAdapter.notifyDataSetChanged();
-                                                                                //4. Sort eventList by timestamp
-                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                Collections.sort(eventList);
-                                                                                Collections.reverse(eventList);
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "ART")
-                                                            .whereEqualTo("type", "Private")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful() && friendsListEmpty==false) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            Log.d("olo", document.getId() + " => " + document.getData());
-
-                                                                            for(int i=0;i<friendsList.size();i++){
-                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
-                                                                                    //Add into arraylist<Event>
-                                                                                    String event_id = document.getId();
-                                                                                    Event events = document.toObject(Event.class).withId(event_id);
-                                                                                    eventList.add(events);
-                                                                                    eventListAdapter.notifyDataSetChanged();
-                                                                                    //4. Sort eventList by timestamp
-                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                    Collections.sort(eventList);
-                                                                                    Collections.reverse(eventList);
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    break;
-                                                case "5":
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "THEATRE")
-                                                            .whereEqualTo("type", "Public")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            if(!document.get("hostid").equals(mUser_id)){
-                                                                                Log.d("olo", document.getId() + " => " + document.getData());
-                                                                                //Add into arraylist<Event>
-                                                                                String event_id = document.getId();
-                                                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                                                eventList.add(events);
-                                                                                eventListAdapter.notifyDataSetChanged();
-                                                                                //4. Sort eventList by timestamp
-                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                Collections.sort(eventList);
-                                                                                Collections.reverse(eventList);
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "THEATRE")
-                                                            .whereEqualTo("type", "Private")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful() && friendsListEmpty==false) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            Log.d("olo", document.getId() + " => " + document.getData());
-
-                                                                            for(int i=0;i<friendsList.size();i++){
-                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
-                                                                                    //Add into arraylist<Event>
-                                                                                    String event_id = document.getId();
-                                                                                    Event events = document.toObject(Event.class).withId(event_id);
-                                                                                    eventList.add(events);
-                                                                                    eventListAdapter.notifyDataSetChanged();
-                                                                                    //4. Sort eventList by timestamp
-                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                    Collections.sort(eventList);
-                                                                                    Collections.reverse(eventList);
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    break;
-                                                case "6":
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "TECHNOLOGY")
-                                                            .whereEqualTo("type", "Public")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            if(!document.get("hostid").equals(mUser_id)){
-                                                                                Log.d("olo", document.getId() + " => " + document.getData());
-                                                                                //Add into arraylist<Event>
-                                                                                String event_id = document.getId();
-                                                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                                                eventList.add(events);
-                                                                                eventListAdapter.notifyDataSetChanged();
-                                                                                //4. Sort eventList by timestamp
-                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                Collections.sort(eventList);
-                                                                                Collections.reverse(eventList);
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "TECHNOLOGY")
-                                                            .whereEqualTo("type", "Private")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful() && friendsListEmpty==false) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            Log.d("olo", document.getId() + " => " + document.getData());
-
-                                                                            for(int i=0;i<friendsList.size();i++){
-                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
-                                                                                    //Add into arraylist<Event>
-                                                                                    String event_id = document.getId();
-                                                                                    Event events = document.toObject(Event.class).withId(event_id);
-                                                                                    eventList.add(events);
-                                                                                    eventListAdapter.notifyDataSetChanged();
-                                                                                    //4. Sort eventList by timestamp
-                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                    Collections.sort(eventList);
-                                                                                    Collections.reverse(eventList);
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    break;
-                                                case "7":
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "OUTING")
-                                                            .whereEqualTo("type", "Public")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            if(!document.get("hostid").equals(mUser_id)){
-                                                                                Log.d("olo", document.getId() + " => " + document.getData());
-                                                                                //Add into arraylist<Event>
-                                                                                String event_id = document.getId();
-                                                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                                                eventList.add(events);
-                                                                                eventListAdapter.notifyDataSetChanged();
-                                                                                //4. Sort eventList by timestamp
-                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                Collections.sort(eventList);
-                                                                                Collections.reverse(eventList);
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "OUTING")
-                                                            .whereEqualTo("type", "Private")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful() && friendsListEmpty==false) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            Log.d("olo", document.getId() + " => " + document.getData());
-
-                                                                            for(int i=0;i<friendsList.size();i++){
-                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
-                                                                                    //Add into arraylist<Event>
-                                                                                    String event_id = document.getId();
-                                                                                    Event events = document.toObject(Event.class).withId(event_id);
-                                                                                    eventList.add(events);
-                                                                                    eventListAdapter.notifyDataSetChanged();
-                                                                                    //4. Sort eventList by timestamp
-                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                    Collections.sort(eventList);
-                                                                                    Collections.reverse(eventList);
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    break;
-                                                case "8":
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "CAREER")
-                                                            .whereEqualTo("type", "Public")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            if(!document.get("hostid").equals(mUser_id)){
-                                                                                Log.d("olo", document.getId() + " => " + document.getData());
-                                                                                //Add into arraylist<Event>
-                                                                                String event_id = document.getId();
-                                                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                                                eventList.add(events);
-                                                                                eventListAdapter.notifyDataSetChanged();
-                                                                                //4. Sort eventList by timestamp
-                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                Collections.sort(eventList);
-                                                                                Collections.reverse(eventList);
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    mFirestore.collection("events")
-                                                            .whereEqualTo("categ", "CAREER")
-                                                            .whereEqualTo("type", "Private")
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful() && friendsListEmpty==false) {
-                                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                                            Log.d("olo", document.getId() + " => " + document.getData());
-
-                                                                            for(int i=0;i<friendsList.size();i++){
-                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
-                                                                                    //Add into arraylist<Event>
-                                                                                    String event_id = document.getId();
-                                                                                    Event events = document.toObject(Event.class).withId(event_id);
-                                                                                    eventList.add(events);
-                                                                                    eventListAdapter.notifyDataSetChanged();
-                                                                                    //4. Sort eventList by timestamp
-                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
-                                                                                    Collections.sort(eventList);
-                                                                                    Collections.reverse(eventList);
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    } else {
-
-                                                                        Log.d("olo", "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-                                                    break;
-
-
 
                                             }
 
                                         }
 
-                                        mProgress.dismiss();
-                                        if(cArray.length==0){
-                                            Toast toast = Toast.makeText(getApplicationContext(),"Please select at least 1 event category.",Toast.LENGTH_SHORT);
-                                            toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
-                                            toast.show();
-                                        }
+                                        //1. Get user's categ_key
+                                        mFirestore.collection("users").document(mUser_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    DocumentSnapshot document = task.getResult();
+                                                    if (document != null && document.exists()) {
+                                                        Log.d("categkey", "DocumentSnapshot data: " + document.getData());
+
+                                                        String userCategKey = document.get("categ_key").toString();
+
+                                                        Log.d("categkey", userCategKey);
+
+                                                        //2. Decrypt key and store it into an array
+                                                        cArray = userCategKey.toCharArray();
+
+                                                        //3. For loop the cArray, while querying "events" to look for corresponding categories
+                                                        for(int i = 0; i < cArray.length; i++) {
+
+                                                            Log.d("categkey", String.valueOf(cArray[i]));
+
+                                                            switch (String.valueOf(cArray[i])) {
+                                                                case "0":
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "SPORTS")
+                                                                            .whereEqualTo("type", "Public")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && publicToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            if(!document.get("hostid").equals(mUser_id)){
+                                                                                                Log.d("olo", document.getId() + " => " + document.getData());
+                                                                                                //Add into arraylist<Event>
+                                                                                                String event_id = document.getId();
+                                                                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                eventList.add(events);
+                                                                                                eventListAdapter.notifyDataSetChanged();
+                                                                                                //4. Sort eventList by timestamp
+                                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                Collections.sort(eventList);
+                                                                                                Collections.reverse(eventList);
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "SPORTS")
+                                                                            .whereEqualTo("type", "Private")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && friendsListEmpty==false && privateToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+
+                                                                                            for(int i=0;i<friendsList.size();i++){
+                                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
+                                                                                                    //Add into arraylist<Event>
+                                                                                                    String event_id = document.getId();
+                                                                                                    Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                    eventList.add(events);
+                                                                                                    eventListAdapter.notifyDataSetChanged();
+                                                                                                    //4. Sort eventList by timestamp
+                                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                    Collections.sort(eventList);
+                                                                                                    Collections.reverse(eventList);
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    break;
+                                                                case "1":
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "EDUCATION")
+                                                                            .whereEqualTo("type", "Public")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && publicToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            if(!document.get("hostid").equals(mUser_id)){
+                                                                                                Log.d("olo", document.getId() + " => " + document.getData());
+                                                                                                //Add into arraylist<Event>
+                                                                                                String event_id = document.getId();
+                                                                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                eventList.add(events);
+                                                                                                eventListAdapter.notifyDataSetChanged();
+                                                                                                //4. Sort eventList by timestamp
+                                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                Collections.sort(eventList);
+                                                                                                Collections.reverse(eventList);
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "EDUCATION")
+                                                                            .whereEqualTo("type", "Private")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && friendsListEmpty==false && privateToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+
+                                                                                            for(int i=0;i<friendsList.size();i++){
+                                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
+                                                                                                    //Add into arraylist<Event>
+                                                                                                    String event_id = document.getId();
+                                                                                                    Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                    eventList.add(events);
+                                                                                                    eventListAdapter.notifyDataSetChanged();
+                                                                                                    //4. Sort eventList by timestamp
+                                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                    Collections.sort(eventList);
+                                                                                                    Collections.reverse(eventList);
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    break;
+                                                                case "2":
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "RECREATION")
+                                                                            .whereEqualTo("type", "Public")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && publicToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            if(!document.get("hostid").equals(mUser_id)){
+                                                                                                Log.d("olo", document.getId() + " => " + document.getData());
+                                                                                                //Add into arraylist<Event>
+                                                                                                String event_id = document.getId();
+                                                                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                eventList.add(events);
+                                                                                                eventListAdapter.notifyDataSetChanged();
+                                                                                                //4. Sort eventList by timestamp
+                                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                Collections.sort(eventList);
+                                                                                                Collections.reverse(eventList);
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "RECREATION")
+                                                                            .whereEqualTo("type", "Private")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && friendsListEmpty==false && privateToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+
+                                                                                            for(int i=0;i<friendsList.size();i++){
+                                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
+                                                                                                    //Add into arraylist<Event>
+                                                                                                    String event_id = document.getId();
+                                                                                                    Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                    eventList.add(events);
+                                                                                                    eventListAdapter.notifyDataSetChanged();
+                                                                                                    //4. Sort eventList by timestamp
+                                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                    Collections.sort(eventList);
+                                                                                                    Collections.reverse(eventList);
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    break;
+                                                                case "3":
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "MUSIC")
+                                                                            .whereEqualTo("type", "Public")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && publicToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            if(!document.get("hostid").equals(mUser_id)){
+                                                                                                Log.d("olo", document.getId() + " => " + document.getData());
+                                                                                                //Add into arraylist<Event>
+                                                                                                String event_id = document.getId();
+                                                                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                eventList.add(events);
+                                                                                                eventListAdapter.notifyDataSetChanged();
+                                                                                                //4. Sort eventList by timestamp
+                                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                Collections.sort(eventList);
+                                                                                                Collections.reverse(eventList);
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "MUSIC")
+                                                                            .whereEqualTo("type", "Private")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && friendsListEmpty==false && privateToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+
+                                                                                            for(int i=0;i<friendsList.size();i++){
+                                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
+                                                                                                    //Add into arraylist<Event>
+                                                                                                    String event_id = document.getId();
+                                                                                                    Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                    eventList.add(events);
+                                                                                                    eventListAdapter.notifyDataSetChanged();
+                                                                                                    //4. Sort eventList by timestamp
+                                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                    Collections.sort(eventList);
+                                                                                                    Collections.reverse(eventList);
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    break;
+                                                                case "4":
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "ART")
+                                                                            .whereEqualTo("type", "Public")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful()  && publicToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            if(!document.get("hostid").equals(mUser_id)){
+                                                                                                Log.d("olo", document.getId() + " => " + document.getData());
+                                                                                                //Add into arraylist<Event>
+                                                                                                String event_id = document.getId();
+                                                                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                eventList.add(events);
+                                                                                                eventListAdapter.notifyDataSetChanged();
+                                                                                                //4. Sort eventList by timestamp
+                                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                Collections.sort(eventList);
+                                                                                                Collections.reverse(eventList);
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "ART")
+                                                                            .whereEqualTo("type", "Private")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && friendsListEmpty==false && privateToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+
+                                                                                            for(int i=0;i<friendsList.size();i++){
+                                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
+                                                                                                    //Add into arraylist<Event>
+                                                                                                    String event_id = document.getId();
+                                                                                                    Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                    eventList.add(events);
+                                                                                                    eventListAdapter.notifyDataSetChanged();
+                                                                                                    //4. Sort eventList by timestamp
+                                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                    Collections.sort(eventList);
+                                                                                                    Collections.reverse(eventList);
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    break;
+                                                                case "5":
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "THEATRE")
+                                                                            .whereEqualTo("type", "Public")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && publicToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            if(!document.get("hostid").equals(mUser_id)){
+                                                                                                Log.d("olo", document.getId() + " => " + document.getData());
+                                                                                                //Add into arraylist<Event>
+                                                                                                String event_id = document.getId();
+                                                                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                eventList.add(events);
+                                                                                                eventListAdapter.notifyDataSetChanged();
+                                                                                                //4. Sort eventList by timestamp
+                                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                Collections.sort(eventList);
+                                                                                                Collections.reverse(eventList);
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "THEATRE")
+                                                                            .whereEqualTo("type", "Private")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && friendsListEmpty==false && privateToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+
+                                                                                            for(int i=0;i<friendsList.size();i++){
+                                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
+                                                                                                    //Add into arraylist<Event>
+                                                                                                    String event_id = document.getId();
+                                                                                                    Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                    eventList.add(events);
+                                                                                                    eventListAdapter.notifyDataSetChanged();
+                                                                                                    //4. Sort eventList by timestamp
+                                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                    Collections.sort(eventList);
+                                                                                                    Collections.reverse(eventList);
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    break;
+                                                                case "6":
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "TECHNOLOGY")
+                                                                            .whereEqualTo("type", "Public")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && publicToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            if(!document.get("hostid").equals(mUser_id)){
+                                                                                                Log.d("olo", document.getId() + " => " + document.getData());
+                                                                                                //Add into arraylist<Event>
+                                                                                                String event_id = document.getId();
+                                                                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                eventList.add(events);
+                                                                                                eventListAdapter.notifyDataSetChanged();
+                                                                                                //4. Sort eventList by timestamp
+                                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                Collections.sort(eventList);
+                                                                                                Collections.reverse(eventList);
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "TECHNOLOGY")
+                                                                            .whereEqualTo("type", "Private")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && friendsListEmpty==false && privateToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+
+                                                                                            for(int i=0;i<friendsList.size();i++){
+                                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
+                                                                                                    //Add into arraylist<Event>
+                                                                                                    String event_id = document.getId();
+                                                                                                    Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                    eventList.add(events);
+                                                                                                    eventListAdapter.notifyDataSetChanged();
+                                                                                                    //4. Sort eventList by timestamp
+                                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                    Collections.sort(eventList);
+                                                                                                    Collections.reverse(eventList);
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    break;
+                                                                case "7":
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "OUTING")
+                                                                            .whereEqualTo("type", "Public")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && publicToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            if(!document.get("hostid").equals(mUser_id)){
+                                                                                                Log.d("olo", document.getId() + " => " + document.getData());
+                                                                                                //Add into arraylist<Event>
+                                                                                                String event_id = document.getId();
+                                                                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                eventList.add(events);
+                                                                                                eventListAdapter.notifyDataSetChanged();
+                                                                                                //4. Sort eventList by timestamp
+                                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                Collections.sort(eventList);
+                                                                                                Collections.reverse(eventList);
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "OUTING")
+                                                                            .whereEqualTo("type", "Private")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && friendsListEmpty==false && privateToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+
+                                                                                            for(int i=0;i<friendsList.size();i++){
+                                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
+                                                                                                    //Add into arraylist<Event>
+                                                                                                    String event_id = document.getId();
+                                                                                                    Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                    eventList.add(events);
+                                                                                                    eventListAdapter.notifyDataSetChanged();
+                                                                                                    //4. Sort eventList by timestamp
+                                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                    Collections.sort(eventList);
+                                                                                                    Collections.reverse(eventList);
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    break;
+                                                                case "8":
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "CAREER")
+                                                                            .whereEqualTo("type", "Public")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && publicToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            if(!document.get("hostid").equals(mUser_id)){
+                                                                                                Log.d("olo", document.getId() + " => " + document.getData());
+                                                                                                //Add into arraylist<Event>
+                                                                                                String event_id = document.getId();
+                                                                                                Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                eventList.add(events);
+                                                                                                eventListAdapter.notifyDataSetChanged();
+                                                                                                //4. Sort eventList by timestamp
+                                                                                                Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                Collections.sort(eventList);
+                                                                                                Collections.reverse(eventList);
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    mFirestore.collection("events")
+                                                                            .whereEqualTo("categ", "CAREER")
+                                                                            .whereEqualTo("type", "Private")
+                                                                            .get()
+                                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful() && friendsListEmpty==false && privateToggle==true) {
+                                                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                                                            Log.d("olo", document.getId() + " => " + document.getData());
+
+                                                                                            for(int i=0;i<friendsList.size();i++){
+                                                                                                if(friendsList.get(i).equals(document.get("hostid").toString()) && !mUser_id.equals(document.get("hostid").toString())) {
+                                                                                                    //Add into arraylist<Event>
+                                                                                                    String event_id = document.getId();
+                                                                                                    Event events = document.toObject(Event.class).withId(event_id);
+                                                                                                    eventList.add(events);
+                                                                                                    eventListAdapter.notifyDataSetChanged();
+                                                                                                    //4. Sort eventList by timestamp
+                                                                                                    Log.d("categkey", "Finished looping and begin sorting by most recent");
+                                                                                                    Collections.sort(eventList);
+                                                                                                    Collections.reverse(eventList);
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+
+                                                                                        Log.d("olo", "Error getting documents: ", task.getException());
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                    break;
+
+
+
+                                                            }
+
+                                                        }
+
+                                                        mProgress.dismiss();
+                                                        if(cArray.length==0){
+                                                            Toast toast = Toast.makeText(getApplicationContext(),"Please select at least 1 event category.",Toast.LENGTH_SHORT);
+                                                            toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+                                                            toast.show();
+                                                        }
+                                                        if(ppArray.length==0){
+                                                            Toast toast = Toast.makeText(getApplicationContext(),"Please toggle an event type or both.",Toast.LENGTH_SHORT);
+                                                            toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+                                                            toast.show();
+                                                        }
+
+                                                    } else {
+                                                        Log.d("olo", "No such document");
+                                                    }
+                                                } else {
+                                                    Log.d("olo", "get failed with ", task.getException());
+                                                }
+                                            }
+
+
+                                        });//End
+
+
 
                                     } else {
-                                        Log.d("olo", "No such document");
-                                    }
-                                } else {
-                                    Log.d("olo", "get failed with ", task.getException());
+                                    Log.d("olo", "No such document");
                                 }
+                            } else {
+                                Log.d("olo", "get failed with ", task.getException());
                             }
+                        }
 
 
-                        });
-
-
+                    });
 
 
                     }

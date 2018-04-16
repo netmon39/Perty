@@ -6,9 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.netipol.perty.Home.MainActivity"
-    android:background="@drawable/gradient1"
+    android:background="@drawable/gradient1_nocorner"
     >
-
     <TextView
         android:id="@+id/tiFirst"
         android:layout_width="wrap_content"
@@ -17,9 +16,9 @@
         android:textColor="@color/textPrimary"
         android:background="@android:color/transparent"
         android:fontFamily="@font/dosisbold"
+        android:layout_above="@+id/fb_icon"
         android:textSize="64dp"
-        android:layout_above="@id/fb_icon"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
         android:layout_marginBottom="16dp"
         />
 
@@ -33,11 +32,11 @@
         <!--android:layout_below="@+id/tiFirst"-->
         <!--android:layout_centerHorizontal="true"/>-->
 
-    <Button
+    <!--Button
         android:id="@+id/facebookBtn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"/>
+        android:background="@android:color/transparent"/-->
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/fb_icon"

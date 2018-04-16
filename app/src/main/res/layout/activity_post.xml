@@ -11,9 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:layout_margin="10dp"
         >
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/info_box"
         android:layout_width="match_parent"
         android:orientation="vertical"
@@ -29,16 +30,26 @@
             android:scaleType="centerCrop"
             android:src="@drawable/add_photo" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What's the Perty?"
+            android:textSize="16dp"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"/>
+
         <EditText
             android:id="@+id/eventTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/imageSelect"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
             android:hint="Event name"
-            android:textSize="18dp" />
+            android:maxLength="30"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="16dp"
+            />
 
         <RelativeLayout
             android:id="@+id/eventTypeBox"
@@ -47,7 +58,7 @@
             android:layout_below="@id/eventTitle"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:layout_marginTop="15dp">
+            >
 
             <Spinner
                 android:id="@+id/eventCategories"
@@ -67,6 +78,15 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="When"
+            android:textSize="16dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="5dp"/>
+
         <RelativeLayout
             android:id="@+id/time_Box"
             android:layout_width="wrap_content"
@@ -74,59 +94,94 @@
             android:layout_below="@id/eventTypeBox"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            >
 
             <Button
                 android:id="@+id/btn_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SELECT DATE" />
+                android:text="DATE"
+                android:textColor="@android:color/white"
+                android:background="@drawable/btstyle"/>
 
             <Button
-                android:id="@+id/btn_time"
+                android:id="@+id/btn_time_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_toEndOf="@id/btn_date"
-                android:text="SELECT TIME" />
+                android:text="START TIME"
+                android:textColor="@android:color/white"
+                android:background="@drawable/btstyle2"/>
+
+            <Button
+                android:id="@+id/btn_time_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_toEndOf="@id/btn_time_start"
+                android:text="END TIME"
+                android:textColor="@android:color/white"
+                android:background="@drawable/btstyle2"/>
 
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Where"
+            android:textSize="16dp"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"/>
+
+        <Spinner
+            android:id="@+id/locationPresets"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:layout_gravity="center_horizontal"  android:layout_marginTop="10dp" />
+
+        <EditText
+            android:id="@+id/in_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Location in detail"
+            android:textSize="16dp"
+            android:maxLength="100"
+            android:maxLines="5"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="About"
+            android:textSize="16dp"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"/>
 
         <RelativeLayout
             android:id="@+id/detail_Box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/time_Box"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp">
-
-            <ImageView
-                android:id="@+id/edit_pen"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/ic_mode_edit_black_24dp" />
+            android:layout_centerHorizontal="true">
 
             <EditText
                 android:id="@+id/eventDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_toRightOf="@id/edit_pen"
+                android:layout_centerHorizontal="true"
                 android:hint="Details"
-                android:textSize="18dp" />
+                android:textSize="16dp"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLength="200"
+                android:maxLines="10"/>
+
         </RelativeLayout>
 
-        <EditText
-            android:id="@+id/in_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/detail_Box"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:hint="Event location"
-            android:textSize="18dp" />
 
 
         <Button
@@ -138,10 +193,11 @@
             android:background="@drawable/gradient1"
             android:elevation="2dp"
             android:text="POST EVENT"
+            android:textSize="18dp"
             android:textColor="@color/textPrimary" />
 
 
-    </RelativeLayout>
+    </LinearLayout>
     </ScrollView>
 
 </RelativeLayout>

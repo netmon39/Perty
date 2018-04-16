@@ -67,13 +67,11 @@
 
             <item
                 android:id="@+id/categ_public"
-                android:checkable="true"
                 android:title="Public"
                 app:actionViewClass="android.widget.Switch"/>
 
             <item
                 android:id="@+id/categ_private"
-                android:checkable="true"
                 android:title="Private"
                 app:actionViewClass="android.widget.Switch"/>
 

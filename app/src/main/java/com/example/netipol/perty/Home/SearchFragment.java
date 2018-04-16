@@ -29,6 +29,7 @@ import com.example.netipol.perty.Event.Event;
 import com.example.netipol.perty.Event.EventListAdapter;
 import com.example.netipol.perty.Friend.FriendReq;
 import com.example.netipol.perty.Friend.FriendReqListAdapter;
+import com.example.netipol.perty.Profile.FavoritesFragment;
 import com.example.netipol.perty.Profile.FriendFragment;
 import com.example.netipol.perty.Profile.NotificationFragment;
 import com.example.netipol.perty.Profile.ProfileFragment;
@@ -102,7 +103,7 @@ public class SearchFragment extends Fragment {
         mUser_id = Profile.getCurrentProfile().getId();
 
         eventList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(getApplicationContext(), eventList,getFragmentManager());
+        eventListAdapter = new EventListAdapter(getApplicationContext(), eventList, getFragmentManager(),1);
         mEventList = v.findViewById(R.id.result_list_events);
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));

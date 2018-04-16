@@ -7,19 +7,21 @@
     app:cardUseCompatPadding="true"
     app:cardElevation="10dp"
     app:cardCornerRadius="10dp"
+    android:background="@drawable/selector"
     >
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/event_linlayout">
 
         <ImageView
             android:id="@+id/post_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:layout_height="90dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/add_photo" />
 
         <TextView
@@ -96,12 +98,23 @@
 
             <TextView
                 android:id="@+id/post_hostname"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="netmon39"
                 android:textStyle="bold"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/event_profpic"/>
+
+            <TextView
+                android:id="@+id/event_private"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:text=""
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/addtofav"
+                android:paddingRight="10dp"/>
 
             <Button
                 android:layout_width="30dp"

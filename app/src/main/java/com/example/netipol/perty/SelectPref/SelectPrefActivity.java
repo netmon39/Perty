@@ -222,6 +222,7 @@ public class SelectPrefActivity extends AppCompatActivity {
 
                 Map<String, Object> categ = new HashMap<>();
                 categ.put("categ_key", categ_key);
+                categ.put("pp_key", "ab"); //a: public, b: private
 
                 // Add a new document with a generated ID
 

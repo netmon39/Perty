@@ -57,13 +57,14 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
     private ProgressDialog mProgress;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String eventType, eventCateg;
+    private String eventType, eventCateg, eventLoca;
 
-    Button btnDatePicker, btnTimePicker;
+    Button btnDatePicker, btnTimePickerStart, btnTimePickerEnd;
     TextView txtDate, txtTime;
     EditText txtLocation;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private String hostusername;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +94,11 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         //get the spinner from the xml.
         Spinner userCategDropdown = findViewById(R.id.eventCategories);
         Spinner userTypeDropdown = findViewById(R.id.eventType);
+        Spinner userLocaDropdown = findViewById(R.id.locationPresets);
         //create a list of items for the spinner.
         String[] itemsCateg = new String[]{"Select Category","SPORTS", "EDUCATION", "RECREATION","MUSIC","ART","THEATRE","TECHNOLOGY","OUTING","CAREER"};
         String[] itemsType = new String[]{"Select Type","PUBLIC", "PRIVATE"};
+        String[] itemsLoca = new String[]{"Select Preset Location","Chulalongkorn University","Chamchuri Square", "I'm Park", "MBK", "Siam Paragon", "Central World", "Other"};
         //create an adapter to describe how the items are displayed, adapters are used in several places in android.
         //There are multiple variations of this, but this is the basic variant.
         ArrayAdapter<String> adapterCateg = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsCateg){@Override
@@ -118,7 +121,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
                 } else {
-                    tv.setTextColor(Color.BLACK);
+                    tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 }
                 return view;
             }
@@ -143,7 +146,32 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
                 } else {
-                    tv.setTextColor(Color.BLACK);
+                    tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                }
+                return view;
+            }
+        };
+        ArrayAdapter<String> adapterLoca = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsLoca){@Override
+        public boolean isEnabled(int position) {
+            if (position == 0) {
+                // Disable the first item from Spinner
+                // First item will be use for hint
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 }
                 return view;
             }
@@ -153,6 +181,8 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         userCategDropdown.setOnItemSelectedListener(this);
         userTypeDropdown.setAdapter(adapterType);
         userTypeDropdown.setOnItemSelectedListener(this);
+        userLocaDropdown.setAdapter(adapterLoca);
+        userLocaDropdown.setOnItemSelectedListener(this);
 
         mUploadPost.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -165,7 +195,8 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         });
 
         btnDatePicker=(Button)findViewById(R.id.btn_date);
-        btnTimePicker=(Button)findViewById(R.id.btn_time);
+        btnTimePickerStart=(Button)findViewById(R.id.btn_time_start);
+        btnTimePickerEnd=(Button)findViewById(R.id.btn_time_end);
 //        txtDate=(TextView)findViewById(R.id.in_date);
 //        txtTime=(TextView)findViewById(R.id.in_time);
         txtLocation=(EditText)findViewById(R.id.in_location);
@@ -183,14 +214,53 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                btnDatePicker.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                String month = null;
+                                switch (monthOfYear){
+                                    case 0:
+                                        month="JAN";
+                                        break;
+                                    case 1:
+                                        month="FEB";
+                                        break;
+                                    case 2:
+                                        month="MAR";
+                                        break;
+                                    case 3:
+                                        month="APR";
+                                        break;
+                                    case 4:
+                                        month="MAY";
+                                        break;
+                                    case 5:
+                                        month="JUN";
+                                        break;
+                                    case 6:
+                                        month="JUL";
+                                        break;
+                                    case 7:
+                                        month="AUG";
+                                        break;
+                                    case 8:
+                                        month="SEP";
+                                        break;
+                                    case 9:
+                                        month="OCT";
+                                        break;
+                                    case 10:
+                                        month="NOV";
+                                        break;
+                                    case 11:
+                                        month="DEC";
+                                        break;
+                                }
+                                btnDatePicker.setText(dayOfMonth + " " + month + " " + year);
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
             }
         });
 
-        btnTimePicker.setOnClickListener(new View.OnClickListener() {
+        btnTimePickerStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Get Current Time
@@ -204,13 +274,39 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                 if(minute >= 10) {
-                                    btnTimePicker.setText(hourOfDay + ":" + minute);
+                                    btnTimePickerStart.setText(hourOfDay + ":" + minute);
                                 }else{
-                                    btnTimePicker.setText(hourOfDay + ":" + "0"+minute);
+                                    btnTimePickerStart.setText(hourOfDay + ":" + "0"+minute);
                                 }
                             }
 
                         }, mHour, mMinute, true);
+
+                timePickerDialog.show();
+            }
+        });
+
+        btnTimePickerEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(PostActivity.this, new TimePickerDialog.OnTimeSetListener(){
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        if(minute >= 10) {
+                            btnTimePickerEnd.setText(hourOfDay + ":" + minute);
+                        }else{
+                            btnTimePickerEnd.setText(hourOfDay + ":" + "0"+minute);
+                        }
+                    }
+
+                }, mHour, mMinute, true);
 
                 timePickerDialog.show();
             }
@@ -278,9 +374,34 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     break;
             }
         }
+        else if(spinner.getId()==R.id.locationPresets)
+        {
+            switch (i) {
+                case 1:
+                    eventLoca = "Chulalongkorn University";
+                    break;
+                case 2:
+                    eventLoca = "Chamchuri Square";
+                    break;
+                case 3:
+                    eventLoca = "I'm Park";
+                    break;
+                case 4:
+                    eventLoca = "MBK";
+                    break;
+                case 5:
+                    eventLoca = "Siam Paragon";
+                    break;
+                case 6:
+                    eventLoca = "Central World";
+                    break;
+                case 7:
+                    eventLoca = "Other";
+                    break;
+            }
+        }
 
     }
-
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
@@ -290,15 +411,21 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void startPosting(){
 
-        final String title_val = mPostTitle.getText().toString().trim();
-        final String desc_val = mPostDesc.getText().toString().trim();
-        final String type_val = eventType;
-        final String categ_val = eventCateg;
+        final String title_val = mPostTitle.getText().toString().trim();//ok
+        final String desc_val = mPostDesc.getText().toString().trim();//ok
+
+        final String categ_val = eventCateg;//ok
+        final String type_val = eventType;//ok
+        final String loca_val = eventLoca;//ok
+
         Long tsLong = System.currentTimeMillis()/1000;
         final String ts = tsLong.toString();
-        final String date_val = btnDatePicker.getText().toString().trim();//21-8-18
-        final String time_val = btnTimePicker.getText().toString().trim();//24-00
-        final String posttime_val = date_val + ", " + time_val;
+        
+        final String date_val = btnDatePicker.getText().toString().trim();//21 AUG 1996
+        final String time_start_val = btnTimePickerStart.getText().toString().trim();//24:00
+        final String time_end_val = btnTimePickerStart.getText().toString().trim();//24:00
+        
+        //final String posttime_val = date_val + ", " + time_val;
         final String location_val = txtLocation.getText().toString().trim();
 
         DocumentReference docRef = db.collection("users").document(Profile.getCurrentProfile().getId());
@@ -333,14 +460,22 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     // Create a new event
                     Map<String, Object> event = new HashMap<>();
                     event.put("title", title_val);
-                    event.put("desc", desc_val);
+                    event.put("desc", desc_val);//make post compatible with html link
                     event.put("type", type_val);
                     event.put("categ", categ_val);
                     event.put("image", downloadUrl.toString());
-                    event.put("timestamp", ts);
-                    event.put("host", hostusername);
-                    event.put("time", posttime_val);
-                    event.put("location", location_val);
+
+                    event.put("timestamp", ts);//time of creation (post)
+
+                    //event.put("host", hostusername);//need to be retrieved again at SingleEventFrage
+
+                    event.put("time_start",time_start_val);
+                    event.put("time_end", time_end_val);//new
+                    event.put("date", date_val);//new
+
+                    event.put("loca_preset",loca_val);//new
+                    event.put("loca_desc", location_val);//chula buildings + extra desc?
+
                     event.put("hostid", Profile.getCurrentProfile().getId());
 
                     // Add a new document with a generated ID
@@ -350,11 +485,14 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     mProgress.dismiss();
 
-                    Toast.makeText(PostActivity.this, "Your post was successfully uploaded.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostActivity.this, "Your event was successfully posted.", Toast.LENGTH_SHORT).show();
 
                     finish();
                 }
             });
+        }
+        else {
+            Toast.makeText(PostActivity.this, "Invalid parameter(s).", Toast.LENGTH_SHORT).show();
         }
     }
 

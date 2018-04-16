@@ -1,6 +1,5 @@
 package com.example.netipol.perty.Profile;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,22 +8,17 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.netipol.perty.Event.Event;
 import com.example.netipol.perty.Event.EventListAdapter;
-import com.example.netipol.perty.Friend.FriendReq;
 import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.R;
-import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,18 +26,15 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static android.content.ContentValues.TAG;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by USER on 09/02/2018.
  */
 
-public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class FavoritesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     private static final String TAG = "TabHistFragment";
 
     private RecyclerView mEventList;
@@ -54,12 +45,12 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private String mUser_id;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public static HistoryFragment newInstance() {
-        HistoryFragment fragment = new HistoryFragment();
+    public static FavoritesFragment newInstance() {
+        FavoritesFragment fragment = new FavoritesFragment();
         return fragment;
     }
 
-    public HistoryFragment() { }
+    public FavoritesFragment() { }
 
     @Nullable
     @Override
@@ -71,10 +62,9 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         Log.d("hello", "data: "+mUser_id);
 
-
         eventList = new ArrayList<>();
         favList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList,getActivity().getSupportFragmentManager());
+        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList,getActivity().getSupportFragmentManager(),1);
 
         mEventList = view.findViewById(R.id.fav_list);
         mEventList.setHasFixedSize(true);
@@ -135,7 +125,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
                         if (task.isSuccessful()) {
 
                             for (DocumentSnapshot document : task.getResult()) {
-                                favList.add(document.get("eventid").toString());
+                                favList.add(document.get("eid").toString());
                             }
 
                             CollectionReference eventsRef = mFirestore.collection("events");
@@ -174,3 +164,4 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
         mSwipeRefreshLayout.setRefreshing(false);
     }
 }
+

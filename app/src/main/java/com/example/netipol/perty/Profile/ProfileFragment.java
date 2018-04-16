@@ -3,17 +3,12 @@ package com.example.netipol.perty.Profile;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -26,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import static com.example.netipol.perty.Profile.currentUser.*;
@@ -33,10 +29,12 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.netipol.perty.EditProfileActivity;
+import com.example.netipol.perty.Event.Event;
+import com.example.netipol.perty.Friend.FriendReq;
 import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.R;
-import com.example.netipol.perty.SelectPref.SelectPrefActivity;
-import com.example.netipol.perty.TutorialActivity;
+import com.example.netipol.perty.TutorialActivityAsGuide;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,11 +44,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import android.graphics.Color;
 import android.widget.Toast;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -66,12 +64,18 @@ public class ProfileFragment extends Fragment {
     private static final String TAG = "ProfileFragment";
     private ViewPager mViewPager;
     private Button profButton;
-    public TextView friendCount;
+    public TextView friendCount, profDesc, profType, hostedCount, joinedCount;
     public CircleImageView profPic;
     public String userName;
     public boolean check, alreadySent;
     public boolean pressToAccept = false;
+    private int f,h,j;
+    private RelativeLayout joinedCounter, hostedCounter, friendCounter;
     //public  NotificationFragment fragmentNoti;
+
+
+    private List<Event> joinedList, hostedList;
+    private List<FriendReq> friendreqList;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -88,6 +92,10 @@ public class ProfileFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
+        friendreqList = new ArrayList<>();
+        hostedList = new ArrayList<>();
+        joinedList = new ArrayList<>();
+
         //fragmentNoti = new NotificationFragment();
 
         //Send mHostid to viewpager fragment
@@ -96,7 +104,12 @@ public class ProfileFragment extends Fragment {
 
         profButton = view.findViewById(R.id.my_profile_button);
         profPic = view.findViewById(R.id.my_profile_picture);
+        hostedCount =view.findViewById(R.id.host_count);
+        joinedCount =view.findViewById(R.id.join_count);
         friendCount = view.findViewById(R.id.friend_count);
+        joinedCounter =view.findViewById(R.id.joined_counter);
+        hostedCounter =view.findViewById(R.id.hosted_counter);
+        friendCounter=view.findViewById(R.id.friends_counter);
 
         Bundle bundle = this.getArguments();
             if (bundle != null) {//Viewing another user
@@ -150,6 +163,7 @@ public class ProfileFragment extends Fragment {
                                             profButton.setText("Friends");
                                             profButton.setEnabled(false);
                                             Log.d("friendReq", "already friends");
+
                                             break;
                                         }
                                     }
@@ -297,13 +311,48 @@ public class ProfileFragment extends Fragment {
                 activity.setHostId(mHost_id);
                 check=false;
 
+                //setCounter();
+
                 profButton.setText("Edit Profile");
 
-                friendCount.setOnClickListener(new View.OnClickListener() {
+                profButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
+
+                    }
+                });
+
+                friendCounter.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FriendFragment mFragment = new FriendFragment();
+                        Bundle mBundle = new Bundle();
+                        mBundle.putString("uid",mHost_id);
+                        mFragment.setArguments(mBundle);
+                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.main_frame, mFragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }
+                });
+
+                hostedCounter.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.main_frame, new FriendFragment());
+                        fragmentTransaction.replace(R.id.main_frame, new HostedFragment());
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }
+                });
+
+                joinedCounter.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.main_frame, new JoinedFragment());
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                     }
@@ -314,8 +363,7 @@ public class ProfileFragment extends Fragment {
             }
 
 
-        imageUrl = "https://graph.facebook.com/"+mHost_id+"/picture?height=200&width=200&migration_overrides=%7Boctober_2012%3Atrue%7D";
-
+        //imageUrl = "https://graph.facebook.com/"+mHost_id+"/picture?height=200&width=200&migration_overrides=%7Boctober_2012%3Atrue%7D";
 
         //mSectionPageadapter = new SectionPageAdaptor(getFragmentManager());
 
@@ -330,15 +378,21 @@ public class ProfileFragment extends Fragment {
 
         //String imageUrl = Profile.getCurrentProfile().getProfilePictureUri(200,200).toString();
 
-        Log.d(TAG, imageUrl);
+        //Log.d(TAG, imageUrl);
 
         //final TextView profName = (TextView) view.findViewById(R.id.my_username_profile);
-        final TextView profDesc = (TextView) view.findViewById(R.id.my_desc_profile);
-        final TextView profType = (TextView) view.findViewById(R.id.my_type_profile);
+        profDesc = (TextView) view.findViewById(R.id.my_desc_profile);
+        profType = (TextView) view.findViewById(R.id.my_type_profile);
 
+        getUserInfo(mHost_id);
+
+        return view;
+    }
+
+    public void getUserInfo(String id){
         //Get user info
         db.collection("users")
-                .document(mHost_id)
+                .document(id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -361,14 +415,14 @@ public class ProfileFragment extends Fragment {
                         }
                     }
                 });
-
-        return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        setProfileActionBar();
+        //setProfileActionBar();
+        getUserInfo(mHost_id);
+        setCounter(mHost_id);
     }
 
     public String getHostId(){
@@ -386,10 +440,85 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    public void setCounter(String x){
+
+        friendreqList.clear();
+        hostedList.clear();
+        joinedList.clear();
+        f=0;
+        h=0;
+        j=0;
+
+        db.collection("users").document(x).collection("friends")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d("FriendList", document.getId() + " => " + document.getData());
+                                String friendreq_id = document.getId();
+                                FriendReq events = document.toObject(FriendReq.class).withId(friendreq_id);
+                                friendreqList.add(events);
+                                f=f+1;
+                            }
+                            friendCount.setText(String.valueOf(f));
+
+                        } else {
+                        }
+                    }
+                });
+
+        db.collection("users").document(x).collection("hosted")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d("FriendList", document.getId() + " => " + document.getData());
+                                String friendreq_id = document.getId();
+                                Event events = document.toObject(Event.class).withId(friendreq_id);
+                                hostedList.add(events);
+                                h=h+1;
+                            }
+                            hostedCount.setText(String.valueOf(h));
+
+                        } else {
+                        }
+                    }
+                });
+
+        db.collection("users").document(x).collection("joined")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d("FriendList", document.getId() + " => " + document.getData());
+                                String friendreq_id = document.getId();
+                                Event events = document.toObject(Event.class).withId(friendreq_id);
+                                joinedList.add(events);
+                                j=j+1;
+                            }
+                            joinedCount.setText(String.valueOf(j));
+                        } else {
+                        }
+                    }
+                });
+
+
+    }
+
     // create an action bar button
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
+        if(check==false){
+            inflater.inflate(R.menu.profile_menu, menu);
+        }else {
+            //bar.setDisplayHomeAsUpEnabled(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -405,10 +534,7 @@ public class ProfileFragment extends Fragment {
         }
 
         if(id == R.id.profileMenu_guide){
-            Intent intent = new Intent(getApplicationContext(), TutorialActivity.class);
-            //intent.putStringArrayListExtra("SELECTED_LETTER", selectedStrings);
-            //intent.putExtra("categ", categ_key);
-            startActivity(intent);
+            startActivity(new Intent(getApplicationContext(), TutorialActivityAsGuide.class));
 
         }
         return super.onOptionsItemSelected(item);
@@ -419,7 +545,7 @@ public class ProfileFragment extends Fragment {
         adapter.addFragment(new UpcomingFragment(), "Upcoming");//0
         adapter.addFragment(new HostFragment(), "Hosting");//1
         //adapter.addFragment(new NotificationFragment(), "Notice");//2
-        adapter.addFragment(new HistoryFragment(), "Favorites");//3
+        adapter.addFragment(new FavoritesFragment(), "Favorites");//3
         viewPager.setAdapter(adapter);
     }
 
@@ -428,7 +554,7 @@ public class ProfileFragment extends Fragment {
         //adapter.addFragment(new UpcomingFragment(), "Upcoming");//0
         adapter.addFragment(new HostFragment(), "Hosting");//1
         //adapter.addFragment(new NotificationFragment(), "Notice");//2
-        //adapter.addFragment(new HistoryFragment(), "History");//3
+        //adapter.addFragment(new FavoritesFragment(), "History");//3
         viewPager.setAdapter(adapter);
     }
 

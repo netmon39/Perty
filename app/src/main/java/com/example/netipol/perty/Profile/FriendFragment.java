@@ -43,6 +43,7 @@ public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private List<FriendReq> friendreqList;//List that stores Events
     private FriendReqListAdapter friendreqListAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private String mHost_id;
 
     public static FriendFragment newInstance() {
         FriendFragment fragment = new FriendFragment();
@@ -59,6 +60,13 @@ public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRef
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_friend, container, false);
+
+        Bundle bundle = this.getArguments();//From profile fragment
+        if (bundle != null) {
+            mHost_id = bundle.getString("uid");
+        }else{
+            mHost_id = Profile.getCurrentProfile().getId();
+        }
 
         NotificationFragment notiFrag = new NotificationFragment();
 
@@ -124,7 +132,7 @@ public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         mFirestore = FirebaseFirestore.getInstance();
 
-        mFirestore.collection("users").document(Profile.getCurrentProfile().getId()).collection("friends")
+        mFirestore.collection("users").document(mHost_id).collection("friends")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

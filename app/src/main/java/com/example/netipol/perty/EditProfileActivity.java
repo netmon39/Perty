@@ -1,7 +1,7 @@
-package com.example.netipol.perty.Login;
+package com.example.netipol.perty;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -21,14 +21,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.netipol.perty.Home.MainActivity;
-import com.example.netipol.perty.R;
-import com.example.netipol.perty.SelectPref.SelectPrefActivity;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.example.netipol.perty.Profile.ProfileFragment;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -42,9 +47,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.example.netipol.perty.Login.LoginActivity.fbUID;
-
-public class AccountActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class EditProfileActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -62,6 +65,9 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
     private StorageReference mStorage;
     private UploadTask uploadTask;
     private Bitmap fbProf;
+    private Spinner userTypeDropdown;
+    private ProgressDialog mProgress;
+    private ProfileFragment profFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,46 +77,33 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
 
-        final Bundle inBundle = getIntent().getExtras();
+        /*Bundle inBundle = getIntent().getExtras();
         String name = inBundle.get("name").toString();
         String surname = inBundle.get("surname").toString();
         fbUID = inBundle.get("fbUID").toString();
-        FBimageUri = Uri.parse(inBundle.get("imageUri").toString());
-
-        if (inBundle!=null) {//if coming from first time login (Login Activity)
-            SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0); // 0 - for private mode
-            SharedPreferences.Editor editor = settings.edit();
-            //Set "hasLoggedIn" to true
-            editor.putBoolean("hasLoggedIn", true);
-            // Commit the edits!
-            editor.commit();
-        }
+        FBimageUri = Uri.parse(inBundle.get("imageUri").toString());*/
 
         db = FirebaseFirestore.getInstance();
 
+        profFrag =new ProfileFragment();
+
         /*TextView nameView = (TextView) findViewById(R.id.fbName);
-        nameView.setText("" + name + " " + surname);*/
+        nameView.setText("" + Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName());*/
 
         mSelectImage = findViewById(R.id.profileImage);
+        userNameF = findViewById(R.id.userNameField);
+        accountD = findViewById(R.id.userBio);
+        getFbProf = findViewById(R.id.getFbProf);
 
-        new AccountActivity.DownloadImage(mSelectImage).execute(inBundle.get("imageUri").toString());
-
-        mSelectImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_REQUEST);
-            }
-        });
+        mProgress = new ProgressDialog(this);
 
         //get the spinner from the xml.
-        Spinner userTypeDropdown = findViewById(R.id.userType);
+        userTypeDropdown = findViewById(R.id.userType);
         //create a list of items for the spinner.
         String[] items = new String[]{"Student", "Professor", "Club", "Official"};
         //create an adapter to describe how the items are displayed, adapters are used in several places in android.
         //There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items){
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items){
             /*@Override
             public boolean isEnabled(int position) {
                 if (position == 0) {
@@ -140,17 +133,53 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         userTypeDropdown.setAdapter(adapter);
         userTypeDropdown.setOnItemSelectedListener(this);
 
-        userNameF = (EditText) findViewById(R.id.userNameField);
-        accountD = (EditText) findViewById(R.id.userBio);
-        nextToP = (Button) findViewById(R.id.nextToPref);
+        db.collection("users").document(Profile.getCurrentProfile().getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        Log.d("editprof", "DocumentSnapshot data: " + document.getData());
+                        userNameF.setText(document.get("username").toString());
+                        accountD.setText(document.get("accountdesc").toString());
 
-        getFbProf = findViewById(R.id.getFbProf);
+                        int spinnerPosition = adapter.getPosition(document.get("usertype").toString());
+                        Log.d("editprof", "pos: " + spinnerPosition);
+                        userTypeDropdown.setSelection(spinnerPosition);
+
+
+                        Glide.with(getApplicationContext()).load(document.get("profimage").toString()).apply(new RequestOptions().fitCenter()).into(mSelectImage);
+
+                    } else {
+                        Log.d("olo", "No such document");
+                    }
+                } else {
+                    Log.d("olo", "get failed with ", task.getException());
+                }
+            }
+        });
+
+
+        //new EditProfileActivity.DownloadImage(mSelectImage).execute(Profile.getCurrentProfile().getProfilePictureUri(200,200).toString());
+
+        mSelectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent, GALLERY_REQUEST);
+            }
+        });
+
         getFbProf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AccountActivity.DownloadImage(mSelectImage).execute(inBundle.get("imageUri").toString());
+                new EditProfileActivity.DownloadImage(mSelectImage).execute(Profile.getCurrentProfile().getProfilePictureUri(200,200).toString());
             }
         });
+
+        nextToP = findViewById(R.id.nextToPref);
+        nextToP.setText("Update Account");
 
         /*/ Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -169,27 +198,30 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
 
         if(!TextUtils.isEmpty(userNameF.getText().toString().trim()) && !TextUtils.isEmpty(accountD.getText().toString().trim())) {//Add parameter check!!!
 
-                userName = userNameF.getText().toString();
-                accountDescription = accountD.getText().toString();
+            userName = userNameF.getText().toString();
+            accountDescription = accountD.getText().toString();
 
             if(userName.length()==0 || accountDescription.length()==0 || userType.equals("x")){
                 Toast.makeText(getApplicationContext(), "Please fill every field :D", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            mProgress.setMessage("Updating your info ...");
+            mProgress.show();
+
             //upload process
             if(resultUri==null){
                 // Get the data from an ImageView as bytes
-                //mSelectImage.setDrawingCacheEnabled(true);
-                //mSelectImage.buildDrawingCache();
-                Bitmap bitmap = fbProf;
+                mSelectImage.setDrawingCacheEnabled(true);
+                mSelectImage.buildDrawingCache();
+                Bitmap bitmap = mSelectImage.getDrawingCache();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                 byte[] data = baos.toByteArray();
 
-                uploadTask = mStorage.child("Profile_Images").child(fbUID+".jpg").putBytes(data);
+                uploadTask = mStorage.child("Profile_Images").child(Profile.getCurrentProfile().getId()+".jpg").putBytes(data);
             }else {
-                uploadTask = mStorage.child("Profile_Images").child(fbUID+".jpg").putFile(resultUri);
+                uploadTask = mStorage.child("Profile_Images").child(Profile.getCurrentProfile().getId()+".jpg").putFile(resultUri);
             }
 
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -203,13 +235,13 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
                     user.put("username", userName);
                     user.put("accountdesc", accountDescription);
                     user.put("usertype", userType);
-                    user.put("uid", fbUID);
+                    user.put("uid", Profile.getCurrentProfile().getId());
                     user.put("profimage", downloadUrl.toString());
 
                     // Add a new document with a generated ID
                     db.collection("users")
-                            .document(fbUID)
-                            .set(user)
+                            .document(Profile.getCurrentProfile().getId())
+                            .set(user, SetOptions.merge())
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -227,15 +259,18 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
                 }
             });
 
-            Intent intent = new Intent(AccountActivity.this, SelectPrefActivity.class);
-            startActivity(intent);
-
 
         }else{
             Toast.makeText(this, "Please fill all parameters",Toast.LENGTH_SHORT).show();
         }
     }
 
+
+    @Override
+    protected void onDestroy() {
+        mProgress.dismiss();
+        super.onDestroy();
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

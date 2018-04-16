@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.netipol.perty.Login.AccountActivity"
-    android:background="@drawable/gradient1"
+    android:background="@drawable/gradient1_nocorner"
     >
 
     <android.support.v7.widget.CardView
@@ -14,43 +14,69 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardBackgroundColor="@color/bgPrimary"
-        android:layout_margin="32dp"
+        android:layout_margin="20dp"
         card_view:cardCornerRadius="20dp"
         >
-        <RelativeLayout
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
             >
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:elevation="2dp"
-                android:id="@+id/profileImage"
-                android:layout_width="144dp"
-                android:layout_height="144dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                app:civ_border_width="0dp"
-                app:civ_border_color="#FF000000"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:elevation="2dp"
+                    android:id="@+id/profileImage"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_centerHorizontal="true"
+                    app:civ_border_width="0dp"
+                    android:layout_centerInParent="true"
+                    app:civ_border_color="#FF000000"
+                    android:layout_marginTop="24dp"/>
+
+            </RelativeLayout>
+
 
             <TextView
-                android:id="@+id/fbName"
-                android:layout_marginTop="8dp"
+                android:id="@+id/profpicedit"
                 android:layout_width="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/profileImage" />
+                android:text="Tap to change"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                />
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:id="@+id/getFbProf"
+                android:layout_margin="10dp"
+                android:text="Get my facebook profile pic"
+                android:textSize="8dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/btstyle2"
+                android:layout_gravity="center_horizontal"/>
+
 
             <TextView
                 android:id="@+id/usernameTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Username"
+                android:text="Set your username"
+                android:textSize="16dp"
+                android:layout_marginBottom="5dp"
                 android:layout_alignStart="@id/userNameField"
-                android:layout_below="@id/fbName"
-                android:layout_marginBottom="8dp"
                 />
 
 
@@ -61,7 +87,7 @@
                 android:layout_marginBottom="16dp"
                 android:hint="@string/userHint"
                 android:maxLength="20"
-                android:textSize="12sp"
+                android:textSize="16dp"
                 android:singleLine="true"
                 android:layout_below="@id/usernameTitle"
                 android:imeOptions="actionDone"
@@ -73,8 +99,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/userType"
                 android:layout_below="@id/userNameField"
-                android:layout_marginBottom="8dp"
-                android:text="UserType" />
+                android:textSize="16dp"
+                android:layout_marginBottom="5dp"
+                android:text="What type of user are you?" />
 
             <Spinner
                 android:id="@+id/userType"
@@ -82,6 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/userTypeTitle"
                 android:layout_marginBottom="16dp"
+                android:layout_gravity="center_horizontal"
                 android:spinnerMode="dropdown" />
 
             <TextView
@@ -90,8 +118,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/userBio"
                 android:layout_below="@id/userType"
-                android:layout_marginBottom="8dp"
-                android:text="Bio" />
+                android:textSize="16dp"
+                android:layout_marginBottom="5dp"
+                android:text="Write a short bio" />
 
             <EditText
                 android:id="@+id/userBio"
@@ -101,7 +130,8 @@
                 android:layout_below="@id/userBioTitle"
                 android:hint="@string/bioHint"
                 android:maxLength="144"
-                android:textSize="12sp"
+                android:inputType="textCapSentences|textMultiLine"
+                android:textSize="16dp"
                 android:maxLines="4"
                 android:imeOptions="actionDone"
                 />
@@ -111,15 +141,19 @@
                 android:elevation="2dp"
                 android:layout_width="wrap_content"
                 android:paddingHorizontal="8dp"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_below="@id/userBio"
                 android:layout_centerHorizontal="true"
                 android:text="Create Account"
+                android:textSize="12dp"
+                android:layout_gravity="center_horizontal"
                 android:textColor="@color/textPrimary"
-                android:background="@drawable/btstyle"
+                android:background="@drawable/gradient1"
                 android:layout_marginBottom="24dp"
                 />
-        </RelativeLayout>
+        </LinearLayout>
+
+        </ScrollView>
 
     </android.support.v7.widget.CardView>
 </LinearLayout>

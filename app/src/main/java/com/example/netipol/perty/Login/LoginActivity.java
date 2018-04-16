@@ -1,6 +1,8 @@
 package com.example.netipol.perty.Login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -33,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;//Allow read/write to Firebase
     public static String fbUID;
     private Button mFacebookBtn;
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+
+        mProgress = new ProgressDialog(this);
+
 
         //mAuth.getCurrentUser().getEmail();\\\\
 
@@ -66,12 +73,13 @@ public class LoginActivity extends AppCompatActivity {
         mCallbackManager = CallbackManager.Factory.create();
 
         //Custom FB login button
-        mFacebookBtn = (Button) findViewById(R.id.facebookBtn);
+        mFacebookBtn = (Button) findViewById(R.id.fb_icon);
         mFacebookBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
 
                 mFacebookBtn.setEnabled(false);//prevent user click during loading, Progress bar here?
+                mFacebookBtn.setVisibility(View.INVISIBLE);
 
                 LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile"));
                 LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -130,10 +138,27 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, currentUser.getPhotoUrl().toString(),Toast.LENGTH_SHORT).show();
                             */
 
-                            Profile profile = Profile.getCurrentProfile();
-                            fbUID = profile.getId();
-                            sendToRegister(profile);
-                            mFacebookBtn.setEnabled(true);
+                            //User has successfully logged in, save this information
+                            // We need an Editor object to make preference changes.
+                            SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
+                            //Get "hasLoggedIn" value. If the value doesn't exist yet false is returned
+                            boolean hasLoggedIn = settings.getBoolean("hasLoggedIn", false);
+
+                            if(hasLoggedIn)
+                            {
+                                Log.d("lgntest", "has logged in");
+                                Intent intent = new Intent();
+                                intent.setClass(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                LoginActivity.this.finish();
+
+                            }else {
+                                Log.d("lgntest", "has not logged in before");
+                                Profile profile = Profile.getCurrentProfile();
+                                fbUID = profile.getId();
+                                sendToRegister(profile);
+                                mFacebookBtn.setEnabled(true);
+                            }
 
                         } else {
                             // If sign in fails, display a message to the user.

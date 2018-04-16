@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class Event extends EventId implements Parcelable, Comparable<Event>{
 
-    private String title, desc, type, image, timestamp, host, hostid, time, location, categ;
+    private String title, desc, date, type, image, timestamp, hostid, time_start, time_end, loca_desc, loca_preset, categ;
 
     public int compareTo(Event other) {
         return timestamp.compareTo(other.timestamp);
@@ -19,16 +19,18 @@ public class Event extends EventId implements Parcelable, Comparable<Event>{
 
     }
 
-    public Event(String title, String desc, String type, String image, String timestamp, String host, String hostid, String time, String location, String categ) {
+    public Event(String title, String desc, String date, String type, String image, String timestamp, String hostid, String time_start, String time_end, String loca_desc, String loca_preset, String categ) {
         this.title = title;
         this.desc = desc;
         this.type = type;
         this.image = image;
         this.timestamp = timestamp;
-        this.host = host;
         this.hostid = hostid;
-        this.time = time;
-        this.location = location;
+        this.date = date;
+        this.time_end= time_end;
+        this.time_start=time_start;
+        this.loca_desc=loca_desc;
+        this.loca_preset=loca_preset;
         this.categ = categ;
     }
 
@@ -38,10 +40,12 @@ public class Event extends EventId implements Parcelable, Comparable<Event>{
         type = in.readString();
         image = in.readString();
         timestamp = in.readString();
-        host = in.readString();
         hostid = in.readString();
-        time = in.readString();
-        location = in.readString();
+        time_start = in.readString();
+        time_end = in.readString();
+        loca_preset = in.readString();
+        loca_desc= in.readString();
+        date = in.readString();
         categ = in.readString();
     }
 
@@ -96,36 +100,55 @@ public class Event extends EventId implements Parcelable, Comparable<Event>{
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;}
 
-    public String getHost() {
-        return host;
-    }
 
     public String getHostId() {
         return hostid;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
 
     public void setHostId(String hostid) {
         this.hostid = hostid;
     }
 
-    public String getTime() {
-        return time;
+    public String getTime_end() {
+        return time_end;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setTime_end(String time_end) {
+        this.time_end = time_end;
     }
 
-    public String getLocation() {
-        return location;
+    public String getLoca_desc() {
+        return loca_desc;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLoca_desc(String loca_desc) {
+        this.loca_desc = loca_desc;
+    }
+
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime_start() {
+        return time_start;
+    }
+
+    public void setTime_start(String time_start) {
+        this.time_start = time_start;
+    }
+
+    public String getLoca_preset() {
+        return loca_preset;
+    }
+
+    public void setLoca_preset(String loca_preset) {
+        this.loca_preset = loca_preset;
     }
 
     public String getCateg() {
@@ -148,10 +171,12 @@ public class Event extends EventId implements Parcelable, Comparable<Event>{
         dest.writeString(type);
         dest.writeString(image);
         dest.writeString(timestamp);
-        dest.writeString(host);
         dest.writeString(hostid);
-        dest.writeString(time);
-        dest.writeString(location);
+        dest.writeString(time_start);
+        dest.writeString(time_end);
+        dest.writeString(loca_preset);
+        dest.writeString(loca_desc);
         dest.writeString(categ);
+        dest.writeString(date);
     }
 }

@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.netipol.perty.AnnouncementFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/no_ann"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/darker_gray"
+                android:text="No announcements made yet"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/result_list_announce_host"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                ></android.support.v7.widget.RecyclerView>
+
+            <Button
+                android:id="@+id/annButt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:text="Announce"
+                android:background="@drawable/btstyle"/>
+
+            <!--android:layout_below="@+id/searchv"-->
+        </LinearLayout>
+
+
+    </ScrollView>
+
+</RelativeLayout>

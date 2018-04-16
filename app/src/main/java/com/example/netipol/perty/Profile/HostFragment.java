@@ -18,6 +18,7 @@ import com.example.netipol.perty.Event.EventListAdapter;
 import com.facebook.Profile;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -62,7 +64,7 @@ public class HostFragment  extends android.support.v4.app.Fragment{
         Log.d("hello", "data: "+mUser_id);
 
         eventList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList,getActivity().getSupportFragmentManager());
+        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList,getActivity().getSupportFragmentManager(),1);
 
         mEventList = v.findViewById(R.id.hosting_list);
         mEventList.setHasFixedSize(true);
@@ -78,16 +80,19 @@ public class HostFragment  extends android.support.v4.app.Fragment{
                     Log.d("FeedLog", "Error : " + e.getMessage());
                 }
 
-                for(DocumentChange change : documentSnapshots.getDocumentChanges()) {
+                //for(DocumentChange change : documentSnapshots.getDocumentChanges()) {
+                for(DocumentSnapshot change : documentSnapshots.getDocuments()){
 
-                    if (change.getType() == DocumentChange.Type.ADDED) { //MODIFIED, REMOVED ??
+                    //if (change.getType() == DocumentChange.Type.ADDED) { //MODIFIED, REMOVED ??
 
-                        String event_id = change.getDocument().getId();
+                        String event_id = change.getId();
                         Log.d("GETID at HostFrag", event_id);
-                        Event events = change.getDocument().toObject(Event.class).withId(event_id);
+                        Event events = change.toObject(Event.class).withId(event_id);
                         eventList.add(events);
                         eventListAdapter.notifyDataSetChanged();
-                    }
+                        Collections.sort(eventList);
+                        Collections.reverse(eventList);
+                   // }
                 }
             }
         });

@@ -17,16 +17,33 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="10dp"
-            android:id="@+id/friendreq_profpic"/>
+            android:id="@+id/announce_eventpic"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/announce_eventpic"
+            android:layout_centerVertical="true">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/friendreq_name"
-            android:layout_toRightOf="@+id/friendreq_profpic"
+            android:id="@+id/announce_eventname"
             android:text="netmon39"
             android:textSize="18dp"
-            android:layout_centerVertical="true"/>
+            android:textStyle="bold"
+           />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/announce_message"
+            android:text="netmon39"
+            android:textSize="18dp"
+            android:layout_below="@+id/announce_eventname"
+           />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

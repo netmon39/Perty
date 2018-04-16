@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.netipol.perty.Friend.FriendReqListAdapter;
 import com.example.netipol.perty.Home.SingleEventFragment;
+import com.example.netipol.perty.Profile.FavoritesFragment;
 import com.example.netipol.perty.Profile.ProfileFragment;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
@@ -63,17 +64,24 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     public FragmentManager fManager;
     public boolean favboo = false;
     public boolean favboo2 = false;
+    private View view;
+    public int key=0;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public EventListAdapter(Context context, List<Event> eventList, FragmentManager fManager){
+    public EventListAdapter(Context context, List<Event> eventList, FragmentManager fManager, int key){
         this.mContext = context;
         this.eventList = eventList;
         this.fManager = fManager;
+        this.key=key;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_row, parent,false);
+        if (key==1){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_row, parent,false);
+        }else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_row_explore, parent,false);
+        }
         return new ViewHolder(view);
     }
 
@@ -99,6 +107,17 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
             }
         });
 
+
+        if(eventList.get(position).getType().toString().equals("Private")){
+            holder.eventlayout.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.selector));
+            holder.eventPrivate.setText("Private");
+            holder.eventPrivate.setVisibility(View.VISIBLE);
+        }else{//Public
+            //Dont display Private Tag
+            holder.eventlayout.setBackgroundDrawable(null);
+            holder.eventPrivate.setVisibility(View.GONE);
+        }
+
         /*db.collection("users").document(Profile.getCurrentProfile().getId()).collection("friends")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -116,21 +135,15 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                 });*/
         //holder.eventprof.setBorderWidth(4);
         //holder.eventprof.setBorderColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
-        if(eventList.get(position).getType().equals("Private")){
-           holder.eventlayout.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.selector));
-           holder.eventPrivate.setText("PRIVATE EVENT");
-        }else{//Public
-            //Dont display Private Tag
-        }
 
         holder.title.setText(eventList.get(position).getTitle());//from Event.java
-        holder.time.setText(eventList.get(position).getTime());
-        holder.location.setText(eventList.get(position).getLocation());
+        holder.time.setText(eventList.get(position).getDate());
+        holder.location.setText(eventList.get(position).getLoca_preset());
         //holder.image.setText(eventList.get(position).getTitle());
         Glide.with(getApplicationContext()).load(eventList.get(position).getImage()).apply(new RequestOptions().fitCenter()).into(holder.image);
 
-
         final String event_doc_id = eventList.get(position).eventId;
+        final String event_doc_type = eventList.get(position).getType();
         final String imageUrl = "https://graph.facebook.com/" + eventList.get(position).getHostId() + "/picture?height=80&width=80&migration_overrides=%7Boctober_2012%3Atrue%7D";
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +156,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                 mFragment = new SingleEventFragment();
                 mBundle = new Bundle();
                 mBundle.putString("event_id",event_doc_id);
+                mBundle.putString("event_type",event_doc_type);
                 mFragment.setArguments(mBundle);
                 fManager.beginTransaction().replace(R.id.main_frame, mFragment).addToBackStack(null).commit();
 
@@ -150,49 +164,56 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         });
 
 
-        holder.favbutt.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(final View v) {
+        if(event_doc_type.equals("Archived") || eventList.get(position).getHostId().equals(Profile.getCurrentProfile().getId())){
 
-                favboo=false;
-                Log.d("lol", "fav");
+            holder.favbutt.setVisibility(View.GONE);
 
-                db.collection("users")//check friend status
-                        .document(Profile.getCurrentProfile().getId())
-                        .collection("favorites")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (DocumentSnapshot document : task.getResult()) {
-                                        Log.d("lol", document.getId() + " => " + document.getData());
-                                        if(document.getId().equals(event_doc_id)){//if event already favorited before...
+        }else{
 
-                                            favboo = true;
+            holder.favbutt.setVisibility(View.VISIBLE);
 
-                                            //holder.favbutt.setBackgroundResource(R.drawable.ic_favorite_border_white_24dp);
-                                            setDialogRemoveFav(holder, position, v, event_doc_id);
+            holder.favbutt.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(final View v) {
 
-                                            break;
+                    favboo=false;
+                    Log.d("lol", "fav");
+
+                    db.collection("users")//check friend status
+                            .document(Profile.getCurrentProfile().getId())
+                            .collection("favorites")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (DocumentSnapshot document : task.getResult()) {
+                                            Log.d("lol", document.getId() + " => " + document.getData());
+                                            if(document.getId().equals(event_doc_id)){//if event already favorited before...
+
+                                                favboo = true;
+                                                setDialogRemoveFav(holder, position, v, event_doc_id);
+
+                                                break;
+                                            }
+
                                         }
 
+                                        if(favboo==false){
+                                            //add to favorite
+                                            setDialogAddFav(holder, position, v, event_doc_id);
+
+                                        }
+
+                                    } else {
+                                        Log.d("lol", "Error getting documents: ", task.getException());
                                     }
-
-                                    if(favboo==false){
-                                        //add to favorite
-                                        setDialogAddFav(holder, position, v, event_doc_id);
-
-                                    }
-
-                                } else {
-                                    Log.d("lol", "Error getting documents: ", task.getException());
                                 }
-                            }
-                        });
-            }
-        });
+                            });
+                }
+            });
 
+        }
 
     }
 
@@ -205,8 +226,8 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                         //Toast.makeText(getApplicationContext(), "Request accepted.",Toast.LENGTH_LONG).show();
 
                         //another one here
-                        Map<String, Object> friendreq = new HashMap<>();
-                        friendreq.put("eventid", event_doc_id);//person to send request (Id of Viewing-user)
+                        Map<String, Object> favtouser = new HashMap<>();
+                        favtouser.put("eid", event_doc_id);//person to send request (Id of Viewing-user)
 
                         //holder.favbutt.setBackgroundResource(R.drawable.ic_favorite_white_24dp);
 
@@ -215,12 +236,22 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                                 .document(Profile.getCurrentProfile().getId())//person to receive request
                                 .collection("favorites")
                                 .document(event_doc_id)
-                                .set(friendreq);
+                                .set(favtouser);
+
+                        //another one here
+                        Map<String, Object> favtoevent = new HashMap<>();
+                        favtoevent.put("uid", Profile.getCurrentProfile().getId());//person to send request (Id of Viewing-user)
+
+                        //Add to event's "favoriters" collection
+                        db.collection("events")
+                                .document(event_doc_id)//person to receive request
+                                .collection("favoriters")
+                                .document(Profile.getCurrentProfile().getId())
+                                .set(favtoevent);
 
                         Toast toast = Toast.makeText(getApplicationContext(),"Favorited "+eventList.get(position).getTitle(),Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
                         toast.show();
-
 
                         break;
 
@@ -247,7 +278,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
 
                         //unfavorite
                         Map<String, Object> friendreq = new HashMap<>();
-                        friendreq.put("eventid", event_doc_id);//person to send request (Id of Viewing-user)
+                        friendreq.put("eid", event_doc_id);//person to send request (Id of Viewing-user)
 
                         // Add a new pending join request
                         db.collection("users")
@@ -261,7 +292,6 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                         Toast toast = Toast.makeText(getApplicationContext(),"Unfavorited "+eventList.get(position).getTitle(),Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
                         toast.show();
-
 
                         break;
 

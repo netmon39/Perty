@@ -20,11 +20,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.netipol.perty.Event.Event;
 import com.example.netipol.perty.Event.EventListAdapter;
 import com.example.netipol.perty.Friend.FriendReq;
+import com.example.netipol.perty.Profile.FavoritesFragment;
 import com.example.netipol.perty.Profile.ProfileFragment;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
@@ -69,6 +71,7 @@ public class ExploreFragment extends Fragment {
     private Bundle mBundle;
     public FragmentManager fManager;
     private ProgressDialog mProgress;
+    private ScrollView scrollView;
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -82,19 +85,21 @@ public class ExploreFragment extends Fragment {
 
         mProgress = new ProgressDialog(getActivity());
 
+        scrollView = v.findViewById(R.id.svContent);
+
         setHasOptionsMenu(true);
 
         expA = v.findViewById(R.id.txta);
         expAList = new ArrayList<>();
-        expAListAdapter = new EventListAdapter(getApplicationContext(), expAList,getFragmentManager());
+        expAListAdapter = new EventListAdapter(getApplicationContext(), expAList,getFragmentManager(),0);
 
         expB = v.findViewById(R.id.txtb);
         expBList = new ArrayList<>();
-        expBListAdapter = new EventListAdapter(getApplicationContext(), expBList,getFragmentManager());
+        expBListAdapter = new EventListAdapter(getApplicationContext(), expBList,getFragmentManager(),0);
 
         expC = v.findViewById(R.id.txtc);
         expCList = new ArrayList<>();
-        expCListAdapter = new EventListAdapter(getApplicationContext(), expCList, getFragmentManager());
+        expCListAdapter = new EventListAdapter(getApplicationContext(), expCList, getFragmentManager(),0);
 
         chosenOnesA = new ArrayList<>();
         chosenOnesB = new ArrayList<>();
@@ -166,6 +171,7 @@ public class ExploreFragment extends Fragment {
                 expA.setText("Recommended from "+randomPicks.get(0));
                 expB.setText("Recommended from "+randomPicks.get(1));
                 expC.setText("Recommended from "+randomPicks.get(2));
+                scrollView.fullScroll(View.FOCUS_UP);
             }
         });
 
@@ -180,7 +186,7 @@ public class ExploreFragment extends Fragment {
 
     public void populateExpA(String categ){
 
-        mProgress.setMessage("Finding events for you ...");
+        mProgress.setMessage("Rolling the Perty dice ...");
         mProgress.show();
 
         allOfA.clear();
@@ -364,6 +370,7 @@ public class ExploreFragment extends Fragment {
                                 Log.d("olo", document.getId() + " => " + document.getData());
                                 if (!document.get("hostid").equals(Profile.getCurrentProfile().getId())){
                                     allOfC.add(document.getId());//all events
+
                                 }
                             }
 

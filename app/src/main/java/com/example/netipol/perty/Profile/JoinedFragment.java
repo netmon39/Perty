@@ -1,20 +1,21 @@
 package com.example.netipol.perty.Profile;
 
+
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.netipol.perty.Event.Event;
-import com.example.netipol.perty.R;
 import com.example.netipol.perty.Event.EventListAdapter;
+import com.example.netipol.perty.Home.MainActivity;
+import com.example.netipol.perty.R;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,11 +33,10 @@ import java.util.List;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
- * Created by USER on 08/02/2018.
+ * A simple {@link Fragment} subclass.
  */
+public class JoinedFragment extends Fragment {
 
-public class UpcomingFragment extends Fragment {
-    private static final String TAG = "TabUPFragment";
 
     private RecyclerView mEventList;
     private List<Event> eventList;
@@ -45,17 +45,17 @@ public class UpcomingFragment extends Fragment {
     private FirebaseFirestore mFirestore;
     private String mUser_id;
 
-    public static UpcomingFragment newInstance() {
-        UpcomingFragment fragment = new UpcomingFragment();
-        return fragment;
+
+    public JoinedFragment() {
+        // Required empty public constructor
     }
 
-    public UpcomingFragment() { }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_upcoming_tab, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v= inflater.inflate(R.layout.fragment_joined, container, false);
 
         mFirestore = FirebaseFirestore.getInstance();
         mUser_id = Profile.getCurrentProfile().getId();
@@ -64,13 +64,13 @@ public class UpcomingFragment extends Fragment {
         joinList = new ArrayList<>();
         eventListAdapter = new EventListAdapter(getApplicationContext(),eventList,getActivity().getSupportFragmentManager(),1);
 
-        mEventList = v.findViewById(R.id.upcoming_list);
+        mEventList = v.findViewById(R.id.joined_list);
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mEventList.setAdapter(eventListAdapter);
 
         //get list of joined events and store it into a arraylist
-        mFirestore.collection("users").document(mUser_id).collection("joining")
+        mFirestore.collection("users").document(mUser_id).collection("joined")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -81,7 +81,7 @@ public class UpcomingFragment extends Fragment {
                                 joinList.add(document.get("eid").toString());
                             }
 
-                            CollectionReference eventsRef = mFirestore.collection("events");
+                            CollectionReference eventsRef = mFirestore.collection("archived");
                             eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
 
                                 @Override
@@ -116,7 +116,18 @@ public class UpcomingFragment extends Fragment {
                 });
 
 
-
         return v;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity activity = (MainActivity) getActivity();
+        ActionBar bar = activity.getSupportActionBar();
+        bar.setTitle("Joined");
+        bar.setDisplayHomeAsUpEnabled(true);
+
+    }
+
+
 }

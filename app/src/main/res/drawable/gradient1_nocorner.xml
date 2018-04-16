@@ -7,7 +7,6 @@
         android:centerColor="#FFA000"
         android:startColor="#FF6A00"
         />
-    <corners android:radius="10dp" />
     <padding
         android:bottom="5dp"
         android:left="5dp"
