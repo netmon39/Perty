@@ -28,43 +28,37 @@
                 android:id="@+id/post_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Post Title Goes here"
+                android:text=""
                 android:paddingLeft="10dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:layout_centerInParent="true"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+                android:textSize="28dp"
+                 />
 
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Date: "
-                android:id="@+id/eventrow_time"
-                android:layout_centerVertical="true"/>
 
         <TextView
             android:id="@+id/post_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Saturday, 10 March 14:00"
-            android:layout_toRightOf="@+id/eventrow_time"
+            android:text=""
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14dp"
             android:layout_centerVertical="true"
             android:textStyle="bold"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="|  Location: "
-                android:paddingLeft="5dp"
+                android:text=" @ "
+                android:textSize="14dp"
                 android:id="@+id/eventrow_loca"
                 android:layout_toRightOf="@+id/post_time"
                 android:layout_centerVertical="true"/>
@@ -73,10 +67,12 @@
                 android:id="@+id/post_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CU Sport Complex"
+                android:text=""
+                android:textSize="14dp"
+                android:singleLine="true"
                 android:layout_toRightOf="@+id/eventrow_loca"
                 android:layout_centerVertical="true"
-                android:textStyle="bold"
+
                 />
 
         </RelativeLayout>
@@ -100,7 +96,8 @@
                 android:id="@+id/post_hostname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="netmon39"
+                android:text=""
+                android:textSize="14dp"
                 android:textStyle="bold"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/event_profpic"/>
@@ -112,18 +109,19 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:text=""
                 android:textStyle="bold"
+                android:textSize="14dp"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/addtofav"
+                android:layout_alignParentRight="true"
                 android:paddingRight="10dp"/>
 
-            <Button
+            <!--Button
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:id="@+id/addtofav"
                 android:layout_centerVertical="true"
                 android:background="@drawable/ic_favorite_border_white_24dp"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:layout_alignParentRight="true"/>
+              /-->
 
         </RelativeLayout>
 

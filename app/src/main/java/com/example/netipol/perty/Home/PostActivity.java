@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -39,7 +40,10 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,11 +63,11 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String eventType, eventCateg, eventLoca;
 
-    Button btnDatePicker, btnTimePickerStart, btnTimePickerEnd;
-    TextView txtDate, txtTime;
-    EditText txtLocation;
-    private int mYear, mMonth, mDay, mHour, mMinute;
-    private String hostusername;
+    Button btnDatePickerStart, btnDatePickerEnd,  btnTimePickerStart, btnTimePickerEnd;
+    EditText txtLocation, locaOther;
+
+    private int mYear, mMonth, mDay, mHour, mMinute, hourOfDayStartCheck, minuteStartCheck, dayOfMonthStart, monthOfYearStart, yearStart;
+    private String hostusername, loca_val, dateStartCheck;
 
 
     @Override
@@ -194,16 +198,39 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
         });
 
-        btnDatePicker=(Button)findViewById(R.id.btn_date);
+        btnDatePickerStart=(Button)findViewById(R.id.btn_date_start);
+        btnDatePickerEnd=(Button)findViewById(R.id.btn_date_end);
+        btnDatePickerEnd.setEnabled(false);
+        btnDatePickerEnd.getBackground().setAlpha(100);
+
         btnTimePickerStart=(Button)findViewById(R.id.btn_time_start);
+        btnTimePickerStart.setEnabled(false);
+        btnTimePickerStart.getBackground().setAlpha(100);
         btnTimePickerEnd=(Button)findViewById(R.id.btn_time_end);
+        btnTimePickerEnd.setEnabled(false);
+        btnTimePickerEnd.getBackground().setAlpha(100);
 //        txtDate=(TextView)findViewById(R.id.in_date);
 //        txtTime=(TextView)findViewById(R.id.in_time);
         txtLocation=(EditText)findViewById(R.id.in_location);
+        locaOther = findViewById(R.id.locaOther);
+        locaOther.setVisibility(View.GONE);
 
-        btnDatePicker.setOnClickListener(new View.OnClickListener() {
+        btnDatePickerStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                btnDatePickerStart.setText("START DATE");
+
+                btnDatePickerEnd.setEnabled(false);
+                btnDatePickerEnd.getBackground().setAlpha(100);
+                btnDatePickerEnd.setText("END DATE");
+                btnTimePickerStart.setEnabled(false);
+                btnTimePickerStart.getBackground().setAlpha(100);
+                btnTimePickerStart.setText("START TIME");
+                btnTimePickerEnd.setEnabled(false);
+                btnTimePickerEnd.getBackground().setAlpha(100);
+                btnTimePickerEnd.setText("END TIME");
+     //reset end date
                 // Get Current Date
                 final Calendar c = Calendar.getInstance();
                 mYear = c.get(Calendar.YEAR);
@@ -253,16 +280,131 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                                         month="DEC";
                                         break;
                                 }
-                                btnDatePicker.setText(dayOfMonth + " " + month + " " + year);
+
+                                dateStartCheck = dayOfMonth+"-"+monthOfYear+"-"+year;
+                                final String dateStart = dayOfMonth + "-" + monthOfYear + "-" + year;//20 AUG 2016
+                                dayOfMonthStart = dayOfMonth;
+                                monthOfYearStart = monthOfYear;
+                                yearStart = year;
+                                final String dateStartNow = c.get(Calendar.DAY_OF_MONTH) + "-" + c.get(Calendar.MONTH) + "-" + c.get(Calendar.YEAR);
+                                SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
+                                Date date = null;
+                                Date dateNow = null;
+                                try {
+                                    date = fmt.parse(dateStart);
+                                    dateNow = fmt.parse(dateStartNow);
+                                    if(date.before(dateNow)){
+                                        Toast.makeText(PostActivity.this, "START DATE cannot be in the past!", Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        btnDatePickerStart.setText(dayOfMonth + " " + month + " " + year);
+                                        btnDatePickerEnd.setEnabled(true);
+                                        btnDatePickerEnd.getBackground().setAlpha(255);
+
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
             }
         });
 
+        btnDatePickerEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                btnDatePickerEnd.setText("END DATE");
+
+                btnTimePickerStart.setEnabled(false);
+                btnTimePickerStart.getBackground().setAlpha(100);
+                btnTimePickerStart.setText("START TIME");
+                btnTimePickerEnd.setEnabled(false);
+                btnTimePickerEnd.getBackground().setAlpha(100);
+                btnTimePickerEnd.setText("END TIME");
+
+                //reset end date
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(PostActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                String month = null;
+                                switch (monthOfYear){
+                                    case 0:
+                                        month="JAN";
+                                        break;
+                                    case 1:
+                                        month="FEB";
+                                        break;
+                                    case 2:
+                                        month="MAR";
+                                        break;
+                                    case 3:
+                                        month="APR";
+                                        break;
+                                    case 4:
+                                        month="MAY";
+                                        break;
+                                    case 5:
+                                        month="JUN";
+                                        break;
+                                    case 6:
+                                        month="JUL";
+                                        break;
+                                    case 7:
+                                        month="AUG";
+                                        break;
+                                    case 8:
+                                        month="SEP";
+                                        break;
+                                    case 9:
+                                        month="OCT";
+                                        break;
+                                    case 10:
+                                        month="NOV";
+                                        break;
+                                    case 11:
+                                        month="DEC";
+                                        break;
+                                }
+
+                                final String dateEnd = dayOfMonth + "-" + monthOfYear + "-" + year;//20-8-2016
+                                SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
+                                Date date = null;
+                                try {
+                                    date = fmt.parse(dateEnd);
+                                    if(date.before(fmt.parse(dateStartCheck))){
+                                        Toast.makeText(PostActivity.this, "END DATE must be one the same day, or after START DATE!", Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        btnDatePickerEnd.setText(dayOfMonth + " " + month + " " + year);
+                                        btnTimePickerStart.setEnabled(true);
+                                        btnTimePickerStart.getBackground().setAlpha(255);
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+
+
         btnTimePickerStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnTimePickerStart.setText("START TIME");
+
+                btnTimePickerEnd.setEnabled(false);
+                btnTimePickerEnd.getBackground().setAlpha(100);
+                btnTimePickerEnd.setText("END TIME");
+                //reset end date
                 // Get Current Time
                 final Calendar c = Calendar.getInstance();
                 mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -274,9 +416,44 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                 if(minute >= 10) {
-                                    btnTimePickerStart.setText(hourOfDay + ":" + minute);
+                                    if(dayOfMonthStart==c.get(Calendar.DAY_OF_MONTH) && monthOfYearStart==c.get(Calendar.MONTH)&& yearStart==c.get(Calendar.YEAR)) {//if set to present day...
+                                        if ((hourOfDay < mHour)||(hourOfDay == mHour && minute < mMinute)) {
+                                            Toast.makeText(PostActivity.this, "START TIME cannot be in the past!", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            btnTimePickerStart.setText(hourOfDay + ":" + minute);
+                                            btnTimePickerEnd.setEnabled(true);
+                                            btnTimePickerEnd.getBackground().setAlpha(255);
+                                            hourOfDayStartCheck = hourOfDay;
+                                            minuteStartCheck = minute;
+                                        }
+
+                                    }else {
+                                        btnTimePickerStart.setText(hourOfDay + ":" + minute);
+                                        btnTimePickerEnd.setEnabled(true);
+                                        btnTimePickerEnd.getBackground().setAlpha(255);
+                                        hourOfDayStartCheck = hourOfDay;
+                                        minuteStartCheck = minute;
+                                    }
+
                                 }else{
-                                    btnTimePickerStart.setText(hourOfDay + ":" + "0"+minute);
+                                    if(dayOfMonthStart==c.get(Calendar.DAY_OF_MONTH) && monthOfYearStart==c.get(Calendar.MONTH)&& yearStart==c.get(Calendar.YEAR)) {//if set to present day...
+                                        if ((hourOfDay < mHour)||(hourOfDay == mHour && minute < mMinute)) {
+                                            Toast.makeText(PostActivity.this, "START TIME cannot be in the past!", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            btnTimePickerStart.setText(hourOfDay + ":"+"0" + minute);
+                                            btnTimePickerEnd.setEnabled(true);
+                                            btnTimePickerEnd.getBackground().setAlpha(255);
+                                            hourOfDayStartCheck = hourOfDay;
+                                            minuteStartCheck = minute;
+                                        }
+
+                                    }else {
+                                        btnTimePickerStart.setText(hourOfDay + ":"+"0" + minute);
+                                        btnTimePickerEnd.setEnabled(true);
+                                        btnTimePickerEnd.getBackground().setAlpha(255);
+                                        hourOfDayStartCheck = hourOfDay;
+                                        minuteStartCheck = minute;
+                                    }
                                 }
                             }
 
@@ -289,6 +466,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
         btnTimePickerEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnTimePickerEnd.setText("END TIME");
                 // Get Current Time
                 final Calendar c = Calendar.getInstance();
                 mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -300,10 +478,29 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         if(minute >= 10) {
-                            btnTimePickerEnd.setText(hourOfDay + ":" + minute);
+                            if(btnDatePickerStart.getText().toString().equals(btnDatePickerEnd.getText().toString())){
+                                if((hourOfDay<hourOfDayStartCheck) || (hourOfDay==hourOfDayStartCheck && minute<minuteStartCheck)){
+                                    //not ok
+                                    Toast.makeText(PostActivity.this, "END TIME must be after START TIME!", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    btnTimePickerEnd.setText(hourOfDay + ":" + minute);
+                                }
+                            }else{
+                                btnTimePickerEnd.setText(hourOfDay + ":" + minute);
+                            }
                         }else{
-                            btnTimePickerEnd.setText(hourOfDay + ":" + "0"+minute);
+                            if (btnDatePickerStart.getText().toString().equals(btnDatePickerEnd.getText().toString())){
+                                if((hourOfDay<hourOfDayStartCheck) || (hourOfDay==hourOfDayStartCheck && minute<minuteStartCheck)){
+                                    //not ok
+                                    Toast.makeText(PostActivity.this, "END TIME must be after START TIME!", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    btnTimePickerEnd.setText(hourOfDay + ":" +"0"+ minute);
+                                }
+                            }else{
+                                btnTimePickerEnd.setText(hourOfDay + ":" + "0"+minute);
+                            }
                         }
+
                     }
 
                 }, mHour, mMinute, true);
@@ -379,24 +576,31 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
             switch (i) {
                 case 1:
                     eventLoca = "Chulalongkorn University";
+                    locaOther.setVisibility(View.GONE);
                     break;
                 case 2:
                     eventLoca = "Chamchuri Square";
+                    locaOther.setVisibility(View.GONE);
                     break;
                 case 3:
                     eventLoca = "I'm Park";
+                    locaOther.setVisibility(View.GONE);
                     break;
                 case 4:
                     eventLoca = "MBK";
+                    locaOther.setVisibility(View.GONE);
                     break;
                 case 5:
                     eventLoca = "Siam Paragon";
+                    locaOther.setVisibility(View.GONE);
                     break;
                 case 6:
                     eventLoca = "Central World";
+                    locaOther.setVisibility(View.GONE);
                     break;
                 case 7:
                     eventLoca = "Other";
+                    locaOther.setVisibility(View.VISIBLE);
                     break;
             }
         }
@@ -416,17 +620,25 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
 
         final String categ_val = eventCateg;//ok
         final String type_val = eventType;//ok
-        final String loca_val = eventLoca;//ok
+        if(eventLoca!=null){
+            if(eventLoca.equals("Other")){
+                loca_val = locaOther.getText().toString().trim();//ok
+            }else{
+                loca_val = eventLoca;//ok
+            }
+        }
+        final String location_val = txtLocation.getText().toString().trim();
 
         Long tsLong = System.currentTimeMillis()/1000;
         final String ts = tsLong.toString();
         
-        final String date_val = btnDatePicker.getText().toString().trim();//21 AUG 1996
+        final String date_start_val = btnDatePickerStart.getText().toString().trim();//21 AUG 1996
+        final String date_end_val = btnDatePickerEnd.getText().toString().trim();//21 AUG 1996
         final String time_start_val = btnTimePickerStart.getText().toString().trim();//24:00
-        final String time_end_val = btnTimePickerStart.getText().toString().trim();//24:00
+        final String time_end_val = btnTimePickerEnd.getText().toString().trim();//24:00
         
         //final String posttime_val = date_val + ", " + time_val;
-        final String location_val = txtLocation.getText().toString().trim();
+
 
         DocumentReference docRef = db.collection("users").document(Profile.getCurrentProfile().getId());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -443,7 +655,7 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && resultUri != null){//Add parameter check!!!
+        if(!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && !TextUtils.isEmpty(location_val) && !date_start_val.equals("DATE START") && !date_end_val.equals("DATE END") && !time_start_val.equals("START TIME") && !time_end_val.equals("END TIME") && resultUri != null  && !TextUtils.isEmpty(categ_val)  && !TextUtils.isEmpty(type_val)  && !TextUtils.isEmpty(loca_val)){//Add parameter check!!!
 
             mProgress.setMessage("Posting your Perty event ...");
             mProgress.show();
@@ -470,11 +682,12 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     //event.put("host", hostusername);//need to be retrieved again at SingleEventFrage
 
                     event.put("time_start",time_start_val);
-                    event.put("time_end", time_end_val);//new
-                    event.put("date", date_val);//new
+                    event.put("time_end", time_end_val);
+                    event.put("date_start", date_start_val);
+                    event.put("date_end", date_end_val);//new
 
-                    event.put("loca_preset",loca_val);//new
-                    event.put("loca_desc", location_val);//chula buildings + extra desc?
+                    event.put("loca_preset",loca_val);//loca main
+                    event.put("loca_desc", location_val);//buildings, floors, rooms + extra desc.
 
                     event.put("hostid", Profile.getCurrentProfile().getId());
 
@@ -492,8 +705,17 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
         else {
-            Toast.makeText(PostActivity.this, "Invalid parameter(s).", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PostActivity.this, "Please complete all parameters.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ActionBar bar = getSupportActionBar();
+        bar.setTitle("Create Event");
+        bar.setDisplayHomeAsUpEnabled(true);
+
     }
 
     @Override

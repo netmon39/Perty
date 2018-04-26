@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.netipol.perty.ViewJoinersFragment">
+    tools:context="com.example.netipol.perty.Single.ViewJoinersFragment">
 
     <ScrollView
         android:layout_width="match_parent"

@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:allowBackup="true"
@@ -16,9 +18,21 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+
+        <receiver
+            android:name=".Util.NetworkChangeReceiver"
+            android:label="NetworkChangeReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>nb
+
         <activity
             android:name=".Home.MainActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,17 +62,9 @@
         </activity>
         <activity android:name=".Login.AccountActivity" />
         <activity android:name=".SelectPref.SelectPrefActivity"/>
-        <activity android:name=".TutorialActivity" />
-        <activity android:name=".TutorialActivityAsGuide" />
-        <activity android:name=".EditProfileActivity" />
-        <activity
-            android:name=".SelectPref.GridViewAdapter"
-            android:label="@string/title_activity_grid_view_adapter"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".SelectPref.GridItemView"
-            android:label="@string/title_activity_grid_item_view"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Login.TutorialActivity" />
+        <activity android:name=".Profile.TutorialActivityAsGuide" />
+        <activity android:name=".Profile.EditProfileActivity" />
         <activity
             android:name=".SelectPref.SelectedItemsActivity"
             android:label="@string/title_activity_selected_items"
@@ -70,4 +76,12 @@
             android:theme="@style/Base.Theme.AppCompat" />
     </application>
 
+    <!--activity
+        android:name=".SelectPref.GridViewAdapter"
+        android:label="@string/title_activity_grid_view_adapter"
+        android:theme="@style/AppTheme.NoActionBar" />
+    <activity
+        android:name=".SelectPref.GridItemView"
+        android:label="@string/title_activity_grid_item_view"
+        android:theme="@style/AppTheme.NoActionBar" /-->
 </manifest>

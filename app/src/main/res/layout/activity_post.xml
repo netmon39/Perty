@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:text="What's the Perty?"
             android:textSize="16dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"/>
 
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/imageSelect"
-            android:hint="Event name"
+            android:hint="Add a short, clear name"
             android:maxLength="30"
             android:maxLines="1"
             android:singleLine="true"
@@ -84,7 +84,7 @@
             android:text="When"
             android:textSize="16dp"
             android:layout_marginTop="10dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_marginLeft="5dp"/>
 
         <RelativeLayout
@@ -97,33 +97,62 @@
             android:layout_marginTop="10dp"
             >
 
-            <Button
-                android:id="@+id/btn_date"
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="START:"
+                android:id="@+id/starttext"
+            android:layout_toLeftOf="@+id/btn_date_start"/>
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DATE"
+                android:text="END:"
+                android:id="@+id/stattext"
+                android:layout_toLeftOf="@+id/btn_date_end"/>
+
+            <Button
+                android:id="@+id/btn_date_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="START DATE"
                 android:textColor="@android:color/white"
-                android:background="@drawable/btstyle"/>
+                android:background="@drawable/btstyle2"/>
 
             <Button
                 android:id="@+id/btn_time_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_toEndOf="@id/btn_date"
                 android:text="START TIME"
+                android:layout_marginLeft="15dp"
+                android:layout_toEndOf="@id/btn_date_start"
                 android:textColor="@android:color/white"
                 android:background="@drawable/btstyle2"/>
+
+            <Button
+                android:id="@+id/btn_date_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="END DATE"
+                android:layout_alignLeft="@id/btn_date_start"
+                android:layout_alignRight="@id/btn_date_start"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/btn_date_start"
+                android:textColor="@android:color/white"
+                android:background="@drawable/btstyle"/>
+
 
             <Button
                 android:id="@+id/btn_time_end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_toEndOf="@id/btn_time_start"
+                android:layout_below="@id/btn_time_start"
+                android:layout_alignLeft="@id/btn_time_start"
+                android:layout_alignRight="@id/btn_time_start"
+                android:layout_marginTop="10dp"
                 android:text="END TIME"
                 android:textColor="@android:color/white"
-                android:background="@drawable/btstyle2"/>
+                android:background="@drawable/btstyle"/>
 
         </RelativeLayout>
 
@@ -132,23 +161,37 @@
             android:layout_height="wrap_content"
             android:text="Where"
             android:textSize="16dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"/>
 
-        <Spinner
-            android:id="@+id/locationPresets"
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
-            android:layout_gravity="center_horizontal"  android:layout_marginTop="10dp" />
+
+            <Spinner
+                android:id="@+id/locationPresets"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                />
+
+            <EditText
+                android:id="@+id/locaOther"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:layout_below="@id/locationPresets"
+                android:layout_marginEnd="10dp"
+                android:hint="Please specify location"
+                android:singleLine="true"
+                android:maxLength="30"
+                android:maxLines="1"
+                />
 
         <EditText
             android:id="@+id/in_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Location in detail"
+            android:hint="Location details ex. 5th Floor, Room: 405"
             android:textSize="16dp"
             android:maxLength="100"
             android:maxLines="5"/>
@@ -158,7 +201,7 @@
             android:layout_height="wrap_content"
             android:text="About"
             android:textSize="16dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"/>
 
@@ -174,11 +217,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:hint="Details"
+                android:hint="Tell people more about the event"
                 android:textSize="16dp"
                 android:inputType="textCapSentences|textMultiLine"
-                android:maxLength="200"
-                android:maxLines="10"/>
+                android:maxLength="500"
+                android:maxLines="20"/>
 
         </RelativeLayout>
 
@@ -189,7 +232,6 @@
             android:layout_margin="25dp"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_below="@id/in_location"
             android:background="@drawable/gradient1"
             android:elevation="2dp"
             android:text="POST EVENT"

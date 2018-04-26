@@ -696,6 +696,8 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                                         //2. Decrypt key and store it into an array
                                                         cArray = userCategKey.toCharArray();
 
+                                                        mProgress.dismiss();
+
                                                         //3. For loop the cArray, while querying "events" to look for corresponding categories
                                                         for(int i = 0; i < cArray.length; i++) {
 
@@ -1240,9 +1242,12 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
                                                             }
 
+
+
                                                         }
 
-                                                        mProgress.dismiss();
+                                                        //mProgress.dismiss();
+
                                                         if(cArray.length==0){
                                                             Toast toast = Toast.makeText(getApplicationContext(),"Please select at least 1 event category.",Toast.LENGTH_SHORT);
                                                             toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -1321,4 +1326,9 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mProgress.dismiss();
+    }
 }

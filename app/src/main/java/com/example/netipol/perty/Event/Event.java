@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class Event extends EventId implements Parcelable, Comparable<Event>{
 
-    private String title, desc, date, type, image, timestamp, hostid, time_start, time_end, loca_desc, loca_preset, categ;
+    private String title, desc, date_start, date_end, type, image, timestamp, hostid, time_start, time_end, loca_desc, loca_preset, categ;
 
     public int compareTo(Event other) {
         return timestamp.compareTo(other.timestamp);
@@ -19,14 +19,15 @@ public class Event extends EventId implements Parcelable, Comparable<Event>{
 
     }
 
-    public Event(String title, String desc, String date, String type, String image, String timestamp, String hostid, String time_start, String time_end, String loca_desc, String loca_preset, String categ) {
+    public Event(String title, String desc, String date_start, String date_end, String type, String image, String timestamp, String hostid, String time_start, String time_end, String loca_desc, String loca_preset, String categ) {
         this.title = title;
         this.desc = desc;
         this.type = type;
         this.image = image;
         this.timestamp = timestamp;
         this.hostid = hostid;
-        this.date = date;
+        this.date_start = date_start;
+        this.date_end = date_end;
         this.time_end= time_end;
         this.time_start=time_start;
         this.loca_desc=loca_desc;
@@ -45,7 +46,8 @@ public class Event extends EventId implements Parcelable, Comparable<Event>{
         time_end = in.readString();
         loca_preset = in.readString();
         loca_desc= in.readString();
-        date = in.readString();
+        date_start = in.readString();
+        date_end = in.readString();
         categ = in.readString();
     }
 
@@ -127,12 +129,20 @@ public class Event extends EventId implements Parcelable, Comparable<Event>{
     }
 
 
-    public String getDate() {
-        return date;
+    public String getDate_start() {
+        return date_start;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDate_start(String date_start) {
+        this.date_start = date_start;
+    }
+
+    public String getDate_end() {
+        return date_end;
+    }
+
+    public void setDate_end(String date_end) {
+        this.date_end = date_end;
     }
 
     public String getTime_start() {
@@ -177,6 +187,7 @@ public class Event extends EventId implements Parcelable, Comparable<Event>{
         dest.writeString(loca_preset);
         dest.writeString(loca_desc);
         dest.writeString(categ);
-        dest.writeString(date);
+        dest.writeString(date_start);
+        dest.writeString(date_end);
     }
 }

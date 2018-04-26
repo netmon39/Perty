@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.netipol.perty.AnnouncementFragment">
+    tools:context="com.example.netipol.perty.Single.AnnouncementFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -40,6 +40,7 @@
                 android:padding="10dp"
                 android:layout_marginBottom="20dp"
                 android:text="Announce"
+                android:textColor="@android:color/white"
                 android:background="@drawable/btstyle"/>
 
             <!--android:layout_below="@+id/searchv"-->

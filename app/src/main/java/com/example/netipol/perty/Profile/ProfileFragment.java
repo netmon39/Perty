@@ -19,9 +19,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import static com.example.netipol.perty.Profile.currentUser.*;
@@ -29,12 +33,11 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.netipol.perty.EditProfileActivity;
 import com.example.netipol.perty.Event.Event;
 import com.example.netipol.perty.Friend.FriendReq;
 import com.example.netipol.perty.Home.MainActivity;
 import com.example.netipol.perty.R;
-import com.example.netipol.perty.TutorialActivityAsGuide;
+import com.example.netipol.perty.Single.SingleEventFragment;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -71,6 +74,8 @@ public class ProfileFragment extends Fragment {
     public boolean pressToAccept = false;
     private int f,h,j;
     private RelativeLayout joinedCounter, hostedCounter, friendCounter;
+    private ActionBar bar;
+    private MainActivity activity;
     //public  NotificationFragment fragmentNoti;
 
 
@@ -96,11 +101,12 @@ public class ProfileFragment extends Fragment {
         hostedList = new ArrayList<>();
         joinedList = new ArrayList<>();
 
+        activity = (MainActivity) getActivity();
+        bar = activity.getSupportActionBar();
         //fragmentNoti = new NotificationFragment();
 
         //Send mHostid to viewpager fragment
         //HostFragment detail = (HostFragment) getActivity().getSupportFragmentManager().findFragmentByTag("TabHostFragment");  //get detail fragment instance by it's tag
-        MainActivity activity = (MainActivity) getActivity();
 
         profButton = view.findViewById(R.id.my_profile_button);
         profPic = view.findViewById(R.id.my_profile_picture);
@@ -114,8 +120,11 @@ public class ProfileFragment extends Fragment {
         Bundle bundle = this.getArguments();
             if (bundle != null) {//Viewing another user
                 mHost_id = bundle.getString("host_id");//id of Viewed-user
-                Log.d("hello", "not null");
                 activity.setHostId(mHost_id);
+
+                getUserInfo(mHost_id);
+
+                Log.d("hello", "not null");
                 check=true;
 
                 profButton.setText("Add Friend");
@@ -309,6 +318,9 @@ public class ProfileFragment extends Fragment {
                 Log.d("hello", "null");
                 mHost_id = Profile.getCurrentProfile().getId();
                 activity.setHostId(mHost_id);
+
+                getUserInfo(mHost_id);
+
                 check=false;
 
                 //setCounter();
@@ -383,9 +395,6 @@ public class ProfileFragment extends Fragment {
         //final TextView profName = (TextView) view.findViewById(R.id.my_username_profile);
         profDesc = (TextView) view.findViewById(R.id.my_desc_profile);
         profType = (TextView) view.findViewById(R.id.my_type_profile);
-
-        getUserInfo(mHost_id);
-
         return view;
     }
 
@@ -402,7 +411,8 @@ public class ProfileFragment extends Fragment {
                             Log.d(TAG, "DocumentSnapshot data:"+ " => " + doc.getData());
 
                             userName = doc.get("username").toString();
-                            setProfileActionBar();
+
+                            setProfileActionBar(userName);
 
                             //profName.setText(userName);
                             profDesc.setText(doc.get("accountdesc").toString());
@@ -420,7 +430,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //setProfileActionBar();
         getUserInfo(mHost_id);
         setCounter(mHost_id);
     }
@@ -429,10 +438,8 @@ public class ProfileFragment extends Fragment {
         return mHost_id;
     }
 
-    public void setProfileActionBar(){
-        MainActivity activity = (MainActivity) getActivity();
-        ActionBar bar = activity.getSupportActionBar();
-        bar.setTitle(userName);
+    public void setProfileActionBar(String title){
+        bar.setTitle(title);
         if(check==true){
             bar.setDisplayHomeAsUpEnabled(true);
         }else {
@@ -514,11 +521,12 @@ public class ProfileFragment extends Fragment {
     // create an action bar button
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if(check==false){
+        if(check==false){//show menu item only when viewing as current user
             inflater.inflate(R.menu.profile_menu, menu);
         }else {
-            //bar.setDisplayHomeAsUpEnabled(false);
+            inflater.inflate(R.menu.profile_menu_peek, menu);
         }
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -527,16 +535,197 @@ public class ProfileFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.profileMenu_logout) {
-            // do something here
-            ((MainActivity)getActivity()).signOutFromAll();
-            ((MainActivity)getActivity()).sendToLogin();
+        if(check==false){//show these menu items only when viewing as current user
+            if (id == R.id.profileMenu_logout) {
+                // do something here
+                ((MainActivity)getActivity()).signOutFromAll();
+                ((MainActivity)getActivity()).sendToLogin();
+            }
+
+            if (id == R.id.profileMenu_rate) {
+                // get prompts.xml view
+                LayoutInflater li = LayoutInflater.from(getActivity());
+                View promptsView = li.inflate(R.layout.dialog_custom_rate_perty, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        getActivity());
+
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                final RatingBar mRatingBar = (RatingBar) promptsView.findViewById(R.id.ratingBar);//star
+                final TextView mRatingScale = (TextView) promptsView.findViewById(R.id.ratingScale);//scale
+                final EditText mComment = (EditText) promptsView.findViewById(R.id.rate_comment);//comment
+
+                mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                        mRatingScale.setText(String.valueOf(v));
+                        switch ((int) ratingBar.getRating()) {
+                            case 1:
+                                mRatingScale.setText("Very bad");
+                                break;
+                            case 2:
+                                mRatingScale.setText("Need some improvement");
+                                break;
+                            case 3:
+                                mRatingScale.setText("Good");
+                                break;
+                            case 4:
+                                mRatingScale.setText("Great");
+                                break;
+                            case 5:
+                                mRatingScale.setText("Awesome. I love it");
+                                break;
+                            default:
+                                mRatingScale.setText("");
+                        }
+                    }
+                });
+
+
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Submit",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        // get user input and set it to result
+                                        // edit text
+                                        //reportButt.setText(userInput.getText());
+                                        //spinnerInput.getSelectedItem().toString();
+                                        //Log.d("report", userInput.getText()+spinnerInput.getSelectedItem().toString());
+
+                                        // Create a new user with a first and last name
+                                        Map<String, Object> rate = new HashMap<>();
+                                        rate.put("rate_value", String.valueOf(mRatingBar.getRating()));
+                                        rate.put("rate_comment", mComment.getText().toString());
+                                        rate.put("rate_by", Profile.getCurrentProfile().getId());
+
+                                        // Add a new document with a generated ID
+                                        db.collection("feedback")
+                                                .document(Profile.getCurrentProfile().getId())
+                                                .set(rate)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d("acc", "DocumentSnapshot added");
+                                                        Toast.makeText(getActivity().getApplicationContext(), "Thank you for your feedback.",Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w("acc", "Error adding document", e);
+                                                    }
+                                                });
+
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+            }
+
+            if(id == R.id.profileMenu_guide){
+                startActivity(new Intent(getApplicationContext(), TutorialActivityAsGuide.class));
+
+            }
+        }else {//viewing other users
+            if(id == R.id.profileMenu_report){
+
+                // get prompts.xml view
+                LayoutInflater li = LayoutInflater.from(getActivity());
+                View promptsView = li.inflate(R.layout.dialog_custom_report_user, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        getActivity());
+
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                final EditText userInput = (EditText) promptsView
+                        .findViewById(R.id.report_extra_user);
+
+                final Spinner spinnerInput = promptsView.findViewById(R.id.report_type_user);
+
+                //get the spinner from the xml.
+                //create a list of items for the spinner.
+                String[] items = new String[]{"Inappropriate Content", "False Content", "Impersonalization", "Other"};
+                //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+                //There are multiple variations of this, but this is the basic variant.
+                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, items){
+                };
+                //set the spinners adapter to the previously created one.
+                spinnerInput.setAdapter(adapter);
+                spinnerInput.setOnItemSelectedListener(new SingleEventFragment());
+
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Report",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        // get user input and set it to result
+                                        // edit text
+                                        //reportButt.setText(userInput.getText());
+                                        //spinnerInput.getSelectedItem().toString();
+                                        Log.d("report", userInput.getText()+spinnerInput.getSelectedItem().toString());
+
+                                        // Create a new user with a first and last name
+                                        Map<String, Object> report = new HashMap<>();
+                                        report.put("report_type", spinnerInput.getSelectedItem().toString());
+                                        report.put("report_extra", userInput.getText().toString());
+                                        report.put("report_user", mHost_id);
+                                        report.put("report_by", Profile.getCurrentProfile().getId());
+
+                                        // Add a new document with a generated ID
+                                        db.collection("report_users")
+                                                .document()
+                                                .set(report)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d("acc", "DocumentSnapshot added");
+                                                        Toast.makeText(getActivity().getApplicationContext(), "Thank you for your feedback.",Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w("acc", "Error adding document", e);
+                                                    }
+                                                });
+
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+
+            }
+            //bar.setDisplayHomeAsUpEnabled(false);
         }
 
-        if(id == R.id.profileMenu_guide){
-            startActivity(new Intent(getApplicationContext(), TutorialActivityAsGuide.class));
 
-        }
         return super.onOptionsItemSelected(item);
     }
 

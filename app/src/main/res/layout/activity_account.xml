@@ -23,8 +23,8 @@
             android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:orientation="vertical"
             >
@@ -52,20 +52,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tap to change"
+                android:textSize="12dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="10dp"
                 />
 
 
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="30dp"
                 android:id="@+id/getFbProf"
-                android:layout_margin="10dp"
-                android:text="Get my facebook profile pic"
+                android:text="Get facebook profile pic"
                 android:textSize="8dp"
                 android:textColor="@android:color/white"
-                android:background="@drawable/btstyle2"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/com_facebook_button_background"
                 android:layout_gravity="center_horizontal"/>
 
 
@@ -73,16 +74,17 @@
                 android:id="@+id/usernameTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Set your username"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="Username"
                 android:textSize="16dp"
-                android:layout_marginBottom="5dp"
-                android:layout_alignStart="@id/userNameField"
+                android:layout_gravity="center_horizontal"
                 />
 
 
             <EditText
                 android:id="@+id/userNameField"
-                android:layout_width="200dp"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:hint="@string/userHint"
@@ -99,9 +101,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/userType"
                 android:layout_below="@id/userNameField"
+                android:layout_gravity="center_horizontal"
                 android:textSize="16dp"
-                android:layout_marginBottom="5dp"
-                android:text="What type of user are you?" />
+                android:textColor="@color/colorPrimaryDark"
+                android:text="User Type" />
 
             <Spinner
                 android:id="@+id/userType"
@@ -118,39 +121,67 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/userBio"
                 android:layout_below="@id/userType"
+                android:layout_gravity="center_horizontal"
                 android:textSize="16dp"
-                android:layout_marginBottom="5dp"
-                android:text="Write a short bio" />
+                android:text="Breif Bio"
+                android:textColor="@color/colorPrimaryDark"/>
+
 
             <EditText
                 android:id="@+id/userBio"
-                android:layout_width="200dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
                 android:layout_below="@id/userBioTitle"
                 android:hint="@string/bioHint"
-                android:maxLength="144"
+                android:maxLength="200"
+                android:layout_gravity="center_horizontal"
                 android:inputType="textCapSentences|textMultiLine"
                 android:textSize="16dp"
+                android:layout_marginBottom="16dp"
                 android:maxLines="4"
                 android:imeOptions="actionDone"
                 />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select at least 3 event categories."
+                android:textSize="16dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/pref_text"
+                android:layout_marginBottom="10dp"
+                />
+
+            <GridView
+                android:id="@+id/grid"
+                android:layout_width="match_parent"
+                android:layout_height="340dp"
+                android:layout_gravity="center_horizontal"
+                android:horizontalSpacing="10dp"
+                android:numColumns="3"
+                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:scrollbars="none"
+                android:verticalSpacing="10dp" />
+
             <Button
                 android:id="@+id/nextToPref"
                 android:elevation="2dp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:paddingHorizontal="8dp"
                 android:layout_height="40dp"
-                android:layout_below="@id/userBio"
                 android:layout_centerHorizontal="true"
                 android:text="Create Account"
+                android:layout_margin="10dp"
                 android:textSize="12dp"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/textPrimary"
                 android:background="@drawable/gradient1"
-                android:layout_marginBottom="24dp"
                 />
+
+
         </LinearLayout>
 
         </ScrollView>

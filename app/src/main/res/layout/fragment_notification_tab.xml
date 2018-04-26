@@ -32,6 +32,7 @@
                 android:id="@+id/notice_nonoti"
                 android:textSize="20dp"
                 android:textStyle="bold"
+                android:layout_marginTop="20dp"
                 android:textColor="@android:color/darker_gray"
                 android:text="No notifications"/>
 

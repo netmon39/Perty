@@ -1,6 +1,9 @@
 package com.example.netipol.perty.SelectPref;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -15,6 +18,10 @@ public class GridItemView extends FrameLayout {//SelectPref
         super(context);
         LayoutInflater.from(context).inflate(R.layout.activity_grid_item_view, this);
         textView = (TextView) getRootView().findViewById(R.id.text);
+    }
+
+    public GridItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
     }
 
     public void display(String text, boolean isSelected, int pos) {

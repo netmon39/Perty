@@ -2,17 +2,12 @@ package com.example.netipol.perty.Event;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,21 +23,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.netipol.perty.Friend.FriendReqListAdapter;
-import com.example.netipol.perty.Home.SingleEventFragment;
-import com.example.netipol.perty.Profile.FavoritesFragment;
-import com.example.netipol.perty.Profile.ProfileFragment;
+import com.example.netipol.perty.Single.SingleEventFragment;
 import com.example.netipol.perty.R;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +77,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
+
         db.collection("users").document(eventList.get(position).getHostId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -115,7 +105,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         }else{//Public
             //Dont display Private Tag
             holder.eventlayout.setBackgroundDrawable(null);
-            holder.eventPrivate.setVisibility(View.GONE);
+            holder.eventPrivate.setVisibility(View.INVISIBLE);
         }
 
         /*db.collection("users").document(Profile.getCurrentProfile().getId()).collection("friends")
@@ -137,7 +127,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         //holder.eventprof.setBorderColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
 
         holder.title.setText(eventList.get(position).getTitle());//from Event.java
-        holder.time.setText(eventList.get(position).getDate());
+        holder.time.setText(eventList.get(position).getDate_start());
         holder.location.setText(eventList.get(position).getLoca_preset());
         //holder.image.setText(eventList.get(position).getTitle());
         Glide.with(getApplicationContext()).load(eventList.get(position).getImage()).apply(new RequestOptions().fitCenter()).into(holder.image);
@@ -150,23 +140,25 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
             @Override
             public void onClick(View v) {
 
-                Log.d("GETID", event_doc_id + position);
+                //if(isConnectedToInternet()==true || isConnectedToInternet()==false){
+                    //Log.d("GETID", event_doc_id + position);
 
-                //Create a bundle to pass data, add data, set the bundle to your fragment and:
-                mFragment = new SingleEventFragment();
-                mBundle = new Bundle();
-                mBundle.putString("event_id",event_doc_id);
-                mBundle.putString("event_type",event_doc_type);
-                mFragment.setArguments(mBundle);
-                fManager.beginTransaction().replace(R.id.main_frame, mFragment).addToBackStack(null).commit();
+                    //Create a bundle to pass data, add data, set the bundle to your fragment and:
+                    mFragment = new SingleEventFragment();
+                    mBundle = new Bundle();
+                    mBundle.putString("event_id",event_doc_id);
+                    mBundle.putString("event_type",event_doc_type);
+                    mFragment.setArguments(mBundle);
+                    fManager.beginTransaction().replace(R.id.main_frame, mFragment).addToBackStack(null).commit();
+
 
             }
         });
 
 
-        if(event_doc_type.equals("Archived") || eventList.get(position).getHostId().equals(Profile.getCurrentProfile().getId())){
+        /*if(event_doc_type.equals("Archived") || eventList.get(position).getHostId().equals(Profile.getCurrentProfile().getId())){
 
-            holder.favbutt.setVisibility(View.GONE);
+            holder.favbutt.setVisibility(View.INVISIBLE);
 
         }else{
 
@@ -178,6 +170,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
 
                     favboo=false;
                     Log.d("lol", "fav");
+                    holder.favbutt.setEnabled(false);
 
                     db.collection("users")//check friend status
                             .document(Profile.getCurrentProfile().getId())
@@ -253,10 +246,13 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                         toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
                         toast.show();
 
+                        holder.favbutt.setEnabled(true);
+
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE://Decline friend request
                         //Toast.makeText(getApplicationContext(), "Request declined.",Toast.LENGTH_LONG).show();
+                        holder.favbutt.setEnabled(true);
 
                         break;
                 }
@@ -293,11 +289,13 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                         toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
                         toast.show();
 
+                        holder.favbutt.setEnabled(true);
+
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE://Decline friend request
                         //Toast.makeText(getApplicationContext(), "Request declined.",Toast.LENGTH_LONG).show();
-
+                        holder.favbutt.setEnabled(true);
                         break;
                 }
             }
@@ -305,7 +303,24 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
 
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         builder.setMessage("Remove "+eventList.get(position).getTitle()+" from Favourites?").setPositiveButton("Remove", dialogClickListener)
-                .setNegativeButton("Cancel", dialogClickListener).show();
+                .setNegativeButton("Cancel", dialogClickListener).show();*/
+    }
+
+
+    public boolean isConnectedToInternet(){
+        ConnectivityManager connectivity = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null)
+        {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null)
+                for (int i = 0; i < info.length; i++)
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED)
+                    {
+                        return true;
+                    }
+
+        }
+        return false;
     }
 
     @Override
@@ -347,10 +362,12 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
             time = (TextView) mView.findViewById(R.id.post_time);
             location = (TextView) mView.findViewById(R.id.post_location);
             image = (ImageView) mView.findViewById(R.id.post_image);
-            favbutt = mView.findViewById(R.id.addtofav);
+            //favbutt = mView.findViewById(R.id.addtofav);
             eventprof = mView.findViewById(R.id.event_profpic);
             eventlayout = mView.findViewById(R.id.event_linlayout);
             eventPrivate = mView.findViewById(R.id.event_private);
+
+
 
             //Add to Fav / Remove from Fav Toggle Switch
             //check if already in fav

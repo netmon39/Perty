@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Arrays;
 
@@ -37,6 +44,8 @@ public class LoginActivity extends AppCompatActivity {
     public static String fbUID;
     private Button mFacebookBtn;
     private ProgressDialog mProgress;
+    private FirebaseFirestore mFirestore;
+    private boolean alreadyExist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +55,9 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         mProgress = new ProgressDialog(this);
+
+        mFirestore = FirebaseFirestore.getInstance();
+        alreadyExist = false;
 
 
         //mAuth.getCurrentUser().getEmail();\\\\
@@ -140,7 +152,49 @@ public class LoginActivity extends AppCompatActivity {
 
                             //User has successfully logged in, save this information
                             // We need an Editor object to make preference changes.
-                            SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
+
+                            CollectionReference eventsRef = mFirestore.collection("users");
+                            eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+                                @Override
+                                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+
+                                    if (e != null) {
+                                        Log.d("ddog", "Error : " + e.getMessage());
+                                    }
+
+                                    Profile profile = Profile.getCurrentProfile();
+
+                                    for (DocumentSnapshot doc : documentSnapshots.getDocuments()) {//getDocuments) {
+
+                                        //for (int i = 0; i < titleList.size(); i++) {
+
+                                        if (doc.getId().equals(profile.getId())) {//compare userlist with cached FB profile
+                                            alreadyExist = true;
+                                            Log.d("lgn_handleFB", "has logged in b4");
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            //intent.putStringArrayListExtra("SELECTED_LETTER", selectedStrings);
+                                            //intent.putExtra("categ", categ_key);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                            break;
+                                        }
+                                        //}
+                                    }
+
+                                    if(alreadyExist==false){//Go create Perty account first
+                                        Log.d("lgn_handleFB", "has not logged in b4, send to acc");
+                                        fbUID = profile.getId();
+                                        sendToRegister(profile);
+                                        mFacebookBtn.setEnabled(true);
+                                    }
+
+                                }
+
+                            });
+
+                            /*SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
                             //Get "hasLoggedIn" value. If the value doesn't exist yet false is returned
                             boolean hasLoggedIn = settings.getBoolean("hasLoggedIn", false);
 
@@ -158,7 +212,7 @@ public class LoginActivity extends AppCompatActivity {
                                 fbUID = profile.getId();
                                 sendToRegister(profile);
                                 mFacebookBtn.setEnabled(true);
-                            }
+                            }*/
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -190,15 +244,37 @@ public class LoginActivity extends AppCompatActivity {
 
     private void sendToRegister(Profile profile){
 
-        Toast.makeText(LoginActivity.this, "You're logged in", Toast.LENGTH_LONG).show();
+        //Toast.makeText(LoginActivity.this, "You're logged in", Toast.LENGTH_LONG).show();
         Intent accountIntent = new Intent(LoginActivity.this, AccountActivity.class);
         accountIntent.putExtra("name", profile.getFirstName());
         accountIntent.putExtra("surname", profile.getLastName());
         accountIntent.putExtra("imageUri", profile.getProfilePictureUri(200,200)).toString();
         accountIntent.putExtra("fbUID", fbUID);
+        //intent.putStringArrayListExtra("SELECTED_LETTER", selectedStrings);
+        //intent.putExtra("categ", categ_key);
+        accountIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(accountIntent);
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        MainActivity mainActivity = new MainActivity();
+        mainActivity.signOutFromAll();
+        finish();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ActionBar bar = getSupportActionBar();
+        bar.hide();
+        //bar.setTitle("");
+        //bar.setDisplayHomeAsUpEnabled(true);
+
+    }
+
 
     /*
     @Override// *************** for demo purposes, don't forget to remove this **************

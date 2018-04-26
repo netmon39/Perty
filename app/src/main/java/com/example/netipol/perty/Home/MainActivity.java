@@ -1,47 +1,37 @@
 package com.example.netipol.perty.Home;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.example.netipol.perty.Announce.Announce;
-import com.example.netipol.perty.BottomNavigationViewHelper;
+import com.example.netipol.perty.Event.Event;
+import com.example.netipol.perty.Util.BottomNavigationViewHelper;
 import com.example.netipol.perty.Friend.FriendReq;
 import com.example.netipol.perty.Login.LoginActivity;
 import com.example.netipol.perty.Profile.NotificationFragment;
 import com.example.netipol.perty.Profile.ProfileFragment;
 import com.example.netipol.perty.R;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -92,14 +82,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         notiFragment = new NotificationFragment();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
+        //Log.d("whynologin", "Logged in as"+currentUser.getDisplayName());
         if(currentUser == null) {//First time user
-            Log.d("lgntest", "current user nul on create");
+            Log.d("lgn_onCreate", "current user null");
             sendToLogin();
-            //Log.d("whynologin", "Sending to login");
-        }else{
+            finish();
+        }else{//logged in...
             setFrag(eventFragment);
+            Log.d("lgn_onStart", "current user is logged in, show EventFeed");
         }
+
+        //FirebaseUser currentUser = mAuth.getCurrentUser();
 
         /*int v = GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE;
         Toast toast = Toast.makeText(getApplicationContext(),String.valueObf(v),Toast.LENGTH_SHORT);
@@ -190,6 +183,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         hostid = id;
     }
 
+    public String  getActionBarTitle(){
+        return getSupportActionBar().getTitle().toString();
+    }
+
+    public void setActionBarTitle(String title){
+        getSupportActionBar().setTitle(title);
+    }
+
     @Override//Control items pressed in actionbar here
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -236,6 +237,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 return false;
 
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
@@ -354,21 +362,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }*/
 
 
-    @Override
+    /*@Override
     public void onStart() {//is user logged in? START HERE
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         //Log.d("whynologin", "Logged in as"+currentUser.getDisplayName());
-
         if(currentUser == null) {//First time user
-            Log.d("lgntest", "current user nul on start");
+            Log.d("lgn_onStart", "current user null");
             sendToLogin();
-            //Log.d("whynologin", "Sending to login");
-        }else{
+            finish();
+        }else{//logged in...
             //setFrag(eventFragment);
+            Log.d("lgn_onStart", "current user is logged in");
         }
-    }
+    }*/
 
     @Override
     protected void onResume() {

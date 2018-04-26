@@ -67,6 +67,7 @@ public class ExploreFragment extends Fragment {
     private Random rand;
     private int randomNum;
     public TextView expA, expB, expC;
+    private FloatingActionButton fab;
     private Fragment mFragment;
     private Bundle mBundle;
     public FragmentManager fManager;
@@ -156,10 +157,16 @@ public class ExploreFragment extends Fragment {
         mExpC.setAdapter(expCListAdapter);//to fill recycler view with Events
         expC.setText("Recommended from "+randomPicks.get(2));
 
-        FloatingActionButton fab = v.findViewById(R.id.fab);
+        fab = v.findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                expA.setVisibility(View.INVISIBLE);
+                expB.setVisibility(View.INVISIBLE);
+                expC.setVisibility(View.INVISIBLE);
+                fab.setVisibility(View.INVISIBLE);
+
                 randomPicks = pickRandom(categList, 3);
                 Log.d("explorer","Random Size: "+String.valueOf(randomPicks.size()));
                 Log.d("explorer",randomPicks.get(0));
@@ -172,6 +179,10 @@ public class ExploreFragment extends Fragment {
                 expB.setText("Recommended from "+randomPicks.get(1));
                 expC.setText("Recommended from "+randomPicks.get(2));
                 scrollView.fullScroll(View.FOCUS_UP);
+                mExpA.scrollToPosition(0);
+                mExpB.scrollToPosition(0);
+                mExpC.scrollToPosition(0);
+
             }
         });
 
@@ -213,67 +224,66 @@ public class ExploreFragment extends Fragment {
                         }
 
                         if(!allOfA.isEmpty()){
-                            chosenOnesA = pickRandom(allOfA, 1);
 
-                            mFirestore.collection("events")
-                                    .document(chosenOnesA.get(0))
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                DocumentSnapshot document = task.getResult();
-                                                String event_id = document.getId();
-                                                event_doc_A = event_id;
-                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                expAList.add(events);//add new events whenever there is a change
-                                                expAListAdapter.notifyDataSetChanged();
-                                            }
+                            if(allOfA.size()<4){//Size = 0,1,2, or 3
+                                //for loop increment by size
+                                List<String> chosenOnesA = pickRandom(allOfA, allOfA.size());
 
-                                            mProgress.dismiss();
+                                for(int i=0;i<allOfA.size();i++){
+                                    mFirestore.collection("events")
+                                            .document(chosenOnesA.get(i))
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        String event_id = document.getId();
+                                                        event_doc_A = event_id;
+                                                        Event events = document.toObject(Event.class).withId(event_id);
+                                                        expAList.add(events);//add new events whenever there is a change
+                                                        expAListAdapter.notifyDataSetChanged();
+                                                    }
 
-                                        }
-                                    });
 
-                            /*mFirestore.collection("events")
-                                .document(chosenOnesA.get(1))
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            DocumentSnapshot document = task.getResult();
-                                            String event_id = document.getId();
-                                            event_doc_1 = event_id;
-                                            Event events = document.toObject(Event.class).withId(event_id);
-                                            expAList.add(events);//add new events whenever there is a change
-                                            expAListAdapter.notifyDataSetChanged();
-                                        }
-                                    }
-                                });
+                                                }
+                                            });
+                                }
+                                expA.setVisibility(View.VISIBLE);
+                                expB.setVisibility(View.VISIBLE);
+                                expC.setVisibility(View.VISIBLE);
+                                fab.setVisibility(View.VISIBLE);
+                                mProgress.dismiss();
 
-                        mFirestore.collection("events")
-                                .document(chosenOnesA.get(2))
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            DocumentSnapshot document = task.getResult();
-                                            String event_id = document.getId();
-                                            event_doc_1 = event_id;
-                                            Event events = document.toObject(Event.class).withId(event_id);
-                                            expAList.add(events);//add new events whenever there is a change
-                                            expAListAdapter.notifyDataSetChanged();
-                                        }
-                                    }
-                                });
+                            }else{//3 items maximum for allOfA.size = 4 or greater
+                                List<String> chosenOnesA = pickRandom(allOfA, 3);
 
-                        Log.d("explorer","Size of expA: "+String.valueOf(chosenOnesA.size()));
-                        Log.d("explorer",chosenOnesA.get(0));
-                        Log.d("explorer",chosenOnesA.get(1));
-                        Log.d("explorer",chosenOnesA.get(2));
-                        */
+                                for(int i=0;i<3;i++){
+                                    mFirestore.collection("events")
+                                            .document(chosenOnesA.get(i))
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        String event_id = document.getId();
+                                                        event_doc_A = event_id;
+                                                        Event events = document.toObject(Event.class).withId(event_id);
+                                                        expAList.add(events);//add new events whenever there is a change
+                                                        expAListAdapter.notifyDataSetChanged();
+                                                    }
+
+
+                                                }
+                                            });
+                                }
+                                expA.setVisibility(View.VISIBLE);
+                                expB.setVisibility(View.VISIBLE);
+                                expC.setVisibility(View.VISIBLE);
+                                fab.setVisibility(View.VISIBLE);
+                                mProgress.dismiss();
+                            }
 
                         }else{
                             expAListAdapter.notifyDataSetChanged();
@@ -318,23 +328,66 @@ public class ExploreFragment extends Fragment {
                         }
 
                         if(!allOfB.isEmpty()){
-                            chosenOnesB = pickRandom(allOfB, 1);
-                            mFirestore.collection("events")
-                                    .document(chosenOnesB.get(0))
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                DocumentSnapshot document = task.getResult();
-                                                String event_id = document.getId();
-                                                event_doc_B = event_id;
-                                                Event events = document.toObject(Event.class).withId(event_id);
-                                                expBList.add(events);//add new events whenever there is a change
-                                                expBListAdapter.notifyDataSetChanged();
-                                            }
-                                        }
-                                    });
+
+                            if(allOfA.size()<4){//Size = 0,1,2, or 3
+                                //for loop increment by size
+                                List<String> chosenOnesA = pickRandom(allOfB, allOfB.size());
+
+                                for(int i=0;i<allOfB.size();i++){
+                                    mFirestore.collection("events")
+                                            .document(chosenOnesA.get(i))
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        String event_id = document.getId();
+                                                        event_doc_B = event_id;
+                                                        Event events = document.toObject(Event.class).withId(event_id);
+                                                        expBList.add(events);//add new events whenever there is a change
+                                                        expBListAdapter.notifyDataSetChanged();
+                                                    }
+
+
+                                                }
+                                            });
+                                }
+                                expA.setVisibility(View.VISIBLE);
+                                expB.setVisibility(View.VISIBLE);
+                                expC.setVisibility(View.VISIBLE);
+                                fab.setVisibility(View.VISIBLE);
+                                mProgress.dismiss();
+
+                            }else{//3 items maximum for allOfA.size = 4 or greater
+                                List<String> chosenOnesA = pickRandom(allOfB, 3);
+
+                                for(int i=0;i<3;i++){
+                                    mFirestore.collection("events")
+                                            .document(chosenOnesA.get(i))
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        String event_id = document.getId();
+                                                        event_doc_B = event_id;
+                                                        Event events = document.toObject(Event.class).withId(event_id);
+                                                        expBList.add(events);//add new events whenever there is a change
+                                                        expBListAdapter.notifyDataSetChanged();
+                                                    }
+
+
+                                                }
+                                            });
+                                }
+                                expA.setVisibility(View.VISIBLE);
+                                expB.setVisibility(View.VISIBLE);
+                                expC.setVisibility(View.VISIBLE);
+                                fab.setVisibility(View.VISIBLE);
+                                mProgress.dismiss();
+                            }
 
                         }else{
                             expBListAdapter.notifyDataSetChanged();
@@ -375,23 +428,66 @@ public class ExploreFragment extends Fragment {
                             }
 
                             if(!allOfC.isEmpty()){
-                                chosenOnesC = pickRandom(allOfC, 1);//change to 3?
-                                mFirestore.collection("events")
-                                        .document(chosenOnesC.get(0))
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    DocumentSnapshot document = task.getResult();
-                                                    String event_id = document.getId();
-                                                    event_doc_C = event_id;
-                                                    Event events = document.toObject(Event.class).withId(event_id);
-                                                    expCList.add(events);//add new events whenever there is a change
-                                                    expCListAdapter.notifyDataSetChanged();
-                                                }
-                                            }
-                                        });
+
+                                if(allOfC.size()<4){//Size = 0,1,2, or 3
+                                    //for loop increment by size
+                                    List<String> chosenOnesA = pickRandom(allOfC, allOfC.size());
+
+                                    for(int i=0;i<allOfC.size();i++){
+                                        mFirestore.collection("events")
+                                                .document(chosenOnesA.get(i))
+                                                .get()
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            DocumentSnapshot document = task.getResult();
+                                                            String event_id = document.getId();
+                                                            event_doc_C = event_id;
+                                                            Event events = document.toObject(Event.class).withId(event_id);
+                                                            expCList.add(events);//add new events whenever there is a change
+                                                            expCListAdapter.notifyDataSetChanged();
+                                                        }
+
+
+                                                    }
+                                                });
+                                    }
+                                    expA.setVisibility(View.VISIBLE);
+                                    expB.setVisibility(View.VISIBLE);
+                                    expC.setVisibility(View.VISIBLE);
+                                    fab.setVisibility(View.VISIBLE);
+                                    mProgress.dismiss();
+
+                                }else{//3 items maximum for allOfA.size = 4 or greater
+                                    List<String> chosenOnesA = pickRandom(allOfC, 3);
+
+                                    for(int i=0;i<3;i++){
+                                        mFirestore.collection("events")
+                                                .document(chosenOnesA.get(i))
+                                                .get()
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            DocumentSnapshot document = task.getResult();
+                                                            String event_id = document.getId();
+                                                            event_doc_C = event_id;
+                                                            Event events = document.toObject(Event.class).withId(event_id);
+                                                            expCList.add(events);//add new events whenever there is a change
+                                                            expCListAdapter.notifyDataSetChanged();
+                                                        }
+
+
+                                                    }
+                                                });
+                                    }
+                                    expA.setVisibility(View.VISIBLE);
+                                    expB.setVisibility(View.VISIBLE);
+                                    expC.setVisibility(View.VISIBLE);
+                                    fab.setVisibility(View.VISIBLE);
+                                    mProgress.dismiss();
+                                }
 
                             }else{
                                 expCListAdapter.notifyDataSetChanged();

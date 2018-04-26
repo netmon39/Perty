@@ -43,6 +43,7 @@ public class HostFragment  extends android.support.v4.app.Fragment{
     private EventListAdapter eventListAdapter;
     private FirebaseFirestore mFirestore;
     private String mUser_id;
+    private Query query;
 
     public static HostFragment newInstance() {
         HostFragment fragment = new HostFragment();
@@ -61,6 +62,14 @@ public class HostFragment  extends android.support.v4.app.Fragment{
         MainActivity activity = (MainActivity) getActivity();
         mUser_id = activity.getHostId();
 
+        CollectionReference eventsRef = mFirestore.collection("events");
+
+        if(mUser_id.equals(Profile.getCurrentProfile().getId())){//as self
+            query = eventsRef.whereEqualTo("hostid", mUser_id);
+        }else{
+            query = eventsRef.whereEqualTo("hostid", mUser_id).whereEqualTo("type","Public");
+        }
+
         Log.d("hello", "data: "+mUser_id);
 
         eventList = new ArrayList<>();
@@ -71,15 +80,12 @@ public class HostFragment  extends android.support.v4.app.Fragment{
         mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mEventList.setAdapter(eventListAdapter);
 
-        CollectionReference eventsRef = mFirestore.collection("events");
-        Query query = eventsRef.whereEqualTo("hostid", mUser_id);
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 if(e != null){
                     Log.d("FeedLog", "Error : " + e.getMessage());
                 }
-
                 //for(DocumentChange change : documentSnapshots.getDocumentChanges()) {
                 for(DocumentSnapshot change : documentSnapshots.getDocuments()){
 
