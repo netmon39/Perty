@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.netipol.perty.Home.MainActivity">
+    tools:context="com.teamperty.netipol.perty.Home.MainActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/imageSelect"
             android:hint="Add a short, clear name"
-            android:maxLength="30"
+            android:maxLength="40"
             android:maxLines="1"
             android:singleLine="true"
             android:textSize="16dp"
@@ -217,7 +217,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:hint="Tell people more about the event"
+                android:hint="- Tell people more about the event\n- Specify how they can contact you\n- Include phone numbers, emails, URLs, etc."
                 android:textSize="16dp"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLength="500"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.netipol.perty">
+    package="com.teamperty.netipol.perty">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
@@ -17,7 +17,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.NoActionBar"
+        android:screenOrientation="portrait">
 
         <receiver
             android:name=".Util.NetworkChangeReceiver"
@@ -30,6 +31,7 @@
 
         <activity
             android:name=".Home.MainActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             >
 
@@ -46,11 +48,13 @@
 
         <activity
             android:name="com.facebook.FacebookActivity"
+            android:screenOrientation="portrait"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -60,17 +64,26 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login.AccountActivity" />
-        <activity android:name=".SelectPref.SelectPrefActivity"/>
-        <activity android:name=".Login.TutorialActivity" />
-        <activity android:name=".Profile.TutorialActivityAsGuide" />
-        <activity android:name=".Profile.EditProfileActivity" />
+        <activity android:name=".Login.AccountActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SelectPref.SelectPrefActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Login.TutorialActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".Profile.TutorialActivityAsGuide"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Profile.EditProfileActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SelectPref.SelectedItemsActivity"
             android:label="@string/title_activity_selected_items"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Home.PostActivity" />
-        <activity android:name=".Login.LoginActivity" />
+        <activity android:name=".Home.PostActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Login.LoginActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

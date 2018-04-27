@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.netipol.perty.Home.ExploreFragment">
+    tools:context="com.teamperty.netipol.perty.Home.ExploreFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -80,10 +80,41 @@
        android:layout_marginBottom="20dp"
        android:layout_centerInParent="true"
        android:src="@drawable/ic_casino_white_24dp"
-       app:backgroundTint="@color/colorPrimaryDark"
+       app:backgroundTint="@color/colorAccent"
        app:rippleColor="@color/colorPrimary"
        app:elevation="5dp"
        />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/fab"
+            android:layout_below="@id/explore_list_c"
+            android:layout_alignTop="@id/fab"
+            android:layout_marginRight="25dp"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:id="@+id/fab_perty"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_alignBottom="@id/fab"
+            android:gravity="center"
+            android:text="Perty"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/fab"
+            android:layout_alignTop="@id/fab"
+            android:layout_marginLeft="25dp"
+            android:textSize="30dp"
+            android:id="@+id/fab_now"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_alignBottom="@id/fab"
+            android:layout_below="@id/explore_list_c"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="Now!"/>
 
 
     </RelativeLayout>

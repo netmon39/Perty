@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.netipol.perty.Single.SingleEventFragment">
+    tools:context="com.teamperty.netipol.perty.Single.SingleEventFragment">
 
 
     <ScrollView
@@ -235,7 +235,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/ic_favorite_border_white_24dp"
-                android:backgroundTint="@color/colorPrimaryDark"/>
+                android:backgroundTint="@color/colorAccent"/>
 
 
         </RelativeLayout>

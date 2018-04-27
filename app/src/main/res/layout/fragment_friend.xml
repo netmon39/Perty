@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.netipol.perty.Profile.FriendFragment">
+    tools:context="com.teamperty.netipol.perty.Profile.FriendFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

@@ -18,4 +18,6 @@
     <string name="typeTitle">What type of user are you?</string>
     <string name="bioHint">Tell others something about you!</string>
 
+    <string name="post_about">This\'ll work</string>
+
 </resources>
