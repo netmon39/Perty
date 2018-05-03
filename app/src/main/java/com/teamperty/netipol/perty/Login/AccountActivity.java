@@ -284,7 +284,8 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
                                 .append(categ_key)
                                 .append("8")
                                 .toString();
-                        Log.d("categ", categ_key);                        }
+                        Log.d("categ", categ_key);
+                    }
                 }
             }
 
@@ -418,7 +419,7 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
         }
     }
 
-    @Override
+    /*@Override
     protected void onStop() {
         super.onStop();
         Log.d("lgn","onStop");
@@ -427,7 +428,7 @@ public class AccountActivity extends AppCompatActivity implements AdapterView.On
             mainActivity.signOutFromAll();
             finish();
         }
-    }
+    }*/
 
     @Override
     public void onResume() {

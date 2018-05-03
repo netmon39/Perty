@@ -197,7 +197,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                             .set(record);
 
                     Toast.makeText(getActivity().getApplicationContext(), "You joined " + eventName, Toast.LENGTH_SHORT).show();
-                    requestJoin.setBackground(getResources().getDrawable(R.drawable.btstyle));
+                    requestJoin.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.btstyle));
                     requestJoin.setText("Unjoin event");
                     alreadyJoined=true;
                 }else {
@@ -216,7 +216,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                             .delete();
 
                     Toast.makeText(getActivity().getApplicationContext(), "You unjoined " + eventName, Toast.LENGTH_SHORT).show();
-                    requestJoin.setBackground(getResources().getDrawable(R.drawable.btstyle2));
+                    requestJoin.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.btstyle2));
                     requestJoin.setText("Join event");
                     alreadyJoined=false;
                 }
@@ -257,7 +257,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                                     Log.w(TAG, eventHostId, task.getException());
 
                                     //singleTitle.setText(doc.get("title").toString());
-                                    Glide.with(getActivity().getApplicationContext()).load(doc.get("image").toString()).into(singleImage);
+                                    Glide.with(getApplicationContext()).load(doc.get("image").toString()).into(singleImage);
                                     singleDesc.setText(doc.get("desc").toString());
                                     //singleHost.setText("get me from db");
                                     singleStart.setText(doc.get("date_start").toString()+", "+doc.get("time_start").toString());
@@ -278,7 +278,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                                                         Log.d(TAG, "DocumentSnapshot data:"+ " => " + doc.getData());
 
                                                         //singleTitle.setText(doc.get("title").toString());
-                                                        Glide.with(getActivity().getApplicationContext()).load(doc.get("profimage").toString()).into(singleHostProf);
+                                                        Glide.with(getApplicationContext()).load(doc.get("profimage").toString()).into(singleHostProf);
                                                         singleHost.setText(doc.get("username").toString());
 
 
@@ -315,12 +315,13 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                                     bar.setDisplayHomeAsUpEnabled(true);
                                     singleEventTitle.setText(eventName);
 
+
                                     //eventHost = doc.get("host").toString();
                                     eventHostId = doc.get("hostid").toString();
                                     Log.w(TAG, eventHostId, task.getException());
 
                                     //singleTitle.setText(doc.get("title").toString());
-                                    Glide.with(getActivity().getApplicationContext()).load(doc.get("image").toString()).into(singleImage);
+                                    Glide.with(getApplicationContext()).load(doc.get("image").toString()).into(singleImage);
                                     singleDesc.setText(doc.get("desc").toString());
                                     //singleHost.setText("get me from db");
                                     singleStart.setText(doc.get("date_start").toString()+", "+doc.get("time_start").toString());
@@ -342,7 +343,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                                                         Log.d(TAG, "DocumentSnapshot data:"+ " => " + doc.getData());
 
                                                         //singleTitle.setText(doc.get("title").toString());
-                                                        Glide.with(getActivity().getApplicationContext()).load(doc.get("profimage").toString()).into(singleHostProf);
+                                                        Glide.with(getApplicationContext()).load(doc.get("profimage").toString()).into(singleHostProf);
                                                         singleHost.setText(doc.get("username").toString());
 
 
@@ -654,12 +655,12 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                                             if (document.exists()) {
                                                 alreadyJoined = true;
                                                 requestJoin.setText("Unjoin event");//Unjoin?
-                                                requestJoin.setBackground(getResources().getDrawable(R.drawable.btstyle));
+                                                requestJoin.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.btstyle));
                                                 //requestJoin.setEnabled(false);
                                             } else {
                                                 alreadyJoined=false;
                                                 requestJoin.setText("Join event");
-                                                requestJoin.setBackground(getResources().getDrawable(R.drawable.btstyle2));
+                                                requestJoin.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.btstyle2));
                                                 //requestJoin.setEnabled(true);
                                             }
                                         }
@@ -702,7 +703,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
 
                                                                 favboo2 = true;
                                                                 //setDialogRemoveFav(mPost_id);
-                                                                reportButt.setBackground(getResources().getDrawable(R.drawable.ic_favorite_white_24dp));
+                                                                reportButt.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_favorite_white_24dp));
                                                                 break;
                                                             }
 
@@ -711,7 +712,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                                                         if(favboo2==false){
                                                             //add to favorite
                                                             //setDialogAddFav(mPost_id);
-                                                            reportButt.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
+                                                            reportButt.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
                                                         }
 
                                                     } else {
@@ -837,7 +838,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                                 .document(Profile.getCurrentProfile().getId())
                                 .set(favtoevent);
 
-                        reportButt.setBackground(getResources().getDrawable(R.drawable.ic_favorite_white_24dp));
+                        reportButt.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_favorite_white_24dp));
                         Toast toast = Toast.makeText(getActivity(),"Favorited "+eventName,Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
                         toast.show();
@@ -880,7 +881,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                                 .delete();
 
 
-                        reportButt.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
+                        reportButt.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
                         Toast toast = Toast.makeText(getActivity(),"Unfavorited "+eventName,Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
                         toast.show();
@@ -1070,23 +1071,24 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
     @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        db.collection("events").document(mPost_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null) {
-                        Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
+        if(!mPost_type.equals("Archived")){
+            db.collection("events").document(mPost_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null) {
+                            Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
 
-                        if (!mUser_id.equals(eventHostId)) {
-                            check = true;
-                            inflater.inflate(R.menu.profile_menu_peek, menu);
+                            if (!mUser_id.equals(eventHostId)) {
+                                check = true;
+                                inflater.inflate(R.menu.profile_menu_peek, menu);
+                            }
                         }
                     }
                 }
-            }
-        });
-
+            });
+        }
     }
 
     // handle button activities
@@ -1140,11 +1142,11 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                                         Map<String, Object> report = new HashMap<>();
                                         report.put("report_type", spinnerInput.getSelectedItem().toString());
                                         report.put("report_extra", userInput.getText().toString());
-                                        report.put("report_user", mUser_id);
+                                        report.put("report_event", mPost_id);
                                         report.put("report_by", Profile.getCurrentProfile().getId());
 
                                         // Add a new document with a generated ID
-                                        db.collection("report_users")
+                                        db.collection("report_events")
                                                 .document()
                                                 .set(report)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -1206,7 +1208,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
         }
 
         protected void onPostExecute(Bitmap result){
-            RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(),result);
+            RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(),result);
             roundedBitmapDrawable.setCircular(true);
             bmImage.setImageDrawable(roundedBitmapDrawable);
         }

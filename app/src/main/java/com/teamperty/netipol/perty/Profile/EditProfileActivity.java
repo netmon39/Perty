@@ -241,6 +241,8 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
 
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
 
+                    Log.d("accupdate", "Applying update");
+
                     // Create a new user with a first and last name
                     Map<String, Object> user = new HashMap<>();
                     user.put("username", userName);
@@ -256,16 +258,15 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Log.d("acc", "DocumentSnapshot added");
+                                    Log.d("accupdate", "Update complete");
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.w("acc", "Error adding document", e);
+                                    Log.w("accupdate", "Error adding document", e);
                                 }
                             });
-
                     finish();
                 }
             });

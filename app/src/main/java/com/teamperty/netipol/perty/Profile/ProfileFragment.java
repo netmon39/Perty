@@ -3,6 +3,7 @@ package com.teamperty.netipol.perty.Profile;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -123,6 +124,15 @@ public class ProfileFragment extends Fragment {
                 activity.setHostId(mHost_id);
 
                 getUserInfo(mHost_id);
+
+                profPic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Uri uri = Uri.parse("https://www.facebook.com/app_scoped_user_id/"+mHost_id+"/"); // missing 'http://' will cause crashed
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
+                });
 
                 Log.d("hello", "not null");
                 check=true;
@@ -333,6 +343,15 @@ public class ProfileFragment extends Fragment {
 
                         startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
 
+                    }
+                });
+
+                profPic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Uri uri = Uri.parse(Profile.getCurrentProfile().getLinkUri().toString()); // missing 'http://' will cause crashed
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
                     }
                 });
 

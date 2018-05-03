@@ -64,17 +64,16 @@ public class HostFragment  extends android.support.v4.app.Fragment{
 
         CollectionReference eventsRef = mFirestore.collection("events");
 
-        if(mUser_id.equals(Profile.getCurrentProfile().getId())){//as self
-            query = eventsRef.whereEqualTo("hostid", mUser_id);
-        }else{
-            query = eventsRef.whereEqualTo("hostid", mUser_id).whereEqualTo("type","Public");
-        }
-
         Log.d("hello", "data: "+mUser_id);
 
+        //List of events
         eventList = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList,getActivity().getSupportFragmentManager(),1);
 
+        //adapter
+        eventListAdapter = new EventListAdapter(getApplicationContext(),eventList,getActivity()
+                .getSupportFragmentManager(),1);
+
+        //Recyclerview setup
         mEventList = v.findViewById(R.id.hosting_list);
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -82,6 +81,12 @@ public class HostFragment  extends android.support.v4.app.Fragment{
 
         notHosted = v.findViewById(R.id.nothosted);
         notHosted.setVisibility(View.VISIBLE);
+
+        if(mUser_id.equals(Profile.getCurrentProfile().getId())){//as self
+            query = eventsRef.whereEqualTo("hostid", mUser_id);
+        }else{
+            query = eventsRef.whereEqualTo("hostid", mUser_id).whereEqualTo("type","Public");
+        }
 
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override

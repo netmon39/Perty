@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.teamperty.netipol.perty.Home.MainActivity;
@@ -42,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;//Allow read/write to Firebase
     public static String fbUID;
     private Button mFacebookBtn;
+    private TextView mLoginText;
     private ProgressDialog mProgress;
     private FirebaseFirestore mFirestore;
     private boolean alreadyExist;
@@ -85,19 +87,28 @@ public class LoginActivity extends AppCompatActivity {
 
         //Custom FB login button
         mFacebookBtn = (Button) findViewById(R.id.fb_icon);
+        mLoginText = findViewById(R.id.tiSlogan);
         mFacebookBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
 
                 mFacebookBtn.setEnabled(false);//prevent user click during loading, Progress bar here?
                 mFacebookBtn.setVisibility(View.INVISIBLE);
+                mLoginText.setText("Logging you into Perty ...");
 
                 LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile"));
+
                 LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                        Log.d("lgn_loginsuccess", "facebook:onSuccess:" + loginResult);
                         handleFacebookAccessToken(loginResult.getAccessToken());//Get FB access token and pass it to Firebase mAuth
+
+                        /*
+                            .
+                            .
+                            .
+                            // We need an Editor object to make preference changes.*/
                     }
 
                     @Override
@@ -139,18 +150,13 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            /*
-                            FirebaseUser currentUser = mAuth.getCurrentUser();
+                            Log.d("lgn_signinwithcred", "signInWithCredential:success");
 
-                            Toast.makeText(MainActivity.this, currentUser.getDisplayName().toString(),Toast.LENGTH_SHORT).show();
-                            //Toast.makeText(MainActivity.this, currentUser.getEmail().toString(),Toast.LENGTH_SHORT).show();
-                            Toast.makeText(MainActivity.this, currentUser.getUid().toString(),Toast.LENGTH_SHORT).show();
-                            Toast.makeText(MainActivity.this, currentUser.getPhotoUrl().toString(),Toast.LENGTH_SHORT).show();
-                            */
-
-                            //User has successfully logged in, save this information
-                            // We need an Editor object to make preference changes.
+                            /*User has successfully logged in, save this information
+                            .
+                            .
+                            .
+                            // We need an Editor object to make preference changes.*/
 
                             CollectionReference eventsRef = mFirestore.collection("users");
                             eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {

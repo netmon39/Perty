@@ -675,23 +675,17 @@ public class PostActivity extends AppCompatActivity implements AdapterView.OnIte
                     event.put("type", type_val);
                     event.put("categ", categ_val);
                     event.put("image", downloadUrl.toString());
-
                     event.put("timestamp", ts);//time of creation (post)
-
-                    //event.put("host", hostusername);//need to be retrieved again at SingleEventFrage
-
                     event.put("time_start",time_start_val);
                     event.put("time_end", time_end_val);
                     event.put("date_start", date_start_val);
                     event.put("date_end", date_end_val);//new
-
                     event.put("loca_preset",loca_val);//loca main
                     event.put("loca_desc", location_val);//buildings, floors, rooms + extra desc.
-
                     event.put("hostid", Profile.getCurrentProfile().getId());
 
                     // Add a new document with a generated ID
-                    db.collection("events")
+                    db.collection("events")//db = Firebase instance
                             .document()
                             .set(event);
 

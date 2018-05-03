@@ -60,6 +60,7 @@ public class ExploreFragment extends Fragment {
     public FragmentManager fManager;
     private ProgressDialog mProgress;
     private ScrollView scrollView;
+    private MediaPlayer mp;
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -76,6 +77,8 @@ public class ExploreFragment extends Fragment {
         scrollView = v.findViewById(R.id.svContent);
 
         setHasOptionsMenu(true);
+
+        mp =new MediaPlayer();
 
         expA = v.findViewById(R.id.txta);
         expAList = new ArrayList<>();
@@ -158,8 +161,13 @@ public class ExploreFragment extends Fragment {
                 fab_perty.setVisibility(View.INVISIBLE);
                 fab_now.setVisibility(View.INVISIBLE);
 
-                final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.rolldice);
+                mp = MediaPlayer.create(getApplicationContext(), R.raw.rolldicemp3);
                 mp.start();
+                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    public void onCompletion(MediaPlayer mp) {
+                        mp.release();
+                    }
+                });
 
                 randomPicks = pickRandom(categList, 3);
                 Log.d("explorer","Random Size: "+String.valueOf(randomPicks.size()));
@@ -221,7 +229,7 @@ public class ExploreFragment extends Fragment {
 
                             if(allOfA.size()<4){//Size = 0,1,2, or 3
                                 //for loop increment by size
-                                List<String> chosenOnesA = pickRandom(allOfA, allOfA.size());
+                                chosenOnesA = pickRandom(allOfA, allOfA.size());
 
                                 for(int i=0;i<allOfA.size();i++){
                                     mFirestore.collection("events")
@@ -252,7 +260,7 @@ public class ExploreFragment extends Fragment {
                                 mProgress.dismiss();
 
                             }else{//3 items maximum for allOfA.size = 4 or greater
-                                List<String> chosenOnesA = pickRandom(allOfA, 3);
+                                chosenOnesA = pickRandom(allOfA, 3);
 
                                 for(int i=0;i<3;i++){
                                     mFirestore.collection("events")
@@ -327,13 +335,13 @@ public class ExploreFragment extends Fragment {
 
                         if(!allOfB.isEmpty()){
 
-                            if(allOfA.size()<4){//Size = 0,1,2, or 3
+                            if(allOfB.size()<4){//Size = 0,1,2, or 3
                                 //for loop increment by size
-                                List<String> chosenOnesA = pickRandom(allOfB, allOfB.size());
+                                chosenOnesB = pickRandom(allOfB, allOfB.size());
 
                                 for(int i=0;i<allOfB.size();i++){
                                     mFirestore.collection("events")
-                                            .document(chosenOnesA.get(i))
+                                            .document(chosenOnesB.get(i))
                                             .get()
                                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                 @Override
@@ -360,11 +368,11 @@ public class ExploreFragment extends Fragment {
                                 mProgress.dismiss();
 
                             }else{//3 items maximum for allOfA.size = 4 or greater
-                                List<String> chosenOnesA = pickRandom(allOfB, 3);
+                                chosenOnesB = pickRandom(allOfB, 3);
 
                                 for(int i=0;i<3;i++){
                                     mFirestore.collection("events")
-                                            .document(chosenOnesA.get(i))
+                                            .document(chosenOnesB.get(i))
                                             .get()
                                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                 @Override
@@ -433,11 +441,11 @@ public class ExploreFragment extends Fragment {
 
                                 if(allOfC.size()<4){//Size = 0,1,2, or 3
                                     //for loop increment by size
-                                    List<String> chosenOnesA = pickRandom(allOfC, allOfC.size());
+                                    chosenOnesC = pickRandom(allOfC, allOfC.size());
 
                                     for(int i=0;i<allOfC.size();i++){
                                         mFirestore.collection("events")
-                                                .document(chosenOnesA.get(i))
+                                                .document(chosenOnesC.get(i))
                                                 .get()
                                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                     @Override
@@ -464,11 +472,11 @@ public class ExploreFragment extends Fragment {
                                     mProgress.dismiss();
 
                                 }else{//3 items maximum for allOfA.size = 4 or greater
-                                    List<String> chosenOnesA = pickRandom(allOfC, 3);
+                                    chosenOnesC = pickRandom(allOfC, 3);
 
                                     for(int i=0;i<3;i++){
                                         mFirestore.collection("events")
-                                                .document(chosenOnesA.get(i))
+                                                .document(chosenOnesC.get(i))
                                                 .get()
                                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                     @Override
@@ -515,6 +523,12 @@ public class ExploreFragment extends Fragment {
         ActionBar bar = activity.getSupportActionBar();
         bar.setTitle("Explore");
         bar.setDisplayHomeAsUpEnabled(false);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mProgress.dismiss();
     }
 
     @Override

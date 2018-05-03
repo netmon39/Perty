@@ -264,6 +264,12 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         bar.setDisplayHomeAsUpEnabled(false); // for add back arrow in action bar
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mProgress.dismiss();
+    }
+
     // create an action bar button
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -301,7 +307,6 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onRefresh() {
-
         // Fetching data from server
         loadRecyclerViewData();
     }
@@ -1324,9 +1329,4 @@ public class EventFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mProgress.dismiss();
-    }
 }

@@ -235,7 +235,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/ic_favorite_border_white_24dp"
-                android:backgroundTint="@color/colorAccent"/>
+                style="@style/favbutton" />
 
 
         </RelativeLayout>

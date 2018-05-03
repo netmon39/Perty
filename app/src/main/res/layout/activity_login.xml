@@ -16,34 +16,60 @@
         android:textColor="@color/textPrimary"
         android:background="@android:color/transparent"
         android:fontFamily="@font/dosisbold"
-        android:layout_above="@+id/fb_icon"
         android:textSize="64dp"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="16dp"
+        android:layout_above="@+id/tiSlogan"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
         />
 
-    <!--<TextView-->
-        <!--android:id="@+id/tiTap"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Tap anywhere to login."-->
-        <!--android:textSize="14sp"-->
-        <!--android:textColor="@color/textPrimary"-->
-        <!--android:layout_below="@+id/tiFirst"-->
-        <!--android:layout_centerHorizontal="true"/>-->
+    <TextView
+        android:id="@+id/tiSlogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="&quot;Where parties begin.&quot;"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        android:textColor="@color/textPrimary"
+        android:layout_centerInParent="true" />
+
+    <!--TextView
+        android:id="@+id/tiTap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tap anywhere to login via Facebook."
+        android:textSize="14sp"
+        android:layout_below="@id/tiSlogan"
+        android:textColor="@color/textPrimary"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"/-->
+
+    <Button
+        android:id="@+id/fb_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Login via Facebook"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
+        android:textColor="@android:color/white"
+        android:padding="10dp"
+        android:textSize="12sp"
+        android:background="@drawable/com_facebook_button_background"
+        />
 
     <!--Button
-        android:id="@+id/facebookBtn"
+        android:id="@+id/fb_icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"/-->
+        android:background="@android:color/transparent"
+        /-->
 
-    <com.facebook.login.widget.LoginButton
+    <!--com.facebook.login.widget.LoginButton
         android:id="@+id/fb_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        />
+        /-->
 
 </RelativeLayout>

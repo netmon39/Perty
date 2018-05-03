@@ -1,5 +1,6 @@
 package com.teamperty.netipol.perty.Home;
 
+import android.content.pm.ActivityInfo;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -246,10 +248,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public void setFrag(Fragment fragment){
             //on nav item pressed, clear backstack
             FragmentManager fm = getSupportFragmentManager(); // or 'getSupportFragmentManager();'
-            int count = fm.getBackStackEntryCount();
-            for(int i = 0; i < count; ++i) {
-                fm.popBackStack();
-            }
+            //int count = fm.getBackStackEntryCount();
+            //for(int i = 0; i < count; ++i) {
+            fm.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            //
+        // }
 
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.main_frame, fragment);
