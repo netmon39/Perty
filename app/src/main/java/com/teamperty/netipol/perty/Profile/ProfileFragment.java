@@ -128,7 +128,7 @@ public class ProfileFragment extends Fragment {
                 profPic.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Uri uri = Uri.parse("https://www.facebook.com/app_scoped_user_id/"+mHost_id+"/"); // missing 'http://' will cause crashed
+                        Uri uri = Uri.parse("http://www.facebook.com/app_scoped_user_id/"+mHost_id+"/"); // missing 'http://' will cause crashed
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
                     }
@@ -349,7 +349,8 @@ public class ProfileFragment extends Fragment {
                 profPic.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Uri uri = Uri.parse(Profile.getCurrentProfile().getLinkUri().toString()); // missing 'http://' will cause crashed
+                        Log.d("profurl", Profile.getCurrentProfile().getLinkUri().toString());
+                        Uri uri = Uri.parse("http://www.facebook.com/app_scoped_user_id/"+mHost_id+"/"); // missing 'http://' will cause crashed
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
                     }

@@ -251,6 +251,7 @@ public class SingleEventFragment extends Fragment implements AdapterView.OnItemS
                                     eventName = doc.get("title").toString();
                                     bar.setTitle(eventName);
                                     bar.setDisplayHomeAsUpEnabled(true);
+                                    singleEventTitle.setText(eventName);
 
                                     //eventHost = doc.get("host").toString();
                                     eventHostId = doc.get("hostid").toString();
